@@ -3,6 +3,8 @@ import { HeatMapGrid } from 'react-grid-heatmap';
 import EditMenu from '../../components/DropdownEditMenu';
 import { Link } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+
 const NotificationHeatmap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const [maxValue, setMaxValue] = useState(1);
@@ -11,7 +13,7 @@ const NotificationHeatmap = () => {
 
   // Fetch data from the back-end API
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/heatmap_data')
+    fetch(`${API_URL}/api/heatmap_data`)
       .then((response) => response.json())
       .then((data) => {
         // Transform the data to create a 2D array where each row is a day and each column is an hour

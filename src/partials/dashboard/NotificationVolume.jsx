@@ -5,12 +5,14 @@ import { Link } from 'react-router-dom';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF6384'];
 
+const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+
 const NotificationVolume = () => {
   const [volumeData, setVolumeData] = useState([]);
 
   // Fetch data from the backend API
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/volume_data') // Replace with your API endpoint
+    fetch(`${API_URL}/api/volume_data`) // Replace with your API endpoint
       .then((response) => response.json())
       .then((data) => {
         setVolumeData(data);
