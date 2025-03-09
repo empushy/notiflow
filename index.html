@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>EmPushy</title>
     <script>
       if (localStorage.theme === 'dark' || !('theme' in localStorage)) {
         document.querySelector('html').classList.add('dark');
@@ -26,5 +26,6 @@
     </script>   
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
   </body>
 </html>
