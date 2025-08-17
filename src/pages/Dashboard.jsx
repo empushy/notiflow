@@ -25,6 +25,7 @@ import NotificationVolume from '../partials/dashboard/NotificationVolume';
 import EmotionalToneTrends from '../partials/dashboard/NotificationToneCard';
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const NotificationCard = ({ message, iconUrl, posted, appName }) => {
   const timeAgo = moment(posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow();
@@ -56,7 +57,13 @@ const NotificationSystem = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/recent_notifications`);
+        const response = await fetch(`${API_URL}/web/recent-notifications`, {
+          method: "GET",
+          headers: {
+            "X-API-Key": API_KEY,
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         console.log(data)
         setNotifications(data.slice(-3)); // Keep only the latest 3 notifications
@@ -115,7 +122,13 @@ function Dashboard() {
   useEffect(() => {
     const fetchTotalStats = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/total_stats`);
+        const response = await fetch(`${API_URL}/web/total-stats`, {
+          method: "GET",
+          headers: {
+            "X-API-Key": API_KEY,
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         setTotalStats(data); // Keep only the latest 3 notifications
       } catch (error) {
