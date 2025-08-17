@@ -4,6 +4,7 @@ import EditMenu from '../../components/DropdownEditMenu';
 import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const NotificationHeatmap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
@@ -13,7 +14,13 @@ const NotificationHeatmap = () => {
 
   // Fetch data from the back-end API
   useEffect(() => {
-    fetch(`${API_URL}/api/heatmap_data`)
+    fetch(`${API_URL}/web/heatmap_data`, {
+                method: "GET",
+                headers: {
+                    "X-API-Key": API_KEY,
+                    "Content-Type": "application/json",
+                },
+                })
       .then((response) => response.json())
       .then((data) => {
         // Transform the data to create a 2D array where each row is a day and each column is an hour

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const EmotionalToneTrends = ( {trendType} ) => {
     const [data, setData] = useState([]);
@@ -9,7 +10,13 @@ const EmotionalToneTrends = ( {trendType} ) => {
     const [stats, setStats] = useState({});
 
     useEffect(() => {
-            fetch(`${API_URL}/api/emotional-tone-trends?filter=${trendType}`)
+            fetch(`${API_URL}/web/emotional-tone-trends?filter=${trendType}`, {
+                method: "GET",
+                headers: {
+                    "X-API-Key": API_KEY,
+                    "Content-Type": "application/json",
+                },
+                })
             .then((res) => res.json())
             .then((trends) => {
                 console.log("Raw API Response:", trends);

@@ -6,13 +6,20 @@ import { Link } from 'react-router-dom';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF6384'];
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const NotificationAppType = () => {
   const [categoryData, setCategoryData] = useState([]);
 
   // Fetch data from the backend API
   useEffect(() => {
-    fetch(`${API_URL}/api/app_type_data`) // Replace with your API endpoint
+    fetch(`${API_URL}/api/app-type-data`, {
+          method: "GET",
+          headers: {
+            "X-API-Key": API_KEY,
+            "Content-Type": "application/json",
+          },
+        })
       .then((response) => response.json())
       .then((data) => {
         setCategoryData(data);
