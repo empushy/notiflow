@@ -28,4 +28,5 @@ For more information about what support covers, please see our (FAQs)[https://cr
 # Deployment
 - app on vercel
 - api on render
+- database mongodb
 - domain: notiflow.empushy.com
