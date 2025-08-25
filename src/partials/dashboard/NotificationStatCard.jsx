@@ -1,34 +1,40 @@
+"use client";
+
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const NotificationStatCard = ({ stat, initialQuantity, autoIncrease }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
-  const count = useMotionValue(0); // Start at 0
+  const count = useMotionValue(0);
   const springCount = useSpring(count, { stiffness: 100, damping: 20 });
-  const displayNumber = useTransform(springCount, (value) => Math.floor(value).toLocaleString());
+  const displayNumber = useTransform(springCount, (value) =>
+    Math.floor(value).toLocaleString()
+  );
 
   useEffect(() => {
-    count.set(quantity); // Animate to the latest quantity
+    count.set(quantity);
   }, [quantity, count]);
 
-  // Optional: Randomly increase quantity every 10 seconds if autoIncrease is true
   useEffect(() => {
-    if (!autoIncrease) return; // ✅ Exit if autoIncrease is false
+    if (!autoIncrease) return;
 
     const interval = setInterval(() => {
-      setQuantity((prev) => prev + Math.floor(Math.random() * 6)); // Increase by 0-20
+      setQuantity((prev) => prev + Math.floor(Math.random() * 6));
     }, 5000);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [autoIncrease]); // ✅ Only runs when autoIncrease is true
+    return () => clearInterval(interval);
+  }, [autoIncrease]);
 
   return (
-    <div className="flex flex-col col-span-4 bg-white shadow-sm rounded-xl">
-      <div className="px-5 pt-5 pb-4">
-        <h2 className="text-lg font-semibold text-gray-400">{stat}</h2>
-        <motion.p className="text-2xl font-bold text-gray-500">{displayNumber}</motion.p>
+    <motion.div className="flex flex-col col-span-4 bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+      <div className="px-6 pt-6 pb-5">
+        <h2 className="text-sm font-medium uppercase tracking-wide mb-2">
+          {stat}
+        </h2>
+        <motion.p className="text-3xl font-bold">{displayNumber}</motion.p>
+        <div className="w-12 h-1 bg-primary rounded-full mt-3"></div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
