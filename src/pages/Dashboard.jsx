@@ -184,19 +184,19 @@ function Dashboard() {
   const plans = [
     {
       id: "buy_btn_free",
-      name: "Free",
-      price: "€0",
+      name: "50 Requests / month",
+      price: "Free",
       description: "Basic notification tracking with limited features.",
     },
     {
       id: "buy_btn_5e",
-      name: "5 Euros / month",
+      name: "200 Requests / month",
       price: "€5",
       description: "Includes additional analytics and reports.",
     },
     {
       id: "buy_btn_25e",
-      name: "25 Euros / month",
+      name: "5000 Requests / month",
       price: "€25",
       description: "Full access to all features and premium support.",
     },
@@ -337,11 +337,11 @@ function Dashboard() {
                     </p>
                     <p className="text-gray-500 mb-8">{description}</p>
 
-                    <stripe-buy-button
+                    {/* <stripe-buy-button
                       buy-button-id={id}
                       publishable-key="pk_live_51LO28HEcRqjLfVA2ChuRABaHeAGLF3foAIuYXROAa4cj0u1tEPUuzP5fRQKa75Qpeh0OXyOlxMEv5h9EklXcgVo300L2yD7mDG"
                       class="w-full max-w-xs mx-auto"
-                    ></stripe-buy-button>
+                    ></stripe-buy-button> */}
                   </div>
                 ))}
               </div>
