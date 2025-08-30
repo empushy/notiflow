@@ -2,49 +2,20 @@ import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { motion } from "framer-motion";
 import { userService } from "../utils/userService";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 
 const Auth = () => {
   const { loginWithRedirect, logout, isAuthenticated, isLoading, user } =
     useAuth0();
+  const navigate = useNavigate();
 
   // Create user in backend when authenticated
   useEffect(() => {
-    const createUserInBackend = async () => {
-      if (isAuthenticated && user && API_URL) {
-        try {
-          const response = await fetch(`${API_URL}/auth/create-user`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: user.email,
-              sub: user.sub,
-              name: user.name,
-              picture: user.picture,
-            }),
-          });
-
-          const data = await response.json();
-
-          if (data.success) {
-            console.log("User created/verified in backend:", data.message);
-            // Store API key in localStorage for future use
-            if (data.api_key) {
-              userService.setApiKey(data.api_key);
-            }
-          } else {
-            console.error("Failed to create user in backend:", data.message);
-          }
-        } catch (error) {
-          console.error("Error creating user in backend:", error);
-        }
-      }
-    };
-
-    createUserInBackend();
+    if (isAuthenticated && user) {
+      navigate("/home", { replace: true });
+    }
   }, [isAuthenticated, user]);
 
   if (isLoading) {

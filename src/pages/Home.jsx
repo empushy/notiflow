@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
@@ -12,7 +12,6 @@ import Loader from "../partials/dashboard/Loader";
 import { userService } from "../utils/userService";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
-const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const NotificationCard = ({ message, iconUrl, posted, appName }) => {
   const timeAgo = moment(posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow();
@@ -60,29 +59,20 @@ const NotificationCard = ({ message, iconUrl, posted, appName }) => {
 };
 
 const NotificationSystem = () => {
+  const { getAccessTokenSilently } = useAuth0();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      setLoading(true);
+      const at = await getAccessTokenSilently();
       try {
-        const apiKey = userService.getApiKey();
-        if (!apiKey) {
-          console.error("No API key found");
-          setNotifications([]);
-          setLoading(false);
-          return;
-        }
-
         const response = await fetch(`${API_URL}/web/recent-notifications`, {
           method: "GET",
-          headers: {
-            "X-API-Key": apiKey,
-            "Content-Type": "application/json",
-          },
+          headers: { Authorization: `Bearer ${at}` },
         });
         const data = await response.json();
+        console.log(data)
         setNotifications(data.slice(-3)); // Only show the latest 3
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -131,7 +121,7 @@ const NotificationSystem = () => {
 };
 
 function Home() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [totalStats, setTotalStats] = useState();
   const [loadingStats, setLoadingStats] = useState(true);
@@ -141,6 +131,25 @@ function Home() {
     setSelectedFilter(filter);
     // fetch data as needed
   };
+
+  useEffect(() => {
+    (async () => {
+      if (isAuthenticated)
+      {
+        const at = await getAccessTokenSilently();   // must have audience set in Auth0Provider
+        const res = await fetch(`${API_URL}/auth/me`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${at}` },
+        });
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          console.error("[Auth] /auth/me failed:", res.status, txt);
+        } else {
+          console.log("[Auth] /auth/me ok");
+        }
+      }
+    })();
+  }, [isAuthenticated, user])
 
   useEffect(() => {
     const fetchTotalStats = async () => {
@@ -202,7 +211,7 @@ function Home() {
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         {/* Site header */}
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isAuthenticated={isAuthenticated} />
 
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">

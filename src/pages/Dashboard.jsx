@@ -8,6 +8,8 @@ import NotificationStatCard from "../partials/dashboard/NotificationStatCard";
 import EmotionalToneTrends from "../partials/dashboard/NotificationToneCard";
 import EmotionalToneHeatmap from "../partials/dashboard/EmotionalToneHeatmap";
 import Loader from "../partials/dashboard/Loader";
+import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
@@ -125,6 +127,15 @@ function Dashboard() {
   const [totalStats, setTotalStats] = useState();
   const [loadingStats, setLoadingStats] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState("Emotional Tone");
+
+  const { isAuthenticated, user } = useAuth0();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home", { replace: true });
+    }
+  }, [isAuthenticated, user]);
 
   const handleFilterClick = async (filter) => {
     setSelectedFilter(filter);

@@ -5,6 +5,6 @@ export const auth0Config = {
     redirect_uri: window.location.origin,
     audience:
       import.meta.env.VITE_AUTH0_AUDIENCE || "https://your-api-identifier",
-    scope: "openid profile email",
+      scope: "openid profile email",
   },
 };
