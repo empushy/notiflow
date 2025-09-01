@@ -6,9 +6,11 @@ import Help from "../components/DropdownHelp";
 import UserMenu from "../components/DropdownProfile";
 import ThemeToggle from "../components/ThemeToggle";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
-function Header({ sidebarOpen, setSidebarOpen, variant = "default" }) {
+function Header({ sidebarOpen, setSidebarOpen, isAuthenticated=false, variant = "default" }) {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const { logout } = useAuth0();
 
   return (
     <header
@@ -20,7 +22,7 @@ function Header({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         variant === "v3" ? "dark:before:bg-gray-900" : ""
       }`}
     >
-      <div className="px-60">
+      <div className="px-10">
         <div
           className={`flex items-center justify-between h-16 ${
             variant === "v2" || variant === "v3"
@@ -30,46 +32,68 @@ function Header({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         >
           {/* Header: Left side */}
           <div className="flex">
-            <NavLink
-              end
-              to="/"
-              className="text-black hover:text-yellow-500 px-3 transition font-bold"
-            >
+            <NavLink end to="/" className="text-black text-xl font-bold">
               EmPushy
             </NavLink>
           </div>
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
-            <NavLink
-              end
-              to="/about"
-              className={"text-black hover:text-yellow-500 px-3 transition"}
-            >
-              About Us
-            </NavLink>
+            
+            {isAuthenticated ? (
+                <button
+                className={
+                  "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
+                }
+                  onClick={() =>
+                    logout({
+                      logoutParams: {
+                        returnTo: window.location.origin,
+                      },
+                    })
+                  }
+                >
+                  Log Out
+                </button>
+            ) : (
+              <div>
+                <NavLink
+                  end
+                  to="/about"
+                  className={
+                    "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
+                  }
+                >
+                  About Us
+                </NavLink>
 
-            <NavLink
-              end
-              to="/newsletter"
-              className={"text-black hover:text-yellow-500 px-3 transition"}
-            >
-              Newsletter
-            </NavLink>
-            <a
-              target="_blank"
-              href="https://blog.empushy.com"
-              className={"text-black hover:text-yellow-500 px-3 transition"}
-            >
-              Blog
-            </a>
-            <NavLink
-              end
-              className="text-white hover:bg-pink-400 bg-yellow-400 px-4 py-2 rounded-lg font-bold"
-              to="/about"
-            >
-              PRO
-            </NavLink>
+                <NavLink
+                  end
+                  to="/newsletter"
+                  className={
+                    "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
+                  }
+                >
+                  Newsletter
+                </NavLink>
+                <a
+                  target="_blank"
+                  href="https://blog.empushy.com"
+                  className={
+                    "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
+                  }
+                >
+                  Blog
+                </a>
+                <NavLink
+                  end
+                  className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
+                  to="/about"
+                >
+                  PRO
+                </NavLink>
+              </div>
+            ) }
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 
 import Header from "../partials/Header";
@@ -8,11 +9,8 @@ import NotificationStatCard from "../partials/dashboard/NotificationStatCard";
 import EmotionalToneTrends from "../partials/dashboard/NotificationToneCard";
 import EmotionalToneHeatmap from "../partials/dashboard/EmotionalToneHeatmap";
 import Loader from "../partials/dashboard/Loader";
-import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
-const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const NotificationCard = ({ message, iconUrl, posted, appName }) => {
   const timeAgo = moment(posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow();
@@ -60,21 +58,20 @@ const NotificationCard = ({ message, iconUrl, posted, appName }) => {
 };
 
 const NotificationSystem = () => {
+  const { getAccessTokenSilently } = useAuth0();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      setLoading(true);
+      const at = await getAccessTokenSilently();
       try {
         const response = await fetch(`${API_URL}/web/recent-notifications`, {
           method: "GET",
-          headers: {
-            "X-API-Key": API_KEY,
-            "Content-Type": "application/json",
-          },
+          headers: { Authorization: `Bearer ${at}` },
         });
         const data = await response.json();
+        console.log(data)
         setNotifications(data.slice(-3)); // Only show the latest 3
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -122,25 +119,36 @@ const NotificationSystem = () => {
   );
 };
 
-function Dashboard() {
+function Home() {
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [totalStats, setTotalStats] = useState();
   const [loadingStats, setLoadingStats] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState("Emotional Tone");
 
-  const { isAuthenticated, user } = useAuth0();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/home", { replace: true });
-    }
-  }, [isAuthenticated, user]);
-
   const handleFilterClick = async (filter) => {
     setSelectedFilter(filter);
     // fetch data as needed
   };
+
+  useEffect(() => {
+    (async () => {
+      if (isAuthenticated)
+      {
+        const at = await getAccessTokenSilently();   // must have audience set in Auth0Provider
+        const res = await fetch(`${API_URL}/auth/me`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${at}` },
+        });
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          console.error("[Auth] /auth/me failed:", res.status, txt);
+        } else {
+          console.log("[Auth] /auth/me ok");
+        }
+      }
+    })();
+  }, [isAuthenticated, user])
 
   useEffect(() => {
     const fetchTotalStats = async () => {
@@ -149,7 +157,6 @@ function Dashboard() {
         const response = await fetch(`${API_URL}/web/total-stats`, {
           method: "GET",
           headers: {
-            "X-API-Key": API_KEY,
             "Content-Type": "application/json",
           },
         });
@@ -174,39 +181,32 @@ function Dashboard() {
     "Promotions",
   ];
 
-  // Payment plans info (if needed)
-  const plans = [
-    {
-      id: "buy_btn_free",
-      name: "50 Requests / month",
-      price: "Free",
-      description: "Basic notification tracking with limited features.",
-    },
-    {
-      id: "buy_btn_5e",
-      name: "200 Requests / month",
-      price: "€5",
-      description: "Includes additional analytics and reports.",
-    },
-    {
-      id: "buy_btn_25e",
-      name: "5000 Requests / month",
-      price: "€25",
-      description: "Full access to all features and premium support.",
-    },
-  ];
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // This should be handled by the router
+  }
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         {/* Site header */}
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} isAuthenticated={isAuthenticated} />
 
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            {/* HERO SECTION - inspired by Exploding Topics */}
-            <section className="relative w-full rounded-2xl mb-20 shadow-lg overflow-hidden bg-gradient-to-br from-indigo-950 via-indigo-900 to-blue-900">
+            {/* Welcome Section */}
+            <section className="relative w-full rounded-2xl mb-20 shadow-lg overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-emerald-900">
               {/* Background grid pattern */}
               <svg
                 className="absolute inset-0 w-full h-full opacity-20"
@@ -236,29 +236,24 @@ function Dashboard() {
                 {/* Left: Headline + copy */}
                 <div className="grid col-span-2">
                   <h1 className="font-extrabold text-white text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6">
-                    Discover Notification Trends
-                    <br />
-                    Before Everyone Else
+                    Welcome back, {user?.name?.split(" ")[0] || "User"}! 👋
                   </h1>
 
-                  <p className="text-lg sm:text-xl text-blue-100 mb-8 font-medium max-w-2xl">
-                    Track 10,000+ brands discovered by users. Detect trends,
-                    shape campaigns, and stay{" "}
-                    <span className="font-semibold text-blue-100 underline underline-offset-4 decoration-blue-300">
+                  <p className="text-lg sm:text-xl text-green-100 mb-8 font-medium max-w-2xl">
+                    Your notification analytics dashboard is ready. Track
+                    trends, analyze patterns, and stay{" "}
+                    <span className="font-semibold text-green-100 underline underline-offset-4 decoration-green-300">
                       ahead of the curve
                     </span>
                     .
                   </p>
 
                   <div className="flex gap-4 flex-wrap">
-                    <button
-                      onClick={() => (window.location.href = "/auth")}
-                      className="px-7 py-3 rounded-xl font-semibold bg-gradient-to-r from-blue-400 to-blue-600 text-white text-lg shadow-lg transition hover:-translate-y-1 duration-200"
-                    >
-                      Try for Free
+                    <button className="px-7 py-3 rounded-xl font-semibold bg-gradient-to-r from-green-400 to-green-600 text-white text-lg shadow-lg transition hover:-translate-y-1 duration-200">
+                      View Analytics
                     </button>
-                    <button className="px-7 py-3 rounded-xl font-semibold text-blue-200 border border-blue-300/70 bg-white/10 hover:bg-white/20 transition text-lg shadow">
-                      Learn More
+                    <button className="px-7 py-3 rounded-xl font-semibold text-green-200 border border-green-300/70 bg-white/10 hover:bg-white/20 transition text-lg shadow">
+                      Export Data
                     </button>
                   </div>
                 </div>
@@ -302,7 +297,7 @@ function Dashboard() {
                   onClick={() => handleFilterClick(filter)}
                   className={`px-5 py-3 rounded-2xl font-semibold transition-all duration-300 focus:outline-none ${
                     selectedFilter === filter
-                      ? "bg-blue-500 text-white shadow-lg"
+                      ? "bg-green-500 text-white shadow-lg"
                       : "bg-white text-gray-900 hover:shadow-md"
                   }`}
                   style={{ transformOrigin: "center" }}
@@ -317,38 +312,12 @@ function Dashboard() {
               <EmotionalToneTrends trendType={selectedFilter} />
             </div>
 
-            {/* Payment Plans Section */}
+            {/* Recent Notifications Section */}
             <section className="max-w-7xl mx-auto mb-20 px-4 sm:px-6 lg:px-8">
               <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-                Choose Your Plan
+                Recent Notifications
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                {plans.map(({ id, name, price, description }) => (
-                  <div
-                    key={id}
-                    className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center"
-                  >
-                    <h3 className="text-xl font-semibold mb-4">{name}</h3>
-                    <p className="text-4xl font-extrabold text-gray-900 mb-4">
-                      {price}
-                    </p>
-                    <p className="text-gray-500 mb-8">{description}</p>
-
-                    {price === "Free" ? (
-                      <button
-                        onClick={() => (window.location.href = "/auth")}
-                        className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition duration-200"
-                      >
-                        Try for Free
-                      </button>
-                    ) : (
-                      <button className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition duration-200">
-                        Coming Soon
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
+              <NotificationSystem />
             </section>
           </div>
           <Footer />
@@ -358,4 +327,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Home;
