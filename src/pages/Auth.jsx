@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { motion } from "framer-motion";
-import { userService } from "../utils/userService";
 import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
@@ -74,7 +73,6 @@ const Auth = () => {
             </button>
             <button
               onClick={() => {
-                userService.logout();
                 logout({ logoutParams: { returnTo: window.location.origin } });
               }}
               className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl font-semibold hover:bg-gray-200 transition duration-200"

@@ -9,7 +9,6 @@ import NotificationStatCard from "../partials/dashboard/NotificationStatCard";
 import EmotionalToneTrends from "../partials/dashboard/NotificationToneCard";
 import EmotionalToneHeatmap from "../partials/dashboard/EmotionalToneHeatmap";
 import Loader from "../partials/dashboard/Loader";
-import { userService } from "../utils/userService";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 
@@ -155,18 +154,9 @@ function Home() {
     const fetchTotalStats = async () => {
       setLoadingStats(true);
       try {
-        const apiKey = userService.getApiKey();
-        if (!apiKey) {
-          console.error("No API key found");
-          setTotalStats(undefined);
-          setLoadingStats(false);
-          return;
-        }
-
         const response = await fetch(`${API_URL}/web/total-stats`, {
           method: "GET",
           headers: {
-            "X-API-Key": apiKey,
             "Content-Type": "application/json",
           },
         });
