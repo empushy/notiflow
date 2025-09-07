@@ -15,114 +15,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
-const NotificationCard = ({ message, iconUrl, posted, appName }) => {
-  const timeAgo = moment(posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow();
-
-  return (
-    <motion.div
-      initial={{ y: 30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -30, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 230, damping: 25 }}
-      className="
-        flex items-start bg-white/60 backdrop-blur-[9px] 
-        shadow-xl rounded-2xl px-6 py-5 w-full min-h-[110px]
-        ring-1 ring-inset ring-white/40
-        hover:scale-[1.02] hover:shadow-2xl transition-all duration-300
-        border border-gray-100
-      "
-    >
-      <div className="flex-shrink-0 w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center mr-4 shadow-sm ring-2 ring-pink-200">
-        {iconUrl ? (
-          <img
-            src={iconUrl}
-            alt="Notification Icon"
-            className="w-10 h-10 object-contain rounded-full"
-          />
-        ) : (
-          <span className="text-2xl text-pink-400">🔔</span>
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-baseline mb-1">
-          <span className="text-xs text-gray-400 font-semibold truncate">
-            {appName}
-          </span>
-          <span className="text-xs text-pink-400 font-medium ml-2">
-            {timeAgo}
-          </span>
-        </div>
-        <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-3">
-          {message}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-const NotificationSystem = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${API_URL}/web/recent-notifications`, {
-          method: "GET",
-          headers: {
-            "X-API-Key": API_KEY,
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        setNotifications(data.slice(-3)); // Only show the latest 3
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-        setNotifications([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="relative w-full flex justify-center px-2 sm:px-0 py-5">
-        <Loader />
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative w-full flex justify-center px-2 sm:px-0 py-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 w-full max-w-5xl">
-        <AnimatePresence>
-          {notifications.length > 0 ? (
-            notifications.map((notif) => (
-              <NotificationCard
-                key={notif.id}
-                message={notif.text}
-                iconUrl={notif.icon}
-                posted={notif.posted}
-                appName={notif.appName}
-              />
-            ))
-          ) : (
-            <div className="col-span-1 sm:col-span-2 md:col-span-3 text-center text-gray-500">
-              No recent notifications
-            </div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
-};
-
 function Dashboard() {
   // Filter constants
   const filters = [
@@ -138,7 +30,7 @@ function Dashboard() {
     "Promotions",
   ];
   const PARTIAL_FILTERS = ["Emotional Tone", "Context Awareness"];
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [totalStats, setTotalStats] = useState();

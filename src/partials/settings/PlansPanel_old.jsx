@@ -14,7 +14,7 @@ function PlansPanel() {
         <section>
           <div className="mb-8">
             <h2 className="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-4">Plans</h2>
-            <div className="text-sm">You are currently on the Free Plan, which is set to <strong className="font-medium">€0</strong> per month and will renew on <strong className="font-medium">July 9, 2024</strong>.</div>
+            <div className="text-sm">This workspace’s Basic Plan is set to <strong className="font-medium">$34</strong> per month and will renew on <strong className="font-medium">July 9, 2024</strong>.</div>
           </div>
 
          {/* Pricing */}
@@ -90,10 +90,10 @@ function PlansPanel() {
                     </div>
                     <h3 className="text-lg text-gray-800 dark:text-gray-100 font-semibold">Starter</h3>
                   </header>
-                  <div className="text-sm mb-2">Ideal for starting out - access all key features and customize the data.</div>
+                  <div className="text-sm mb-2">Ideal for individuals that need a custom solution with custom tools.</div>
                  {/* Price */}
                   <div className="text-gray-800 dark:text-gray-100 font-bold mb-4">
-                    <span className="text-2xl">€</span><span className="text-3xl">{annual? '4': '5'}</span><span className="text-gray-500 font-medium text-sm">/mo</span>
+                    <span className="text-2xl">$</span><span className="text-3xl">{annual? '4': '5'}</span><span className="text-gray-500 font-medium text-sm">/mo</span>
                   </div>
                  {/* CTA */}
                   <button className="btn w-full bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white disabled:border-gray-200 dark:disabled:border-gray-700 disabled:bg-white dark:disabled:bg-gray-800 disabled:text-gray-300 dark:disabled:text-gray-600 disabled:cursor-not-allowed" disabled>
@@ -155,7 +155,7 @@ function PlansPanel() {
                   <div className="text-sm mb-2">Ideal for individuals that need detailed insights on specific markets and brands.</div>
                  {/* Price */}
                   <div className="text-gray-800 dark:text-gray-100 font-bold mb-4">
-                    <span className="text-2xl">€</span><span className="text-3xl">{annual? '20': '25'}</span><span className="text-gray-500 font-medium text-sm">/mo</span>
+                    <span className="text-2xl">$</span><span className="text-3xl">{annual? '20': '25'}</span><span className="text-gray-500 font-medium text-sm">/mo</span>
                   </div>
                  {/* CTA */}
                   <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white w-full">Upgrade</button>
@@ -211,6 +211,48 @@ function PlansPanel() {
               </div>
             </div>
           </div>
+        </section>
+
+       {/* Contact Sales */}
+        <section>
+          <div className="px-5 py-3 bg-[linear-gradient(135deg,var(--tw-gradient-stops))] from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] rounded-lg text-center xl:text-left xl:flex xl:flex-wrap xl:justify-between xl:items-center">
+            <div className="text-gray-800 dark:text-gray-100 font-semibold mb-2 xl:mb-0">Looking for different configurations?</div>
+            <a className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white" 
+            href="mailto:hello@empushy.com?subject=Sales">Contact Sales</a>
+          </div>
+        </section>
+
+       {/* FAQs */}
+        <section>
+          <div className="my-8">
+            <h2 className="text-2xl text-gray-800 dark:text-gray-100 font-bold">FAQs</h2>
+          </div>
+          <ul className="space-y-5">
+            <li>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+                What is the difference between the three versions?
+              </div>
+              <div className="text-sm">
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.
+              </div>
+            </li>
+            <li>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+                Is there any difference between Basic and Plus licenses?
+              </div>
+              <div className="text-sm">
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+              </div>
+            </li>
+            <li>
+              <div className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+                Got more questions?
+              </div>
+              <div className="text-sm">
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum in voluptate velit esse cillum dolore eu fugiat <a className="font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400" href="#0">contact us</a>.
+              </div>
+            </li>
+          </ul>
         </section>
 
       </div>

@@ -13,7 +13,7 @@ function Footer() {
               Track 10,000+ brands and stay ahead of the curve.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-gray-500">
+              <a href="https://twitter.com/empathetic_push" target="_blank" className="text-gray-400 hover:text-gray-500">
                 <span className="sr-only">X</span>
                 <svg
                   className="h-6 w-6"
@@ -25,7 +25,7 @@ function Footer() {
                 </svg>
               </a>
               <a
-                href="https://www.linkedin.com/company/80336170/"
+                href="https://ie.linkedin.com/company/empushy"
                 target="_blank"
                 className="text-gray-400 hover:text-gray-500"
               >

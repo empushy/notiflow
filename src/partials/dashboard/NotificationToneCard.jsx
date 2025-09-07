@@ -107,7 +107,6 @@ const EmotionalToneTrends = ({
       .then((trends) => {
         const transformedData = {};
         const emotionStats = {};
-
         Object.keys(trends).forEach((date) => {
           const dailyData = { date };
 
@@ -154,7 +153,8 @@ const EmotionalToneTrends = ({
     return <Loader />;
   }
 
-  const totalPages = Math.ceil(emotions.length / itemsPerPageInternal);
+  const maxPages = Math.ceil(emotions.length / itemsPerPageInternal)
+  const totalPages = maxPages <= 10 ? maxPages : 10;
   const startIndex = (currentPageInternal - 1) * itemsPerPageInternal;
   const endIndex = startIndex + itemsPerPageInternal;
   const currentEmotions = emotions.slice(startIndex, endIndex);
