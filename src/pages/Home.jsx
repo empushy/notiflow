@@ -1,13 +1,13 @@
-import React, { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
+import Sidebar from "../partials/Sidebar";
 import NotificationStatCard from "../partials/dashboard/NotificationStatCard";
 import EmotionalToneTrends from "../partials/dashboard/NotificationToneCard";
-import EmotionalToneHeatmap from "../partials/dashboard/EmotionalToneHeatmap";
 import Loader from "../partials/dashboard/Loader";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
@@ -71,7 +71,6 @@ const NotificationSystem = () => {
           headers: { Authorization: `Bearer ${at}` },
         });
         const data = await response.json();
-        console.log(data)
         setNotifications(data.slice(-3)); // Only show the latest 3
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -125,8 +124,11 @@ function Home() {
   const [totalStats, setTotalStats] = useState();
   const [loadingStats, setLoadingStats] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState("Emotional Tone");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const handleFilterClick = async (filter) => {
+    setCurrentPage(1);
     setSelectedFilter(filter);
     // fetch data as needed
   };
@@ -144,7 +146,7 @@ function Home() {
           const txt = await res.text().catch(() => "");
           console.error("[Auth] /auth/me failed:", res.status, txt);
         } else {
-          console.log("[Auth] /auth/me ok");
+          var userData = await res.json();
         }
       }
     })();
@@ -198,6 +200,10 @@ function Home() {
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
+
+      {/* Sidebar */}
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         {/* Site header */}
@@ -289,6 +295,11 @@ function Home() {
               </div>
             </div>
 
+            {/* Recent Notifications Section */}
+            <section className="max-w-7xl mx-auto mb-20 px-4 sm:px-6 lg:px-8">
+              <NotificationSystem />
+            </section>
+
             {/* Filters */}
             <div className="flex justify-center mt-28 gap-4 mb-16 flex-wrap">
               {filters.map((filter) => (
@@ -309,18 +320,12 @@ function Home() {
 
             {/* Emotional tone trends chart */}
             <div className="w-4/5 mx-auto mb-24">
-              <EmotionalToneTrends trendType={selectedFilter} />
+              <EmotionalToneTrends trendType={selectedFilter}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}/>
             </div>
-
-            {/* Recent Notifications Section */}
-            <section className="max-w-7xl mx-auto mb-20 px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-                Recent Notifications
-              </h2>
-              <NotificationSystem />
-            </section>
           </div>
-          <Footer />
         </main>
       </div>
     </div>

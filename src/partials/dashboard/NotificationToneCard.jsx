@@ -1,3 +1,4 @@
+// src/partials/dashboard/EmotionalToneTrends.jsx
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -7,8 +8,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LockIcon } from "lucide-react";
 import Loader from "../../partials/dashboard/Loader";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
@@ -20,15 +22,6 @@ const EMOTION_COLORS = {
   surprise: "#f59e0b", // amber-500
   fear: "#8b5cf6", // violet-500
   default: "#f97316", // orange-500
-};
-
-const EMOTION_GRADIENTS = {
-  joy: "from-emerald-500/20 to-emerald-500/5",
-  anger: "from-red-500/20 to-red-500/5",
-  sadness: "from-blue-500/20 to-blue-500/5",
-  surprise: "from-amber-500/20 to-amber-500/5",
-  fear: "from-violet-500/20 to-violet-500/5",
-  default: "from-orange-500/20 to-orange-500/5",
 };
 
 function parseISO(d) {
@@ -73,13 +66,33 @@ function getContinuousMonthTicks(data) {
   return ticks;
 }
 
-const EmotionalToneTrends = ({ trendType }) => {
+const LOCK_ICON_SVG = (
+  <svg
+    width="48"
+    height="48"
+    viewBox="0 0 24 24"
+    fill="none"
+    className="text-blue-500"
+  >
+    <path d="M6 10v2a6 6 0 1 0 12 0v-2" stroke="currentColor" strokeWidth="2" />
+    <rect x="6" y="10" width="12" height="8" rx="4" fill="currentColor" />
+  </svg>
+);
+
+const EmotionalToneTrends = ({
+  trendType,
+  currentPage,
+  itemsPerPage,
+  onPageChange,
+}) => {
   const [data, setData] = useState([]);
   const [emotions, setEmotions] = useState([]);
   const [stats, setStats] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useAuth0();
+
+  const itemsPerPageInternal = itemsPerPage || 10;
+  const currentPageInternal = currentPage || 1;
 
   useEffect(() => {
     setLoading(true);
@@ -94,7 +107,6 @@ const EmotionalToneTrends = ({ trendType }) => {
       .then((trends) => {
         const transformedData = {};
         const emotionStats = {};
-
         Object.keys(trends).forEach((date) => {
           const dailyData = { date };
 
@@ -137,18 +149,37 @@ const EmotionalToneTrends = ({ trendType }) => {
       });
   }, [trendType]);
 
-  // Show loader while data is being fetched
   if (loading) {
     return <Loader />;
   }
 
-  const totalPages = Math.ceil(emotions.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const maxPages = Math.ceil(emotions.length / itemsPerPageInternal)
+  const totalPages = maxPages <= 10 ? maxPages : 10;
+  const startIndex = (currentPageInternal - 1) * itemsPerPageInternal;
+  const endIndex = startIndex + itemsPerPageInternal;
   const currentEmotions = emotions.slice(startIndex, endIndex);
 
+  // Lock/partial filter constants - passed from Dashboard for logic
+  const LOCKED_FILTERS = [
+    "Behavioral Triggers",
+    "Call-to-Emotion",
+    "Promotions",
+  ];
+
+  const PARTIAL_FILTERS = ["Emotional Tone", "Context Awareness"];
+
+  const isLockedFilter = LOCKED_FILTERS.includes(trendType) && !isAuthenticated;
+  const isPartialLockedFilter =
+    PARTIAL_FILTERS.includes(trendType) &&
+    !isAuthenticated &&
+    currentPageInternal > 3;
+
   const goToPage = (page) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+    if (isPartialLockedFilter || isLockedFilter) return;
+    if (page < 1 || page > totalPages) return;
+    if (onPageChange) {
+      onPageChange(page);
+    }
   };
 
   const highlightMatches = (text, matches) => {
@@ -176,155 +207,205 @@ const EmotionalToneTrends = ({ trendType }) => {
     );
   };
 
+  if (isLockedFilter) {
+    // Fully locked: show lock message instead of charts
+    return (
+      <div className="flex flex-col items-center justify-center h-96 bg-blue-100/60 rounded-xl opacity-70 cursor-not-allowed relative">
+        <LockIcon className="w-4 h-4" />
+        <span
+          className="z-10 text-md text-blue-800 font-bold mt-12"
+          title="Available to PRO users"
+        >
+          Available to PRO users
+        </span>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 mt-12">
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-600">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 mt-12">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+        <div className="text-xs sm:text-sm text-gray-600">
           Showing {startIndex + 1}-{Math.min(endIndex, emotions.length)} of{" "}
           {emotions.length} emotions
         </div>
 
         {totalPages > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              onClick={() => goToPage(currentPageInternal - 1)}
+              disabled={currentPageInternal === 1 || isPartialLockedFilter}
+              className="px-2 sm:px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-wrap">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    onClick={() => goToPage(page)}
-                    className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                      currentPage === page
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                )
+                (page) => {
+                  const pageLocked =
+                    PARTIAL_FILTERS.includes(trendType) &&
+                    !isAuthenticated &&
+                    page > 3;
+
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => (pageLocked ? null : goToPage(page))}
+                      className={`px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                        pageLocked
+                          ? "bg-blue-100 text-blue-400 cursor-not-allowed relative"
+                          : currentPageInternal === page
+                          ? "bg-blue-500 text-white"
+                          : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                      disabled={pageLocked}
+                      title={pageLocked ? "Available to PRO users" : ""}
+                    >
+                      {pageLocked ? (
+                        <span className="inline-block align-text-bottom">
+                          <LockIcon className="w-4 h-4" />
+                        </span>
+                      ) : null}
+                      {!pageLocked ? page : null}
+                    </button>
+                  );
+                }
               )}
             </div>
 
             <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              onClick={() => goToPage(currentPageInternal + 1)}
+              disabled={
+                currentPageInternal === totalPages || isPartialLockedFilter
+              }
+              className="px-2 sm:px-3 py-1 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {currentEmotions.map((emotion) => (
-          <div
-            key={emotion}
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
-          >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {currentEmotions.map((emotion) =>
+          isPartialLockedFilter ? (
             <div
-              className="h-1 w-full"
-              style={{
-                backgroundColor:
-                  EMOTION_COLORS[emotion] || EMOTION_COLORS.default,
-              }}
-            />
+              key={emotion}
+              className="relative bg-blue-100/60 rounded-xl min-h-[280px] flex items-center justify-center cursor-not-allowed opacity-70"
+              title="Available to PRO users"
+            >
+              {LOCK_ICON_SVG}
+              <span className="absolute bottom-8 text-blue-800 font-bold text-lg select-none">
+                Available to PRO users
+              </span>
+            </div>
+          ) : (
+            <div
+              key={emotion}
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+            >
+              <div
+                className="h-1 w-full"
+                style={{
+                  backgroundColor:
+                    EMOTION_COLORS[emotion] || EMOTION_COLORS.default,
+                }}
+              />
 
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 capitalize">
-                  {emotion}
-                </h2>
-                <div className="text-right">
-                  <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                    Volume
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900 mb-3">
-                    {stats[emotion]?.total_count.toLocaleString()}
-                  </div>
-                  <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                    Intensity
-                  </div>
-                  <div
-                    className="text-lg font-semibold"
-                    style={{
-                      color: EMOTION_COLORS[emotion] || EMOTION_COLORS.default,
-                    }}
-                  >
-                    {stats[emotion]?.avg_intensity}
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <h2 className="text-lg font-semibold text-gray-900 capitalize">
+                    {emotion}
+                  </h2>
+                  <div className="text-right">
+                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                      Volume
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-3">
+                      {stats[emotion]?.total_count.toLocaleString()}
+                    </div>
+                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                      Intensity
+                    </div>
+                    <div
+                      className="text-lg font-semibold"
+                      style={{
+                        color:
+                          EMOTION_COLORS[emotion] || EMOTION_COLORS.default,
+                      }}
+                    >
+                      {stats[emotion]?.avg_intensity}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mb-6">
-                <ResponsiveContainer width="100%" height={160}>
-                  <LineChart
-                    data={data}
-                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-                  >
-                    <CartesianGrid
-                      stroke="#f3f4f6"
-                      strokeDasharray="1 1"
-                      vertical={false}
-                    />
-                    <XAxis
-                      dataKey="date"
-                      interval="preserveStartEnd"
-                      tickFormatter={formatMonthOnly}
-                      ticks={getContinuousMonthTicks(data)}
-                      tick={{ fill: "#9ca3af", fontSize: 12 }}
-                      axisLine={false}
-                      tickLine={false}
-                      tickMargin={10}
-                    />
-                    <Tooltip
-                      labelFormatter={formatTooltipDate}
-                      contentStyle={{
-                        backgroundColor: "white",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                        fontSize: "14px",
-                      }}
-                      labelStyle={{ color: "#374151", fontWeight: "500" }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey={emotion}
-                      stroke={EMOTION_COLORS[emotion] || EMOTION_COLORS.default}
-                      strokeWidth={2}
-                      dot={false}
-                      activeDot={{
-                        r: 4,
-                        fill: EMOTION_COLORS[emotion] || EMOTION_COLORS.default,
-                        strokeWidth: 2,
-                        stroke: "white",
-                      }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+                <div className="mb-6">
+                  <ResponsiveContainer width="100%" height={160}>
+                    <LineChart
+                      data={data}
+                      margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                    >
+                      <CartesianGrid
+                        stroke="#f3f4f6"
+                        strokeDasharray="1 1"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="date"
+                        interval="preserveStartEnd"
+                        tickFormatter={formatMonthOnly}
+                        ticks={getContinuousMonthTicks(data)}
+                        tick={{ fill: "#9ca3af", fontSize: 12 }}
+                        axisLine={false}
+                        tickLine={false}
+                        tickMargin={10}
+                      />
+                      <Tooltip
+                        labelFormatter={formatTooltipDate}
+                        contentStyle={{
+                          backgroundColor: "white",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "8px",
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                          fontSize: "14px",
+                        }}
+                        labelStyle={{ color: "#374151", fontWeight: "500" }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey={emotion}
+                        stroke={
+                          EMOTION_COLORS[emotion] || EMOTION_COLORS.default
+                        }
+                        strokeWidth={2}
+                        dot={false}
+                        activeDot={{
+                          r: 4,
+                          fill:
+                            EMOTION_COLORS[emotion] || EMOTION_COLORS.default,
+                          strokeWidth: 2,
+                          stroke: "white",
+                        }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
 
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                  Featured Notification
-                </h4>
-                <div className="text-sm text-gray-700 leading-relaxed">
-                  {highlightMatches(
-                    stats[emotion]?.example_notification,
-                    stats[emotion]?.matches
-                  )}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                    Featured Notification
+                  </h4>
+                  <div className="text-sm text-gray-700 leading-relaxed">
+                    {highlightMatches(
+                      stats[emotion]?.example_notification,
+                      stats[emotion]?.matches
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
     </div>
   );
