@@ -11,8 +11,8 @@ import {
 import { ChevronLeft, ChevronRight, LockIcon } from "lucide-react";
 import Loader from "../../partials/dashboard/Loader";
 import { useAuth0 } from "@auth0/auth0-react";
-import { motion, AnimatePresence } from "framer-motion";
 import moment from "moment";
+import { motion, AnimatePresence } from "framer-motion";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
@@ -168,25 +168,25 @@ const EmotionalToneTrends = ({
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_URL}/web/emotional-tone-trends?filter=${trendType}`, {
-      method: "GET",
-      headers: {
-        "X-API-Key": API_KEY,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((trends) => {
-        const transformedData = {};
-        const emotionStats = {};
-        Object.keys(trends).forEach((date) => {
-          const dailyData = { date };
+      fetch(`${API_URL}/web/emotional-tone-trends?filter=${trendType}&months=3`, {
+        method: "GET",
+        headers: {
+          "X-API-Key": API_KEY,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((trends) => {
+          const transformedData = {};
+          const emotionStats = {};
+          Object.entries(trends || {}).forEach(([date, value]) => {
+            const dailyData = { date };
 
-          Object.keys(trends[date]).forEach((emotion) => {
-            const { count, avg_intensity, example_notification, example_appName, example_icon, example_posted, matches } =
-              trends[date][emotion];
+            Object.keys(value).forEach((emotion) => {
+              const { count, avg_intensity, example_notification, example_appName, example_icon, example_posted, matches } =
+                value[emotion];
 
-            dailyData[emotion] = count;
+              dailyData[emotion] = count;
 
             if (!emotionStats[emotion]) {
               emotionStats[emotion] = {
@@ -225,7 +225,12 @@ const EmotionalToneTrends = ({
         });
 
         setData(Object.values(transformedData));
-        setEmotions(Object.keys(emotionStats));
+        const sortedEmotions = Object.keys(emotionStats).sort(
+          (a, b) =>
+            (emotionStats[b]?.total_count || 0) -
+            (emotionStats[a]?.total_count || 0)
+        );
+        setEmotions(sortedEmotions);
         setStats(emotionStats);
         setLoading(false);
       })
@@ -494,15 +499,15 @@ const EmotionalToneTrends = ({
                   className="bg-white backdrop-blur-[9px] shadow-xl rounded-xl w-full ring-1 ring-inset ring-gray-200 hover:scale-[1.02] hover:shadow-2xl transition-all duration-200 border border-gray-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 overflow-hidden"
                 >
                   <div className="h-1 w-full bg-blue-500" />
-                  <div className="flex items-start px-4 py-3 min-h-[90px]">
-                    <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm border-2 border-white overflow-hidden">
-                      {stats[emotion]?.example_icon ? (
-                        <>
-                          <img
-                            src={stats[emotion].example_icon}
-                            alt="App Icon"
-                            className="w-full h-full object-cover bg-white"
-                          />
+                <div className="flex items-start px-4 py-3 min-h-[90px]">
+                  <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm border-2 border-white overflow-hidden">
+                    {buildIcon(stats[emotion] || {}) ? (
+                      <>
+                        <img
+                          src={buildIcon(stats[emotion] || {})}
+                          alt="App Icon"
+                          className="w-full h-full object-cover bg-white"
+                        />
                           <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 2px white'}}></div>
                         </>
                       ) : (
@@ -515,7 +520,20 @@ const EmotionalToneTrends = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-1">
                         <span className="text-xs text-gray-400 font-semibold truncate">
-                          {stats[emotion]?.example_appName || emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+                          {(() => {
+                            const notif = stats[emotion] || {};
+                            const chromeDomain =
+                              (notif.example_appName && notif.example_appName.includes(".") && notif.example_appName) ||
+                              chromeDomainFromText(notif.example_notification || "");
+                            const isChrome = isChromeNotif({
+                              appPackage: notif.example_app_package,
+                              app: notif.example_app_package,
+                              appName: notif.example_appName,
+                            });
+                            return isChrome && chromeDomain
+                              ? chromeDomain
+                              : notif.example_appName || emotion.charAt(0).toUpperCase() + emotion.slice(1);
+                          })()}
                         </span>
                         <span className="text-xs text-indigo-400 font-medium ml-2">
                           {stats[emotion]?.example_posted ? moment(stats[emotion].example_posted).fromNow() : ''}
@@ -627,3 +645,28 @@ const EmotionalToneTrends = ({
 };
 
 export default EmotionalToneTrends;
+const chromeDomainFromText = (text = "") => {
+  if (!text || typeof text !== "string") return null;
+  const match = text.match(/\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/);
+  return match ? match[0] : null;
+};
+
+const isChromeNotif = (notif = {}) =>
+  notif.appPackage === "com.android.chrome" ||
+  notif.app === "com.android.chrome" ||
+  notif.appName === "Chrome";
+
+const buildIcon = (notif = {}) => {
+  const domain =
+    (notif.appName && notif.appName.includes(".") && notif.appName) ||
+    chromeDomainFromText(notif.text || notif.example_notification || "");
+
+  if (isChromeNotif(notif) && domain) {
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+  }
+  if (notif.icon) return notif.icon;
+  if (domain) {
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+  }
+  return notif.icon || "";
+};

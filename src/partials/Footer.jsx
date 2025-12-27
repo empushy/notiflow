@@ -7,7 +7,7 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company info */}
           <div className="col-span-1 md:col-span-2">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">EmPushy</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">NotiFlow</h3>
             <p className="text-gray-600 mb-4 max-w-md">
               Discover notification trends 12+ months before everyone else.
               Track 10,000+ brands and stay ahead of the curve.
@@ -62,25 +62,20 @@ function Footer() {
 
           {/* Links */}
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">
-              Product
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-gray-900">
-                  API
-                </a>
-              </li>
+          <h4 className="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">
+            Product
+          </h4>
+          <ul className="space-y-2">
+            <li>
+              <a href="/pricing" className="text-gray-600 hover:text-gray-900">
+                Pricing
+              </a>
+            </li>
+            <li>
+              <a href="https://docs.notiflow.empushy.com/" target="_blank" className="text-gray-600 hover:text-gray-900">
+                API
+              </a>
+            </li>
             </ul>
           </div>
 
@@ -122,7 +117,7 @@ function Footer() {
 
         <div className="mt-8 pt-8 border-t border-gray-200">
           <p className="text-center text-gray-400 text-sm">
-            © 2025 EmPushy. All rights reserved.
+            © 2026 NotiFlow. All rights reserved.
           </p>
         </div>
       </div>

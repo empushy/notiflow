@@ -97,7 +97,7 @@ const Auth = () => {
             <span className="text-2xl">🔐</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome to EmPushy
+            Welcome to NotiFlow
           </h1>
           <p className="text-gray-600">
             Sign in to access your notification analytics dashboard
@@ -125,23 +125,10 @@ const Auth = () => {
             </p>
           </div>
         </div>
-
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="text-center">
-            <p className="text-sm text-gray-500 mb-3">Or continue with</p>
-            <div className="flex justify-center space-x-3">
-              <button className="p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition duration-200">
-                <span className="text-xl">🔍</span>
-              </button>
-              <button className="p-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition duration-200">
-                <span className="text-xl">📧</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </motion.div>
     </div>
   );
 };
 
 export default Auth;
+

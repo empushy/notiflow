@@ -77,6 +77,7 @@ import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
 import CampaignInsights from "./pages/CampaignInsights";
 import BrandInsights from "./pages/BrandInsights";
+import Pricing from "./pages/Pricing";
 
 // Import components
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -98,6 +99,7 @@ function App() {
         <Route exact path="/auth" element={<Auth />} />
         <Route exact path="/about" element={<About />} />
         <Route exact path="/newsletter" element={<Newsletter />} />
+        <Route exact path="/pricing" element={<Pricing />} />
 
         {/* Protected routes */}
         <Route

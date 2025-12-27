@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useState, useRef } from "react";
 import moment from "moment";
+import { useAuth0 } from "@auth0/auth0-react";
 
 import Header from "../partials/Header";
 import Sidebar from "../partials/Sidebar";
@@ -91,6 +92,28 @@ const buildIcon = (notif = {}, brand = "") => {
     return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
   }
   return "";
+};
+
+const normalizeLabel = (val) => {
+  if (typeof val !== "string") return "";
+  const t = val.trim();
+  if (!t) return "";
+  if (t.toLowerCase() === "none") return "";
+  return t;
+};
+
+const isValidLabel = (val) => {
+  const t = normalizeLabel(val);
+  if (!t) return false;
+  if (t.toLowerCase() === "unknown") return false;
+  return true;
+};
+
+const faviconFromBrand = (b = "") => {
+  if (!b || typeof b !== "string") return "";
+  const trimmed = b.trim();
+  if (!trimmed.includes(".")) return "";
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(trimmed)}&sz=128`;
 };
 
 // Single-select dropdown with inline search input
@@ -290,7 +313,6 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
         </div>
       </div>
       <div className="relative py-4">
-        <div className="absolute left-1/2 top-0 bottom-0 w-[3px] -translate-x-1/2 bg-gradient-to-b from-indigo-200 via-sky-200 to-indigo-500 rounded-full"></div>
         <div className="space-y-0">
           {items.map((i, idx) => {
             const isLeft = idx % 2 === 0;
@@ -302,18 +324,36 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
             const displayTime = i.time || timeLabel || " ";
             const displayIcon = iconUrl || BELL_FALLBACK;
             const dateChanged = idx === 0 || i.date !== items[idx - 1]?.date;
-            const roleTag = i.campaign_role || i.role;
-            const typeTag = i.campaign_type || i.type;
+            const roleTag = normalizeLabel(i.campaign_role || i.role);
+            const typeTag = normalizeLabel(i.campaign_type || i.type);
+            const holidayLabel = normalizeLabel(i.holiday || i.holiday_name || i.holidayName);
             return (
               <div key={i.date || idx} className="space-y-1">
                 {dateChanged && i.date && (
                   <div className="flex items-center gap-3 text-xs text-gray-500 mb-2 px-4 md:px-10">
                     <div className="flex-1 h-px bg-gray-200" />
                     <span className="px-3 py-1 rounded-full bg-white text-gray-600 border border-gray-200 flex items-center gap-2 shadow-sm">
-                      <span>{i.date}</span>
+                      <span className="inline-flex items-center gap-1 text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V5m8 2V5m-9 4h10M5 11h14v8a2 2 0 01-2 2H7a2 2 0 01-2-2v-8z" />
+                        </svg>
+                        {i.date}
+                      </span>
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
                         <span>{dayCounts[i.date] || 0}</span>
                       </span>
+                      {holidayLabel ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 3v4m8-4v4M3 9h18M5 9v12h14V9" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 15l1.5 1.5L15 12" />
+                          </svg>
+                          <span className="truncate max-w-[120px]">{holidayLabel}</span>
+                        </span>
+                      ) : null}
                     </span>
                     <div className="flex-1 h-px bg-gray-200" />
                   </div>
@@ -356,9 +396,9 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                               {roleTag && (
                                 <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">{roleTag}</span>
                               )}
-                              {i.cta && (
+                              {normalizeLabel(i.cta) && (
                                 <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100">
-                                  {i.cta}
+                                  {normalizeLabel(i.cta)}
                                 </span>
                               )}
                             </div>
@@ -424,9 +464,9 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                             {roleTag && (
                               <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">{roleTag}</span>
                             )}
-                            {i.cta && (
+                            {normalizeLabel(i.cta) && (
                               <span className="px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100">
-                                {i.cta}
+                                {normalizeLabel(i.cta)}
                               </span>
                             )}
                           </div>
@@ -440,18 +480,68 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                 </div>
 
                 {idx < items.length - 1 && (
-                  <div className="flex justify-center -mt-1 mb-1">
+                  <div className="relative -mt-2 mb-1 h-16">
                     <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6 text-amber-400"
+                      className={`pointer-events-none absolute left-1/2 -translate-x-1/2 w-full max-w-2xl ${nextIsLeft ? "" : "scale-x-[-1]"}`}
+                      viewBox="0 0 320 140"
                       fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      style={{ transform: nextIsLeft ? "none" : "scaleX(-1)" }}
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 18L18 8m0 0h-6m6 0v6" />
+                      <defs>
+                        <linearGradient id={`squiggle-${idx}`} x1="0" y1="140" x2="320" y2="10" gradientUnits="userSpaceOnUse">
+                          <stop stopColor="#22d3ee" stopOpacity="0.9" />
+                          <stop offset="0.5" stopColor="#a855f7" stopOpacity="0.85" />
+                          <stop offset="1" stopColor="#fbbf24" stopOpacity="0.8" />
+                        </linearGradient>
+                        <marker id={`squiggle-head-${idx}`} viewBox="0 0 12 12" refX="6" refY="6" markerWidth="8" markerHeight="8" orient="auto">
+                          <path d="M 0 0 L 12 6 L 0 12 Q 5 6 0 0 Z" fill="#a855f7" />
+                        </marker>
+                      </defs>
+                      <path
+                        d="M 20 120 C 90 130 140 60 200 90 S 280 50 300 20"
+                        stroke={`url(#squiggle-${idx})`}
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        markerEnd={`url(#squiggle-head-${idx})`}
+                        style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.05))", opacity: 0.6 }}
+                      />
                     </svg>
+                    {/* Decorative floating icons */}
+                    {(() => {
+                      const iconSets = [
+                        [
+                          { icon: "🔔", top: "10%", left: "30%" },
+                          { icon: "🛒", top: "55%", left: "65%" },
+                          { icon: "🏆", top: "35%", left: "80%" },
+                        ],
+                        [
+                          { icon: "💙", top: "25%", left: "20%" },
+                          { icon: "😊", top: "60%", left: "55%" },
+                          { icon: "🔔", top: "40%", left: "75%" },
+                        ],
+                        [
+                          { icon: "🛒", top: "20%", left: "25%" },
+                          { icon: "❤️", top: "50%", left: "50%" },
+                          { icon: "🏆", top: "70%", left: "70%" },
+                        ],
+                      ];
+                      const set = iconSets[idx % iconSets.length];
+                      return set.map((d, j) => (
+                        <span
+                          key={`${idx}-deco-${j}`}
+                          className="pointer-events-none absolute text-base"
+                          style={{
+                            top: d.top,
+                            left: d.left,
+                            transform: "translate(-50%, -50%)",
+                            opacity: 0.6,
+                          }}
+                        >
+                          {d.icon}
+                        </span>
+                      ));
+                    })()}
                   </div>
                 )}
               </div>
@@ -675,7 +765,9 @@ const GenericBreakdownCard = ({ title, icon, accent = "indigo", items, buttonAcc
 };
 
 const DailyHeatmap = ({ items }) => {
+  const [showAll, setShowAll] = useState(false);
   const maxCount = Math.max(...items.map((x) => x.count || 0), 1);
+  const visible = showAll ? items : items.slice(0, 18);
   return (
     <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-5">
       <div className="flex items-center justify-between mb-3">
@@ -692,13 +784,24 @@ const DailyHeatmap = ({ items }) => {
             <div className="w-12 h-[3px] rounded-full bg-gradient-to-r from-gray-300/80 via-gray-200 to-transparent mt-1"></div>
           </div>
         </div>
-        <span className="text-[11px] text-gray-400">{items.length} days</span>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-gray-400">{items.length} days</span>
+          {items.length > 18 && (
+            <button
+              type="button"
+              onClick={() => setShowAll((p) => !p)}
+              className="px-3 py-1 rounded-full text-xs font-semibold border border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
+            >
+              {showAll ? "Show less" : "Show more"}
+            </button>
+          )}
+        </div>
       </div>
       {items.length === 0 ? (
         <p className="text-sm text-gray-500">No timeline data</p>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {items.map((t) => {
+          {visible.map((t) => {
             const colorClass = heatColor(t.count || 0, maxCount);
             return (
               <div key={t.date} className={`p-3 rounded-xl border border-gray-100 ${colorClass}`}>
@@ -717,9 +820,12 @@ const DailyHeatmap = ({ items }) => {
 function BrandInsights() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [brand, setBrand] = useState("");
-  const [startDate, setStartDate] = useState(moment.utc().subtract(30, "days").format("YYYY-MM-DD"));
+  const [startDate, setStartDate] = useState(moment.utc().subtract(7, "days").format("YYYY-MM-DD"));
   const [endDate, setEndDate] = useState(moment.utc().format("YYYY-MM-DD"));
-  const [chartWindowDays, setChartWindowDays] = useState(30);
+  const [chartWindowDays, setChartWindowDays] = useState(7);
+  const [starSaving, setStarSaving] = useState(false);
+  const [starred, setStarred] = useState([]);
+  const [starError, setStarError] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState(null);
@@ -728,52 +834,10 @@ function BrandInsights() {
   const [timelineDayPage, setTimelineDayPage] = useState(0);
   const [brandOptions, setBrandOptions] = useState([]);
   const [brandsLoading, setBrandsLoading] = useState(false);
-
-  const loadInsights = async () => {
-    if (!brand) {
-      setError("Please enter a brand to fetch insights.");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const params = new URLSearchParams({
-        brand,
-        start_date: startDate,
-        end_date: endDate,
-      });
-      const res = await fetch(`${API_URL}/web/brands/insights?${params.toString()}`);
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || "Failed to load insights");
-      }
-      const json = await res.json();
-      setData(json);
-      // Fetch notifications directly for the timeline
-      const notifParams = new URLSearchParams({
-        brand,
-        start_date: startDate,
-        end_date: endDate,
-        limit: "200",
-      });
-      const notifRes = await fetch(
-        `${API_URL}/web/notifications/list?${notifParams.toString()}`
-      );
-      if (notifRes.ok) {
-        const notifJson = await notifRes.json();
-        setNotifications(sortNotifications(notifJson.data || []));
-        setTimelineDayPage(0);
-      } else {
-        setNotifications([]);
-      }
-    } catch (err) {
-      setError(err.message || "Unable to load insights");
-      setData(null);
-      setNotifications([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [brandMeta, setBrandMeta] = useState(null);
+  const [brandMetaLoading, setBrandMetaLoading] = useState(false);
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const userEmail = (user?.email || user?.sub || "").toLowerCase();
 
   const loadMoreNotifications = useCallback(async () => {
     if (!brand) return;
@@ -854,8 +918,142 @@ function BrandInsights() {
     fetchBrands();
   }, [fetchBrands]);
 
+  const fetchBrandMeta = useCallback(
+    async (targetBrand) => {
+      const metaBrand = targetBrand || brand;
+      setBrandMeta(null);
+      if (!metaBrand) {
+        return;
+      }
+      try {
+        setBrandMetaLoading(true);
+        const path = `${API_URL}/web/brands/metadata?brand=${encodeURIComponent(metaBrand)}`;
+        let meta = null;
+        const res = await fetch(path);
+        if (res.ok) {
+          const json = await res.json();
+          meta = json.data || null;
+        }
+
+        setBrandMeta(meta);
+      } catch (e) {
+        console.error(e);
+        setBrandMeta(null);
+      } finally {
+        setBrandMetaLoading(false);
+      }
+    },
+    [API_URL, brand]
+  );
+
+  const loadInsights = async (brandOverride) => {
+    const activeBrand = brandOverride || brand;
+    if (!activeBrand) {
+      setError("Please enter a brand to fetch insights.");
+      return;
+    }
+    // Reset metadata and fetch for the selected brand when loading insights
+    setBrandMeta(null);
+    await fetchBrandMeta(activeBrand);
+    setLoading(true);
+    setError("");
+    try {
+      const end = moment.utc();
+      const start = end.clone().subtract(Math.max(windowDays - 1, 0), "days");
+      const startStr = start.format("YYYY-MM-DD");
+      const endStr = end.format("YYYY-MM-DD");
+      setStartDate(startStr);
+      setEndDate(endStr);
+
+      const params = new URLSearchParams({
+        brand: activeBrand,
+        start_date: startStr,
+        end_date: endStr,
+      });
+      const res = await fetch(`${API_URL}/web/brands/insights?${params.toString()}`);
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || "Failed to load insights");
+      }
+      const json = await res.json();
+      setData(json);
+      // Fetch notifications directly for the timeline
+      const notifParams = new URLSearchParams({
+        brand: activeBrand,
+        start_date: startStr,
+        end_date: endStr,
+        limit: "200",
+      });
+      const notifRes = await fetch(
+        `${API_URL}/web/notifications/list?${notifParams.toString()}`
+      );
+      if (notifRes.ok) {
+        const notifJson = await notifRes.json();
+        setNotifications(sortNotifications(notifJson.data || []));
+        setTimelineDayPage(0);
+      } else {
+        setNotifications([]);
+      }
+    } catch (err) {
+      setError(err.message || "Unable to load insights");
+      setData(null);
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStarred = useCallback(async () => {
+    if (!userEmail || !isAuthenticated) return;
+    try {
+      const res = await fetch(`${API_URL}/web/brands/starred?email=${encodeURIComponent(userEmail)}`);
+      if (!res.ok) return;
+      const json = await res.json();
+      setStarred(json.brands || []);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [API_URL, userEmail, isAuthenticated]);
+
+  useEffect(() => {
+    fetchStarred();
+  }, [fetchStarred]);
+
+  const addStarredBrand = async () => {
+    if (!brand || !userEmail || !isAuthenticated) return;
+    setStarSaving(true);
+    try {
+      const updated = starred.includes(brand) ? starred.filter((b) => b !== brand) : [...starred, brand];
+      await fetch(`${API_URL}/web/brands/starred`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, brands: updated }),
+      });
+      setStarred(updated);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setStarSaving(false);
+    }
+  };
+
   useEffect(() => {
     setTimelineDayPage(0);
+  }, [chartWindowDays]);
+
+  // When brand changes, clear existing insight data so charts disappear until reload
+  useEffect(() => {
+    setData(null);
+    setNotifications([]);
+    setError(null);
+    setTimelineDayPage(0);
+  }, [brand]);
+
+  useEffect(() => {
+    if (brand && !loading) {
+      loadInsights();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartWindowDays]);
 
   const endWindow = (() => {
@@ -892,8 +1090,8 @@ function BrandInsights() {
     return acc;
   }, {});
   const campaignTypesArray = Object.entries(campaignTypeItems)
-    .map(([label, count]) => ({ label, count }))
-    .filter((i) => i.label && i.label !== "Unknown");
+    .map(([label, count]) => ({ label: normalizeLabel(label), count }))
+    .filter((i) => isValidLabel(i.label));
 
   const emotionItems = filteredNotifications.reduce((acc, n) => {
     const key = pickEmotionLabel(n);
@@ -901,8 +1099,8 @@ function BrandInsights() {
     return acc;
   }, {});
   const emotionArray = Object.entries(emotionItems)
-    .map(([label, count]) => ({ label, count }))
-    .filter((i) => i.label && i.label !== "Unknown");
+    .map(([label, count]) => ({ label: normalizeLabel(label), count }))
+    .filter((i) => isValidLabel(i.label));
 
   const contextItems = filteredNotifications.reduce((acc, n) => {
     const key = pickContextLabel(n);
@@ -910,8 +1108,8 @@ function BrandInsights() {
     return acc;
   }, {});
   const contextArray = Object.entries(contextItems)
-    .map(([label, count]) => ({ label, count }))
-    .filter((i) => i.label && i.label !== "Unknown");
+    .map(([label, count]) => ({ label: normalizeLabel(label), count }))
+    .filter((i) => isValidLabel(i.label));
 
   const triggerItems = filteredNotifications.reduce((acc, n) => {
     const key = pickTriggerLabel(n);
@@ -919,8 +1117,8 @@ function BrandInsights() {
     return acc;
   }, {});
   const triggerArray = Object.entries(triggerItems)
-    .map(([label, count]) => ({ label, count }))
-    .filter((i) => i.label && i.label !== "Unknown");
+    .map(([label, count]) => ({ label: normalizeLabel(label), count }))
+    .filter((i) => isValidLabel(i.label));
 
   const promoItems = filteredNotifications.reduce((acc, n) => {
     const key = pickPromotionLabel(n);
@@ -928,8 +1126,33 @@ function BrandInsights() {
     return acc;
   }, {});
   const promoArray = Object.entries(promoItems)
-    .map(([label, count]) => ({ label, count }))
-    .filter((i) => i.label && i.label !== "Unknown");
+    .map(([label, count]) => ({ label: normalizeLabel(label), count }))
+    .filter((i) => isValidLabel(i.label));
+
+  const exportTableAsCsv = useCallback(() => {
+    const rowsToExport = filteredNotifications.slice(0, 10);
+    if (!rowsToExport.length) return;
+    const headers = ["Date", "Time", "Notification"];
+    const rows = rowsToExport.map((n) => {
+      const ts = n.timestamp || n.posted || n.created_at;
+      const m = moment(ts);
+      const date = m.isValid() ? m.utc().format("YYYY-MM-DD") : n.date || "";
+      const time = m.isValid() ? m.utc().format("HH:mm") : n.time || "";
+      const text = (pickText(n) || "No text").replace(/"/g, '""');
+      return [date, time, `"${text}"`].join(",");
+    });
+    // Prefix BOM to preserve emoji/UTF-8 when opened in Excel
+    const csv = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${brand || "notifications"}-table.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [filteredNotifications, brand]);
 
   return (
     <div className="flex h-[100dvh] overflow-hidden">
@@ -950,41 +1173,40 @@ function BrandInsights() {
                   What is the push strategy of a brand?
                 </p>
               </div>
-              <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-4 relative z-[3000]">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Brand</label>
-                    <div className="flex flex-col gap-2">
-                      <SingleSelect
-                        options={brandOptions}
-                        value={brand}
-                        onChange={(val) => setBrand(val)}
-                        placeholder="Search brands..."
-                        onSearch={(q) => fetchBrands(q)}
-                        loading={brandsLoading}
-                      />
+              <div className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm p-4 relative z-[3000] flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
+                  <label className="block text-sm font-semibold text-gray-700">Brand</label>
+                  <SingleSelect
+                    options={brandOptions}
+                    value={brand}
+                    onChange={(val) => setBrand(val)}
+                    placeholder="Search brands..."
+                    onSearch={(q) => fetchBrands(q)}
+                    loading={brandsLoading}
+                  />
+                  {starred.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {starred.map((b) => (
+                        <button
+                          key={b}
+                          type="button"
+                          onClick={() => {
+                            setBrand(b);
+                            loadInsights(b);
+                          }}
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-semibold hover:bg-indigo-100"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                          </svg>
+                          {b}
+                        </button>
+                      ))}
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Start date</label>
-                    <input
-                      type="date"
-                      className="form-input w-full"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">End date</label>
-                    <input
-                      type="date"
-                      className="form-input w-full"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </div>
+                  ) : null}
                 </div>
-                <div className="flex items-center justify-end mt-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">Pick a brand and load insights.</p>
                   <button
                     onClick={loadInsights}
                     className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 transition"
@@ -992,20 +1214,158 @@ function BrandInsights() {
                     Load insights
                   </button>
                 </div>
-                {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+                {error && <p className="text-sm text-red-600">{error}</p>}
               </div>
             </div>
 
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <Loader />
-              </div>
-            ) : data ? (
-              <div className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <TextBlock
-                    title="Primary strategy"
-                    icon={
+            <div className="relative">
+              {data ? (
+            <div className="space-y-5">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 border border-gray-200 text-gray-600 shadow-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V5m8 2V5m-9 4h10M5 11h14v8a2 2 0 01-2 2H7a2 2 0 01-2-2v-8z" />
+                      </svg>
+                    </span>
+                    <select
+                      className="form-select text-sm"
+                      value={chartWindowDays}
+                      onChange={(e) => setChartWindowDays(parseInt(e.target.value, 10))}
+                    >
+                      <option value={7}>Last 7 days</option>
+                      <option value={14}>Last 14 days</option>
+                      <option value={30}>Last 30 days</option>
+                      <option value={90}>Last 3 months</option>
+                    </select>
+                    {loading ? (
+                      <span className="inline-flex items-center justify-center h-8 w-8 text-indigo-500">
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4"></path>
+                        </svg>
+                      </span>
+                    ) : null}
+                  </div>
+                  <button
+                    onClick={addStarredBrand}
+                    disabled={!brand || starSaving || !userEmail || !isAuthenticated}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500 text-white text-sm font-semibold shadow-sm hover:bg-amber-600 disabled:opacity-60 transition"
+                  >
+                    {starSaving ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4"></path>
+                        </svg>
+                        <span>Saving...</span>
+                      </>
+                    ) : starred.includes(brand) ? (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <span>Unstar brand</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <span>Star this brand</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              <div className="relative">
+                <div className={`space-y-5 ${loading ? "pointer-events-none blur-[1.5px]" : ""}`}>
+                  <div
+                    className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm p-5 relative overflow-hidden"
+                    style={
+                      brandMeta?.headerImage
+                        ? {
+                            backgroundImage: `linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0.75) 78%, rgba(255,255,255,0.5) 90%, rgba(255,255,255,0.25) 100%), url(${brandMeta.headerImage})`,
+                            backgroundSize: "auto",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "right center",
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="h-14 w-14 min-w-[56px] min-h-[56px] rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden">
+                          {(() => {
+                            const iconSrc =
+                              brandMeta?.icon ||
+                              faviconFromBrand(brand) ||
+                              brandMeta?.headerImage ||
+                              "";
+                            return iconSrc ? (
+                              <img
+                                src={iconSrc}
+                                alt={brand || "brand"}
+                                className="block w-full h-full object-cover rounded-full"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  const fallback = faviconFromBrand(brand) || BELL_FALLBACK;
+                                  if (e.currentTarget.src !== fallback) {
+                                    e.currentTarget.src = fallback;
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <span className="text-lg font-semibold text-indigo-600">
+                                {brand ? brand.slice(0, 2).toUpperCase() : "—"}
+                              </span>
+                            );
+                          })()}
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm uppercase tracking-[0.12em] text-gray-600 font-semibold">Brand overview</p>
+                          <h2 className="text-xl font-semibold text-gray-900">
+                            {brandMeta?.title || brand || "Select a brand"}
+                          </h2>
+                          <p className="text-sm text-gray-900 line-clamp-3">
+                            {brandMetaLoading
+                              ? "Loading brand details..."
+                              : brandMeta?.summary || brandMeta?.description || "Quick details about this brand will appear here."}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 pt-1 justify-between">
+                            <div className="flex flex-wrap gap-2">
+                              {brandMeta?.developer && (
+                                <span className="px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs text-gray-700">
+                                  {brandMeta.developer}
+                                </span>
+                              )}
+                              {brandMeta?.overall_category && (
+                                <span className="px-2 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-xs text-indigo-700">
+                                  {brandMeta.overall_category}
+                                </span>
+                              )}
+                            </div>
+                            {brandMeta?.url && (
+                              <a
+                                href={brandMeta.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold hover:bg-indigo-100"
+                              >
+                                See more
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6" />
+                                </svg>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <TextBlock
+                  title="Primary strategy"
+                  icon={
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 18h6m-4 3h2m-5.5-9.5A5.5 5.5 0 1116.5 14c0 1.455-.556 2.769-1.467 3.75a2 2 0 00-.533 1.333V20a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.917c0-.5-.186-.984-.533-1.333A5.495 5.495 0 017 14.5z" />
                       </svg>
@@ -1034,25 +1394,6 @@ function BrandInsights() {
                     content={data.default_playbook || "Not available"}
                   />
                   <RiskList risks={data.risk_signals || []} />
-                </div>
-
-                <div className="flex items-center justify-end">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 border border-gray-200 text-gray-600 shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V5m8 2V5m-9 4h10M5 11h14v8a2 2 0 01-2 2H7a2 2 0 01-2-2v-8z" />
-                      </svg>
-                    </span>
-                    <select
-                      className="form-select text-sm"
-                      value={chartWindowDays}
-                      onChange={(e) => setChartWindowDays(parseInt(e.target.value, 10))}
-                    >
-                      <option value={7}>Last 7 days</option>
-                      <option value={14}>Last 14 days</option>
-                      <option value={30}>Last 30 days</option>
-                    </select>
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -1124,29 +1465,106 @@ function BrandInsights() {
                     <EmotionBreakdown items={emotionArray} />
                   </div>
                 </div>
-
-                <div className="rounded-xl border border-gray-100 bg-white/60 p-4 text-sm text-gray-600">
-                  <div className="flex flex-wrap gap-4">
-                    <span className="font-semibold text-gray-800">
-                      Brand: <span className="text-gray-600">{data.brand}</span>
-                    </span>
-                    <span className="font-semibold text-gray-800">
-                      Window: <span className="text-gray-600">{data.window?.start}-{data.window?.end}</span>
-                    </span>
-                    <span className="font-semibold text-gray-800">
-                      Notifications: <span className="text-gray-600">{data.total_notifications?.toLocaleString?.()}</span>
-                    </span>
-                    <span className="font-semibold text-gray-800">
-                      Campaigns: <span className="text-gray-600">{data.total_campaigns?.toLocaleString?.()}</span>
-                    </span>
+                <div className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm p-4 relative overflow-hidden">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="h-9 w-9 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-700 text-sm font-semibold shadow-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h18M3 12h18M3 17h18" />
+                      </svg>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-sm uppercase tracking-[0.12em] text-gray-600 font-semibold">Notifications</p>
+                      <div className="w-12 h-[3px] rounded-full bg-gradient-to-r from-gray-300/80 via-gray-200 to-transparent mt-1"></div>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="relative">
+                      <table className="w-full text-sm text-gray-800 relative z-0">
+                        <thead className="text-xs uppercase text-gray-500">
+                          <tr>
+                            <th className="text-left py-2 pr-4">Date</th>
+                            <th className="text-left py-2 pr-4">Time</th>
+                            <th className="text-left py-2">Notification</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {filteredNotifications.slice(0, 10).map((n, idx) => {
+                            const text = pickText(n) || "No text";
+                            const ts = n.timestamp || n.posted || n.created_at;
+                            const m = moment(ts);
+                            const date = m.isValid() ? m.utc().format("YYYY-MM-DD") : n.date || "";
+                            const time = m.isValid() ? m.utc().format("HH:mm") : n.time || "";
+                            return (
+                              <tr key={idx} className="hover:bg-gray-50">
+                                <td className="py-2 pr-4 whitespace-nowrap">{date}</td>
+                                <td className="py-2 pr-4 whitespace-nowrap">{time}</td>
+                                <td className="py-2 text-gray-900">{text}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                      <div
+                        className="pointer-events-none absolute left-0 right-0 bottom-0 z-10"
+                        style={{
+                          top: "120px",
+                          background:
+                            "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 18%, rgba(255,255,255,0.35) 45%, rgba(255,255,255,0.7) 72%, rgba(255,255,255,0.97) 100%)",
+                          backdropFilter: "blur(8px)",
+                          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 14%, #000 100%)",
+                          maskImage: "linear-gradient(to bottom, transparent 0%, #000 14%, #000 100%)",
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-auto">
+                        <button
+                          type="button"
+                          onClick={exportTableAsCsv}
+                          className="px-4 py-2 rounded-full text-xs font-semibold border border-gray-300 bg-white text-gray-800 shadow-sm transition pointer-events-auto transform hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring focus:ring-indigo-200"
+                        >
+                          Export CSV
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                </div>
+                {loading && (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to bottom, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.78) 35%, rgba(255,255,255,0.9) 70%, rgba(255,255,255,0.95) 100%)",
+                        backdropFilter: "blur(6px)",
+                        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%)",
+                        maskImage: "linear-gradient(to bottom, transparent 0%, #000 15%, #000 85%, transparent 100%)",
+                      }}
+                    />
+                    <div className="relative z-10">
+                      <Loader />
+                    </div>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="rounded-2xl border border-dashed border-gray-300 bg-white/80 p-10 text-center shadow-sm text-gray-500">
-                Enter a brand and load insights to get started.
               </div>
-            )}
+              ) : (
+              <div className="rounded-2xl border border-gray-200 bg-white/80 shadow-sm p-8 flex flex-col items-center gap-3 text-center">
+                <div className="h-12 w-12 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-gray-900">No brand selected</p>
+                  <p className="text-sm text-gray-500">Pick a brand and date range above, then hit “Load insights”.</p>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-semibold">
+                  Tip: start typing to search your brands
+                </div>
+              </div>
+              )}
+            </div>
           </div>
         </main>
       </div>
@@ -1155,27 +1573,3 @@ function BrandInsights() {
 }
 
 export default BrandInsights;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

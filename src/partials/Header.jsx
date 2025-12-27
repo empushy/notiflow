@@ -10,11 +10,11 @@ function Header({ variant = "default" }) {
 
   // Navigation Links (for reuse)
   const navigationLinks = (
-    <>
-      {!isAuthenticated && (
-        <>
-          <NavLink
-            end
+      <>
+        {!isAuthenticated && (
+          <>
+            <NavLink
+              end
             to="/about"
             className={
               "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
@@ -31,12 +31,22 @@ function Header({ variant = "default" }) {
             }
             onClick={() => setMobileMenuOpen(false)}
           >
-            Newsletter
-          </NavLink>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://blog.empushy.com"
+              Newsletter
+            </NavLink>
+            <NavLink
+              end
+              to="/pricing"
+              className={
+                "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
+              }
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </NavLink>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://blog.empushy.com"
             className={
               "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
             }
@@ -46,18 +56,18 @@ function Header({ variant = "default" }) {
           </a>
         </>
       )}
-      <NavLink
-        end
-        className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
-        to="/pro"
-        onClick={() => setMobileMenuOpen(false)}
-      >
-        PRO
-      </NavLink>
-    </>
-  );
+        <NavLink
+          end
+          className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
+          to="/auth"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          PRO
+        </NavLink>
+      </>
+    );
 
-  return (
+    return (
     <header
       className={`sticky top-0 before:absolute before:inset-0 before:backdrop-blur-md max-lg:before:bg-white/90 dark:max-lg:before:bg-gray-800/90 before:-z-10 z-30 ${
         variant === "v2" || variant === "v3"
@@ -97,11 +107,11 @@ function Header({ variant = "default" }) {
             </svg>
           </button>
           {/* Header: Left side */}
-          <div className="flex">
-            <NavLink end to="/" className="text-black text-xl font-bold">
-              EmPushy
-            </NavLink>
-          </div>
+            <div className="flex">
+              <NavLink end to="/" className="text-black text-xl font-bold">
+                NotiFlow
+              </NavLink>
+            </div>
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
@@ -135,15 +145,15 @@ function Header({ variant = "default" }) {
         }`}
         style={{}}
       >
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-700">
-          <NavLink
-            end
-            to="/"
-            className="text-black text-xl font-bold"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            EmPushy
-          </NavLink>
+          <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+            <NavLink
+              end
+              to="/"
+              className="text-black text-xl font-bold"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              NotiFlow
+            </NavLink>
           <button
             className="flex items-center text-gray-700 dark:text-gray-200 focus:outline-none"
             aria-label="Close menu"

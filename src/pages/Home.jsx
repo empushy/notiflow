@@ -11,6 +11,7 @@ import EmotionalToneTrends from "../partials/dashboard/NotificationToneCard";
 import Loader from "../partials/dashboard/Loader";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
+const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 
 const NotificationCard = ({ message, iconUrl, posted, appName, onClick }) => {
   const timeAgo = moment(posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow();
@@ -118,7 +119,7 @@ const NotificationSystem = () => {
     };
 
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000);
+    const interval = setInterval(fetchNotifications, 180000);
     return () => clearInterval(interval);
   }, []);
 
@@ -244,10 +245,10 @@ const NotificationSystem = () => {
 };
 
 function Home() {
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [totalStats, setTotalStats] = useState();
-  const [loadingStats, setLoadingStats] = useState(true);
+    const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [totalStats, setTotalStats] = useState();
+    const [loadingStats, setLoadingStats] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState("Emotional Tone");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -259,43 +260,47 @@ function Home() {
   };
 
   useEffect(() => {
-    (async () => {
-      if (isAuthenticated)
-      {
-        const at = await getAccessTokenSilently();   // must have audience set in Auth0Provider
-        const res = await fetch(`${API_URL}/auth/me`, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${at}` },
-        });
-        if (!res.ok) {
-          const txt = await res.text().catch(() => "");
-          console.error("[Auth] /auth/me failed:", res.status, txt);
-        } else {
-          var userData = await res.json();
+      (async () => {
+        if (isAuthenticated) {
+          const at = await getAccessTokenSilently(); // must have audience set in Auth0Provider
+          const res = await fetch(`${API_URL}/auth/me`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${at}` },
+          });
+          if (!res.ok) {
+            const txt = await res.text().catch(() => "");
+            console.error("[Auth] /auth/me failed:", res.status, txt);
+          } else {
+            await res.json();
+          }
         }
-      }
-    })();
+      })();
   }, [isAuthenticated, user])
 
   useEffect(() => {
     const fetchTotalStats = async () => {
-      setLoadingStats(true);
-      try {
+        setLoadingStats(true);
+        try {
         const response = await fetch(`${API_URL}/web/total-stats`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-Key": API_KEY,
+            },
+          });
+          if (!response.ok) {
+            const txt = await response.text().catch(() => "");
+            throw new Error(`Status ${response.status}: ${txt}`);
+          }
+          const data = await response.json();
         setTotalStats(data);
-      } catch (error) {
+        } catch (error) {
         console.error("Error fetching total stats:", error);
         setTotalStats(undefined);
-      } finally {
-        setLoadingStats(false);
-      }
-    };
+        } finally {
+          setLoadingStats(false);
+        }
+      };
 
     fetchTotalStats();
   }, []);
@@ -337,7 +342,7 @@ function Home() {
         <main className="grow">
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
             {/* Welcome Section */}
-            <section className="relative w-full rounded-2xl mb-20 shadow-lg overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-emerald-900">
+            <section className="relative w-full rounded-2xl mb-12 shadow-lg overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-emerald-900">
               {/* Background grid pattern */}
               <svg
                 className="absolute inset-0 w-full h-full opacity-20"
@@ -363,14 +368,14 @@ function Home() {
               </svg>
 
               {/* Content */}
-              <div className="relative z-10 px-6 sm:px-10 lg:px-14 py-14 lg:py-18">
+                <div className="relative z-10 px-6 sm:px-10 lg:px-14 py-10 lg:py-14">
                 {/* Left: Headline + copy */}
                 <div className="grid col-span-2">
                   <h1 className="font-extrabold text-white text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6">
-                    Welcome back, {user?.name?.split(" ")[0] || "User"}! 👋
+                    Welcome back, {user?.name?.split(" ")[0] || "User"}!
                   </h1>
 
-                  <p className="text-lg sm:text-xl text-green-100 mb-8 font-medium max-w-2xl">
+                  <p className="text-lg sm:text-xl text-green-100 mb-6 font-medium max-w-2xl">
                     Your notification analytics dashboard is ready. Track
                     trends, analyze patterns, and stay{" "}
                     <span className="font-semibold text-green-100 underline underline-offset-4 decoration-green-300">
@@ -379,23 +384,15 @@ function Home() {
                     .
                   </p>
 
-                  <div className="flex gap-4 flex-wrap">
-                    <button className="px-7 py-3 rounded-xl font-semibold bg-gradient-to-r from-green-400 to-green-600 text-white text-lg shadow-lg transition hover:-translate-y-1 duration-200">
-                      View Analytics
-                    </button>
-                    <button className="px-7 py-3 rounded-xl font-semibold text-green-200 border border-green-300/70 bg-white/10 hover:bg-white/20 transition text-lg shadow">
-                      Export Data
-                    </button>
-                  </div>
                 </div>
               </div>
             </section>
 
             {/* Stats section */}
-            <div className="w-2/3 text-center mx-auto mb-12">
-              <div className="grid grid-cols-12 gap-6 mb-12">
+            <div className="w-full max-w-5xl mx-auto mb-12 px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {loadingStats ? (
-                  <div className="col-span-12 flex justify-center">
+                  <div className="col-span-3 flex justify-center">
                     <Loader />
                   </div>
                 ) : totalStats ? (

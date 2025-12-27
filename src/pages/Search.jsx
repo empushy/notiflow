@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
@@ -71,8 +71,8 @@ const NotificationCard = ({ message, iconUrl, posted, appName, onClick, index = 
   );
 };
 
-// Simple MultiSelect component with search
-const MultiSelect = ({ options = [], selected = [], setSelected, placeholder = "Select" }) => {
+// Simple MultiSelect component with search in main textbox
+const MultiSelect = ({ options = [], selected = [], setSelected, placeholder = "Select", onSearch }) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const dropdownRef = useRef(null);
@@ -83,63 +83,56 @@ const MultiSelect = ({ options = [], selected = [], setSelected, placeholder = "
     setSelected((prev) => (prev.includes(opt) ? prev.filter((p) => p !== opt) : [...prev, opt]));
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setOpen(false);
       }
     };
-
     if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
   return (
     <div ref={dropdownRef} className="relative">
-      <div
-        onClick={() => setOpen((v) => !v)}
-        className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 flex items-center flex-wrap gap-2 cursor-pointer"
-      >
-        {selected.length === 0 ? (
-          <span className="text-sm text-gray-400">{placeholder}</span>
-        ) : (
-          selected.map((s) => (
-            <span 
-              key={s} 
-              onClick={(e) => {
-                e.stopPropagation();
-                toggle(s);
-              }}
-              className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs hover:bg-indigo-200 cursor-pointer transition-colors flex items-center gap-1"
-            >
-              {s}
-              <span className="text-indigo-500 hover:text-indigo-700">&times;</span>
-            </span>
-          ))
-        )}
+      <div className="w-full min-h-[40px] px-2 py-1 rounded-lg bg-white border border-gray-200 focus-within:border-gray-200 focus-within:outline-none focus-within:ring-0 flex items-center flex-wrap gap-2">
+        {selected.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => toggle(s)}
+            className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs hover:bg-indigo-200 transition-colors flex items-center gap-1"
+          >
+            {s}
+            <span className="text-indigo-500 hover:text-indigo-700">&times;</span>
+          </button>
+        ))}
+        <input
+          className="flex-1 min-w-[120px] px-2 py-1 text-sm text-gray-800 placeholder:text-gray-400 bg-transparent outline-none ring-0 border-none focus:outline-none focus:ring-0 focus-visible:ring-0 focus:border-none"
+          placeholder={selected.length === 0 ? placeholder : "Type to filter brands..."}
+          value={query}
+          onFocus={() => setOpen(true)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            onSearch?.(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setOpen(false);
+          }}
+        />
       </div>
       {open && (
-        <div className="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-2">
-          <input
-            className="w-full px-2 py-1 rounded border border-gray-200 text-sm mb-2"
-            placeholder={`Search ${placeholder}`}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false); }}
-          />
-          <div className="max-h-44 overflow-auto">
+        <div className="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-auto">
+          <div className="p-2 space-y-1">
             {filtered.map((opt) => (
-              <label key={opt} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 rounded cursor-pointer">
+              <label key={opt} className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer text-sm">
                 <input type="checkbox" checked={selected.includes(opt)} onChange={() => toggle(opt)} />
-                <span className="text-sm truncate">{opt}</span>
+                <span className="truncate">{opt}</span>
               </label>
             ))}
-            {filtered.length === 0 && <div className="text-xs text-gray-400 p-2">No results</div>}
+            {filtered.length === 0 && <div className="text-xs text-gray-400 px-2 py-1">No results</div>}
           </div>
         </div>
       )}
@@ -206,6 +199,236 @@ const SingleSelect = ({ options = [], value, setValue, placeholder = "Select", d
   );
 };
 
+// Searchable single select (matches BrandInsights style)
+const SearchableSingleSelect = ({ options = [], value = "", onChange, placeholder = "Select", onSearch, loading = false }) => {
+  const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState(value || "");
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setInputValue(value || "");
+  }, [value]);
+
+  const filtered = options.filter((o) => o.toLowerCase().includes((inputValue || "").toLowerCase()));
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      <input
+        className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400"
+        value={inputValue}
+        placeholder={placeholder}
+        onFocus={() => setOpen(true)}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          onSearch?.(e.target.value);
+          setOpen(true);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") setOpen(false);
+        }}
+      />
+      {loading && (
+        <div className="absolute top-2 right-2 text-[10px] text-gray-400 pointer-events-none">
+          Loading...
+        </div>
+      )}
+      {open && (
+        <div className="absolute z-30 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-auto">
+          <div className="p-3 pt-2 space-y-1">
+            {filtered.map((opt) => (
+              <label
+                key={opt}
+                className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer text-sm"
+              >
+                <input
+                  type="radio"
+                  name="brand-select"
+                  checked={value === opt}
+                  onChange={() => {
+                    onChange(opt);
+                    setInputValue(opt);
+                    setOpen(false);
+                  }}
+                />
+                <span className="truncate">{opt}</span>
+              </label>
+            ))}
+            {filtered.length === 0 && (
+              <div className="text-xs text-gray-400 px-2 py-1">No results</div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const chromeDomainFromText = (text = "") => {
+  if (!text || typeof text !== "string") return null;
+  const match = text.match(/\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/);
+  return match ? match[0] : null;
+};
+
+const buildIcon = (notif = {}) => {
+  const isChrome =
+    notif.appPackage === "com.android.chrome" ||
+    notif.app === "com.android.chrome" ||
+    notif.appName === "Chrome";
+
+  const domain = (() => {
+    if (notif.appName && notif.appName.includes(".")) return notif.appName;
+    return chromeDomainFromText(notif.text || notif.message || "");
+  })();
+
+  if (isChrome && domain) {
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+  }
+  if (notif.icon) return notif.icon;
+  if (domain) {
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+  }
+  return "";
+};
+
+  const normalizeNotification = (notif = {}) => {
+    const isChrome =
+      notif.appPackage === "com.android.chrome" ||
+      notif.app === "com.android.chrome" ||
+      notif.appName === "Chrome";
+    const domain = chromeDomainFromText(notif.text || notif.message || "");
+    const iconUrl = buildIcon(notif);
+    return {
+      ...notif,
+      icon: iconUrl || notif.icon,
+      displayAppName: isChrome && domain ? domain : notif.appName,
+    };
+  };
+
+  const buildSpansFromMatches = (notif, matchesList) => {
+    const baseText = notif?.text || notif?.message || "";
+    if (!baseText || !Array.isArray(matchesList)) return [];
+
+    const spans = [];
+    const lowerText = baseText.toLowerCase();
+
+    matchesList
+      .map((m) => (typeof m === "string" ? m.trim() : ""))
+      .filter(Boolean)
+      .forEach((matchTerm) => {
+        const lowerMatch = matchTerm.toLowerCase();
+        let startIndex = 0;
+        while (startIndex < lowerText.length) {
+          const found = lowerText.indexOf(lowerMatch, startIndex);
+          if (found === -1) break;
+          spans.push({ start: found, end: found + matchTerm.length });
+          startIndex = found + Math.max(matchTerm.length, 1);
+        }
+      });
+
+    // Deduplicate and sort spans
+    const unique = [];
+    spans
+      .sort((a, b) => a.start - b.start || a.end - b.end)
+      .forEach((span) => {
+        if (
+          !unique.length ||
+          unique[unique.length - 1].start !== span.start ||
+          unique[unique.length - 1].end !== span.end
+        ) {
+          unique.push(span);
+        }
+      });
+    return unique;
+  };
+
+  const toSemanticEntries = (notif, fieldKey) => {
+    const field = notif?.[fieldKey];
+    if (!field) return [];
+
+    const normalizeSpan = (span) => {
+      if (!span) return null;
+      if (Array.isArray(span) && span.length >= 2) {
+        return { start: Number(span[0]), end: Number(span[1]) };
+      }
+      if (typeof span === "object" && span.start !== undefined && span.end !== undefined) {
+        return { start: Number(span.start), end: Number(span.end) };
+      }
+      return null;
+    };
+
+    const list = Array.isArray(field) ? field : [field];
+    return list
+      .map((item) => {
+        if (typeof item === "string") {
+          return { value: item, spans: [] };
+        }
+        const value = item?.value || item?.label || item?.name || "";
+        const matchesList = Array.isArray(item?.matches) ? item.matches : [];
+        const spansRaw = item?.spans || item?.matches || [];
+
+        // Determine if spansRaw actually contains span structures (objects or arrays of numbers)
+        const hasStructuredSpans =
+          Array.isArray(spansRaw) &&
+          spansRaw.some(
+            (s) =>
+              (Array.isArray(s) && s.length >= 2 && !isNaN(Number(s[0])) && !isNaN(Number(s[1]))) ||
+              (typeof s === "object" && s && s.start !== undefined && s.end !== undefined)
+          );
+
+        const spans = hasStructuredSpans
+          ? spansRaw
+              .map(normalizeSpan)
+              .filter(Boolean)
+              .sort((a, b) => a.start - b.start)
+          : buildSpansFromMatches(notif, matchesList);
+        if (!value) return null;
+        return { value, spans };
+      })
+      .filter(Boolean);
+  };
+
+  const highlightText = (text, spans = [], color = "#FDE68A") => {
+    if (!text) return null;
+    if (!Array.isArray(spans) || spans.length === 0) return text;
+
+    const pieces = [];
+    let cursor = 0;
+    spans.forEach(({ start, end }, idx) => {
+      if (start < cursor || end <= start || start >= text.length) return;
+      if (start > cursor) {
+        pieces.push(<span key={`t-${idx}-pre`}>{text.slice(cursor, start)}</span>);
+      }
+      pieces.push(
+        <mark
+          key={`t-${idx}-hl`}
+          className="rounded px-1 py-0.5 font-semibold"
+          style={{ backgroundColor: color, color: "#111827", boxShadow: "0 0 0 1px rgba(0,0,0,0.04)" }}
+        >
+          {text.slice(start, Math.min(end, text.length))}
+        </mark>
+      );
+      cursor = Math.min(end, text.length);
+    });
+    if (cursor < text.length) {
+      pieces.push(<span key="t-end">{text.slice(cursor)}</span>);
+    }
+    return pieces;
+  };
+
 function Search() {
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -217,6 +440,7 @@ function Search() {
 
   const closeModal = () => {
     setModalOpen(false);
+    setHighlightSemantic(null);
     setSelectedNotification(null);
   };
 
@@ -242,9 +466,34 @@ function Search() {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [sortBy, setSortBy] = useState("relevance"); // "relevance" or "date"
-  const [brands, setBrands] = useState([]);
+  const [brandOptions, setBrandOptions] = useState([]);
+  const [brandLoading, setBrandLoading] = useState(false);
   const [genres, setGenres] = useState([]);
   const [loadingMetadata, setLoadingMetadata] = useState(false);
+  const [highlightSemantic, setHighlightSemantic] = useState(null);
+  const semanticFields = [
+    { key: "emotional_tone", label: "Emotional Tone", color: "#C7D2FE" }, // indigo-200
+    { key: "call_to_emotion", label: "Call to Emotion", color: "#FDE68A" }, // amber-200
+    { key: "behavioral_triggers", label: "Behavioral Triggers", color: "#BBF7D0" }, // green-200
+    { key: "context_awareness", label: "Context Awareness", color: "#BAE6FD" }, // sky-200
+    { key: "promotions", label: "Promotions", color: "#FECDD3" }, // rose-200
+  ];
+
+  // Fetch brand options (searchable)
+  const fetchBrands = useCallback(async (search = "") => {
+    try {
+      setBrandLoading(true);
+      const res = await fetch(`${API_URL}/web/campaigns/brands?limit=500${search ? `&q=${encodeURIComponent(search)}` : ""}`);
+      if (!res.ok) throw new Error("Failed to load brands");
+      const json = await res.json();
+      setBrandOptions(json.data || []);
+    } catch (error) {
+      console.error("Error fetching brands:", error);
+      setBrandOptions([]);
+    } finally {
+      setBrandLoading(false);
+    }
+  }, [API_URL]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -255,14 +504,8 @@ function Search() {
     setLoadingMetadata(true);
     try {
       // Public endpoints — no Authorization header required
-      const [brandsRes, genresRes] = await Promise.all([
-        fetch(`${API_URL}/web/brands`, { method: "GET" }),
-        fetch(`${API_URL}/web/categories`, { method: "GET" }),
-      ]);
-
-      const brandsData = await brandsRes.json();
+      const genresRes = await fetch(`${API_URL}/web/categories`, { method: "GET" });
       const genresData = await genresRes.json();
-      setBrands(brandsData.data || []);
       setGenres(genresData.data || []);
     } catch (error) {
       console.error("Error fetching metadata:", error);
@@ -274,15 +517,13 @@ function Search() {
   // Fetch metadata on component mount
   useEffect(() => {
     fetchMetadata();
-  }, []);
+    fetchBrands();
+  }, [fetchBrands]);
 
   const buildSearchParams = (rawQuery) => {
     const params = new URLSearchParams();
     const searchPhrase = rawQuery.trim().startsWith('"') ? rawQuery.trim() : `"${rawQuery.trim()}"`;
     params.set("q", searchPhrase);
-    // Don't include brand/genre filters in API call - handle client-side only
-    // selectedBrands.forEach((b) => params.append("brand", b));
-    // selectedGenres.forEach((g) => params.append("genre", g));
     if (selectedType) {
       params.set("type", selectedType);
     }
@@ -296,7 +537,8 @@ function Search() {
 
     // Apply brand filter
     if (selectedBrands.length > 0) {
-      filtered = filtered.filter((notif) => selectedBrands.includes(notif.appName));
+      const selectedLower = selectedBrands.map((b) => b.toLowerCase());
+      filtered = filtered.filter((notif) => selectedLower.includes((notif.displayAppName || notif.appName || "").toLowerCase()));
     }
 
     // Apply genre filter
@@ -336,11 +578,6 @@ function Search() {
     setLoading(true);
     setHasSearched(true);
     
-    // Fetch metadata when user performs search
-    if (brands.length === 0) {
-      await fetchMetadata();
-    }
-
     try {
       const at = await getAccessTokenSilently();
       const params = buildSearchParams(searchQuery);
@@ -349,7 +586,8 @@ function Search() {
         headers: { Authorization: `Bearer ${at}` },
       });
       const data = await response.json();
-      setAllNotifications(data.data || []);
+      const normalized = (data.data || []).map(normalizeNotification);
+      setAllNotifications(normalized);
     } catch (error) {
       console.error("Error searching notifications:", error);
       setAllNotifications([]);
@@ -363,10 +601,6 @@ function Search() {
     setHasSearched(true);
     setLoading(true);
 
-    if (brands.length === 0) {
-      await fetchMetadata();
-    }
-
     try {
       const at = await getAccessTokenSilently();
       const params = buildSearchParams(query);
@@ -375,7 +609,8 @@ function Search() {
         headers: { Authorization: `Bearer ${at}` },
       });
       const data = await response.json();
-      setAllNotifications(data.data || []);
+      const normalized = (data.data || []).map(normalizeNotification);
+      setAllNotifications(normalized);
     } catch (error) {
       console.error("Error searching notifications:", error);
       setAllNotifications([]);
@@ -404,6 +639,9 @@ function Search() {
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <main className="grow flex flex-col">
+          <div className="px-4 sm:px-6 lg:px-8 pt-4 text-center text-xs text-gray-500">
+            Note: Search results cover the past 90 days.
+          </div>
           {!hasSearched ? (
             // ChatGPT-like minimalist home state
             <div className="flex flex-col items-center px-4 pt-16">
@@ -529,10 +767,11 @@ function Search() {
                           Brand
                         </label>
                         <MultiSelect
-                          options={brands}
+                          options={brandOptions}
                           selected={selectedBrands}
                           setSelected={setSelectedBrands}
                           placeholder="Select Brands"
+                          onSearch={(q) => fetchBrands(q)}
                         />
                       </div>
 
@@ -638,7 +877,7 @@ function Search() {
                               message={notif.text}
                               iconUrl={notif.icon}
                               posted={notif.posted}
-                              appName={notif.appName}
+                              appName={notif.displayAppName || notif.appName}
                               onClick={() => openModal(notif)}
                               index={idx}
                             />
@@ -720,7 +959,7 @@ function Search() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="relative z-10 w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl p-6"
+              className="relative z-10 w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl p-6 max-h-[80vh] overflow-y-auto"
             >
               <div className="flex items-start gap-4">
                 <div className="relative flex-shrink-0 w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-sm border-4 border-white overflow-hidden">
@@ -744,12 +983,63 @@ function Search() {
                     </div>
                     <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 ml-4">Close</button>
                   </div>
-                  <div className="mt-4 text-sm text-gray-800 whitespace-pre-wrap">
-                    {selectedNotification.text}
+                <div className="mt-4 text-sm text-gray-800 whitespace-pre-wrap">
+                  {highlightText(
+                    selectedNotification.text || selectedNotification.message || "",
+                    highlightSemantic?.spans || [],
+                    highlightSemantic?.color || "#FDE68A"
+                  )}
+                </div>
+
+                {/* Semantics */}
+                <div className="mt-6 border border-gray-200 rounded-xl p-4 bg-gray-50">
+                  <h4 className="text-sm font-semibold text-gray-800 mb-3">Semantics</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {semanticFields.map(({ key, label, color }) => {
+                      const entries = toSemanticEntries(selectedNotification, key);
+                      return (
+                        <div key={key} className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                          <p className="text-xs font-semibold text-gray-600 mb-2">{label}</p>
+                          {entries.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                              {entries.map((entry) => {
+                                const isActive =
+                                  highlightSemantic?.key === key &&
+                                  highlightSemantic?.value === entry.value;
+                                return (
+                                  <button
+                                    key={`${key}-${entry.value}`}
+                                    onClick={() =>
+                                      setHighlightSemantic(
+                                        isActive
+                                          ? null
+                                          : { key, value: entry.value, spans: entry.spans, color }
+                                      )
+                                    }
+                                    className="inline-flex items-center px-2 py-1 text-xs rounded-full border transition"
+                                    style={{
+                                      backgroundColor: isActive ? color : `${color}80`,
+                                      color: "#111827",
+                                      borderColor: isActive ? "#11182720" : `${color}60`,
+                                      boxShadow: isActive ? "0 4px 12px rgba(0,0,0,0.08)" : "none",
+                                    }}
+                                  >
+                                    {entry.value}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-gray-400">No data</p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
+                </div>
 
                   {/* Empushy Analytics */}
-                  <div className="mt-6">
+                <div className="mt-6">
                     <h4 className="text-sm font-semibold text-gray-700 mb-3">Empushy Analytics</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="md:col-span-2 bg-white border border-gray-200 rounded-lg p-4">
