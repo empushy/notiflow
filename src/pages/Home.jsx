@@ -12,8 +12,9 @@ import Loader from "../partials/dashboard/Loader";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 
-const NotificationCard = ({ message, iconUrl, posted, appName }) => {
+const NotificationCard = ({ message, iconUrl, posted, appName, onClick }) => {
   const timeAgo = moment(posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow();
+  const [imgError, setImgError] = useState(false);
 
   return (
     <motion.div
@@ -21,36 +22,51 @@ const NotificationCard = ({ message, iconUrl, posted, appName }) => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -30, opacity: 0 }}
       transition={{ type: "spring", stiffness: 230, damping: 25 }}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick(); }}
       className="
-        flex items-start bg-white/60 backdrop-blur-[9px] 
-        shadow-xl rounded-2xl px-6 py-5 w-full min-h-[110px]
+        bg-white/60 backdrop-blur-[9px] 
+        shadow-xl rounded-2xl w-full min-h-[110px]
         ring-1 ring-inset ring-white/40
         hover:scale-[1.02] hover:shadow-2xl transition-all duration-300
-        border border-gray-100
+        border border-gray-100 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-gray-200
+        overflow-hidden
       "
     >
-      <div className="flex-shrink-0 w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center mr-4 shadow-sm ring-2 ring-pink-200">
-        {iconUrl ? (
-          <img
-            src={iconUrl}
-            alt="Notification Icon"
-            className="w-10 h-10 object-contain rounded-full"
-          />
-        ) : (
-          <span className="text-2xl text-pink-400">🔔</span>
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-baseline mb-1">
-          <span className="text-xs text-gray-400 font-semibold truncate">
-            {appName}
-          </span>
-          <span className="text-xs text-pink-400 font-medium ml-2">
-            {timeAgo}
-          </span>
+      <div className="h-1 w-full bg-green-600" />
+      <div className="flex items-start px-6 py-5">
+        <div className="relative flex-shrink-0 w-20 h-20 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm border-4 border-white overflow-hidden">
+          {iconUrl && !imgError ? (
+            <>
+              <img
+                src={iconUrl}
+                alt="Notification Icon"
+                className="w-full h-full object-cover bg-white"
+                onError={() => setImgError(true)}
+              />
+              <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 4px white'}}></div>
+            </>
+          ) : (
+            <>
+              <span className="text-4xl text-gray-400">🔔</span>
+              <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 4px white, 0 0 0 4px white'}}></div>
+            </>
+          )}
         </div>
-        <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-3">
-          {message}
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-baseline mb-1">
+            <span className="text-xs text-gray-400 font-semibold truncate">
+              {appName}
+            </span>
+            <span className="text-xs text-pink-400 font-medium ml-2">
+              {timeAgo}
+            </span>
+          </div>
+          <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-3">
+            {message}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -61,6 +77,27 @@ const NotificationSystem = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = (notif) => {
+    setSelectedNotification(notif);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedNotification(null);
+  };
+
+  // Close modal on ESC
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape' && modalOpen) closeModal();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [modalOpen]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -95,7 +132,7 @@ const NotificationSystem = () => {
 
   return (
     <div className="relative w-full flex justify-center px-2 sm:px-0 py-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 w-full max-w-5xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 w-full max-w-7xl">
         <AnimatePresence>
           {notifications.length > 0 ? (
             notifications.map((notif) => (
@@ -105,6 +142,7 @@ const NotificationSystem = () => {
                 iconUrl={notif.icon}
                 posted={notif.posted}
                 appName={notif.appName}
+                onClick={() => openModal(notif)}
               />
             ))
           ) : (
@@ -114,6 +152,93 @@ const NotificationSystem = () => {
           )}
         </AnimatePresence>
       </div>
+      {/* Modal */}
+      <AnimatePresence>
+        {modalOpen && selectedNotification && (
+          <motion.div
+            key="notif-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center"
+          >
+            <div className="absolute inset-0 bg-black/50" onClick={closeModal} />
+            <motion.div
+              key="notif-modal"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="relative z-10 w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl p-6"
+            >
+              <div className="flex items-start gap-4">
+                <div className="relative flex-shrink-0 w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-sm border-4 border-white overflow-hidden">
+                  {selectedNotification.icon ? (
+                    <>
+                      <img src={selectedNotification.icon} alt="icon" className="w-full h-full object-cover bg-white" />
+                      <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 4px white'}}></div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-4xl text-gray-400">🔔</span>
+                      <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 4px white, 0 0 0 4px white'}}></div>
+                    </>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{selectedNotification.appName}</h3>
+                      <p className="text-xs text-gray-400">{moment(selectedNotification.posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow()}</p>
+                    </div>
+                    <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 ml-4">Close</button>
+                  </div>
+                  <div className="mt-4 text-sm text-gray-800 whitespace-pre-wrap">
+                    {selectedNotification.text}
+                  </div>
+
+                  {/* Empushy Analytics */}
+                  <div className="mt-6">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Empushy Analytics</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="md:col-span-2 bg-white border border-gray-200 rounded-lg p-4">
+                        <div className="text-xs text-gray-500 mb-2">Notification frequency (last 7 days)</div>
+                        <div className="h-36 flex items-end gap-2">
+                          <div className="flex-1 h-6 rounded-t-lg bg-indigo-100" />
+                          <div className="flex-1 h-12 rounded-t-lg bg-indigo-300" />
+                          <div className="flex-1 h-20 rounded-t-lg bg-indigo-400" />
+                          <div className="flex-1 h-10 rounded-t-lg bg-indigo-300" />
+                          <div className="flex-1 h-8 rounded-t-lg bg-indigo-200" />
+                          <div className="flex-1 h-22 rounded-t-lg bg-indigo-400" />
+                          <div className="flex-1 h-14 rounded-t-lg bg-indigo-300" />
+                        </div>
+                        <div className="mt-3 text-xs text-gray-500">Static sample chart — real charts will replace this using Empushy analytics data.</div>
+                      </div>
+                      <div className="md:col-span-1 bg-white border border-gray-200 rounded-lg p-4">
+                        <div className="space-y-3">
+                          <div>
+                            <div className="text-xs text-gray-500">Total notifications</div>
+                            <div className="text-xl font-semibold text-gray-900">1,234</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500">Avg / day</div>
+                            <div className="text-xl font-semibold text-gray-900">176</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-gray-500">Top keywords</div>
+                            <div className="text-sm text-gray-700">sale · update · promo</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-xs text-gray-500">More analytics coming soon — brand frequency, text analysis, and engagement metrics.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -296,12 +421,12 @@ function Home() {
             </div>
 
             {/* Recent Notifications Section */}
-            <section className="max-w-7xl mx-auto mb-20 px-4 sm:px-6 lg:px-8">
+            <section className="max-w-7xl mx-auto mb-12 px-4 sm:px-6 lg:px-8">
               <NotificationSystem />
             </section>
 
             {/* Filters */}
-            <div className="flex justify-center mt-28 gap-4 mb-16 flex-wrap">
+            <div className="flex justify-center mt-12 gap-4 mb-16 flex-wrap">
               {filters.map((filter) => (
                 <button
                   key={filter}

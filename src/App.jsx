@@ -8,6 +8,7 @@ import "./charts/ChartjsConfig";
 // Import pages
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
+import Search from "./pages/Search";
 import Auth from "./pages/Auth";
 import Analytics from "./pages/Analytics";
 import Fintech from "./pages/Fintech";
@@ -74,6 +75,8 @@ import AccordionPage from "./pages/component/AccordionPage";
 import IconsPage from "./pages/component/IconsPage";
 import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
+import CampaignInsights from "./pages/CampaignInsights";
+import BrandInsights from "./pages/BrandInsights";
 
 // Import components
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -102,6 +105,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <Search />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/campaign-insights"
+          element={
+            <ProtectedRoute>
+              <CampaignInsights />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/brand-insights"
+          element={
+            <ProtectedRoute>
+              <BrandInsights />
             </ProtectedRoute>
           }
         />
