@@ -2,26 +2,26 @@ import React, { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink } from "react-router-dom";
 
-function Header({ variant = "default" }) {
-  const { isAuthenticated, logout } = useAuth0();
+function Header({ variant = "default", extraContent = null }) {
+  const { isAuthenticated, logout, user } = useAuth0();
 
   // Mobile menu state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Navigation Links (for reuse)
   const navigationLinks = (
-    <>
-      {!isAuthenticated && (
-        <>
-          <NavLink
-            end
+      <>
+        {!isAuthenticated && (
+          <>
+            <NavLink
+              end
             to="/about"
             className={
               "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
             }
             onClick={() => setMobileMenuOpen(false)}
           >
-            About Us
+            About
           </NavLink>
           <NavLink
             end
@@ -31,12 +31,22 @@ function Header({ variant = "default" }) {
             }
             onClick={() => setMobileMenuOpen(false)}
           >
-            Newsletter
-          </NavLink>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://blog.empushy.com"
+              Newsletter
+            </NavLink>
+            <NavLink
+              end
+              to="/pricing"
+              className={
+                "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
+              }
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </NavLink>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://blog.empushy.com"
             className={
               "text-black hover:bg-yellow-500 font-medium rounded-lg px-3 py-2 transition-all"
             }
@@ -46,18 +56,20 @@ function Header({ variant = "default" }) {
           </a>
         </>
       )}
-      <NavLink
-        end
-        className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
-        to="/pro"
-        onClick={() => setMobileMenuOpen(false)}
-      >
-        PRO
-      </NavLink>
-    </>
-  );
+        {!isAuthenticated && (
+          <NavLink
+            end
+            className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
+            to="/auth"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Dashboard
+          </NavLink>
+        )}
+      </>
+    );
 
-  return (
+    return (
     <header
       className={`sticky top-0 before:absolute before:inset-0 before:backdrop-blur-md max-lg:before:bg-white/90 dark:max-lg:before:bg-gray-800/90 before:-z-10 z-30 ${
         variant === "v2" || variant === "v3"
@@ -97,14 +109,25 @@ function Header({ variant = "default" }) {
             </svg>
           </button>
           {/* Header: Left side */}
-          <div className="flex">
-            <NavLink end to="/" className="text-black text-xl font-bold">
-              EmPushy
-            </NavLink>
-          </div>
+            <div className="flex">
+              <NavLink end to="/" className="text-black text-xl font-bold">
+                NotiFlow
+              </NavLink>
+            </div>
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
+            {user ? (
+              <div className="hidden lg:flex flex-col items-end text-right pr-3">
+                <span className="text-[11px] uppercase tracking-[0.16em] text-emerald-600 font-semibold">
+                  Welcome back
+                </span>
+                <span className="text-sm text-gray-700 font-semibold">{user.name || "User"}</span>
+              </div>
+            ) : null}
+            {extraContent ? (
+              <div className="hidden lg:flex items-center pr-3">{extraContent}</div>
+            ) : null}
             {isAuthenticated ? (
               <button
                 className={
@@ -135,15 +158,15 @@ function Header({ variant = "default" }) {
         }`}
         style={{}}
       >
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-700">
-          <NavLink
-            end
-            to="/"
-            className="text-black text-xl font-bold"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            EmPushy
-          </NavLink>
+          <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+            <NavLink
+              end
+              to="/"
+              className="text-black text-xl font-bold"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              NotiFlow
+            </NavLink>
           <button
             className="flex items-center text-gray-700 dark:text-gray-200 focus:outline-none"
             aria-label="Close menu"

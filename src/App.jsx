@@ -8,6 +8,7 @@ import "./charts/ChartjsConfig";
 // Import pages
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
+import Search from "./pages/Search";
 import Auth from "./pages/Auth";
 import Analytics from "./pages/Analytics";
 import Fintech from "./pages/Fintech";
@@ -47,6 +48,7 @@ import Apps from "./pages/settings/Apps";
 import Plans from "./pages/settings/Plans";
 import Billing from "./pages/settings/Billing";
 import Feedback from "./pages/settings/Feedback";
+import ApiKeys from "./pages/settings/ApiKeys";
 import Changelog from "./pages/utility/Changelog";
 import Roadmap from "./pages/utility/Roadmap";
 import Faqs from "./pages/utility/Faqs";
@@ -74,6 +76,9 @@ import AccordionPage from "./pages/component/AccordionPage";
 import IconsPage from "./pages/component/IconsPage";
 import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
+import CampaignInsights from "./pages/CampaignInsights";
+import BrandInsights from "./pages/BrandInsights";
+import Pricing from "./pages/Pricing";
 
 // Import components
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -95,6 +100,7 @@ function App() {
         <Route exact path="/auth" element={<Auth />} />
         <Route exact path="/about" element={<About />} />
         <Route exact path="/newsletter" element={<Newsletter />} />
+        <Route exact path="/pricing" element={<Pricing />} />
 
         {/* Protected routes */}
         <Route
@@ -102,6 +108,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <Search />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/campaign-insights"
+          element={
+            <ProtectedRoute>
+              <CampaignInsights />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/brand-insights"
+          element={
+            <ProtectedRoute>
+              <BrandInsights />
             </ProtectedRoute>
           }
         />
@@ -144,6 +174,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/settings/account" element={<Account />} />
         <Route path="/settings/notifications" element={<Notifications />} />
+        <Route path="/settings/api-keys" element={<ApiKeys />} />
         <Route path="/settings/apps" element={<Apps />} />
         <Route path="/settings/plans" element={<Plans />} />
         <Route path="/settings/billing" element={<Billing />} />
