@@ -838,7 +838,7 @@ function BrandInsights() {
   const [brandMeta, setBrandMeta] = useState(null);
   const [brandMetaLoading, setBrandMetaLoading] = useState(false);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialBrandLoaded = useRef(false);
   const userEmail = (user?.email || user?.sub || "").toLowerCase();
 
@@ -950,14 +950,18 @@ function BrandInsights() {
   );
 
   const loadInsights = async (brandOverride) => {
-    const activeBrand = brandOverride || brand;
-    if (!activeBrand) {
+    const override = typeof brandOverride === "string" ? brandOverride : "";
+    const normalized = (override || brand || "").trim();
+    if (!normalized) {
       setError("Please enter a brand to fetch insights.");
       return;
     }
+    // Persist the selected brand in the URL so the query is correct for deep links
+    setBrand(normalized);
+    setSearchParams({ brand: normalized });
     // Reset metadata and fetch for the selected brand when loading insights
     setBrandMeta(null);
-    await fetchBrandMeta(activeBrand);
+    await fetchBrandMeta(normalized);
     setLoading(true);
     setError("");
     try {
@@ -969,7 +973,7 @@ function BrandInsights() {
       setEndDate(endStr);
 
       const params = new URLSearchParams({
-        brand: activeBrand,
+        brand: normalized,
         start_date: startStr,
         end_date: endStr,
       });
@@ -982,7 +986,7 @@ function BrandInsights() {
       setData(json);
       // Fetch notifications directly for the timeline
       const notifParams = new URLSearchParams({
-        brand: activeBrand,
+        brand: normalized,
         start_date: startStr,
         end_date: endStr,
         limit: "200",
