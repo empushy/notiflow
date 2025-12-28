@@ -177,29 +177,46 @@ const EmotionalToneTrends = ({
       })
         .then((res) => res.json())
         .then((trends) => {
-          const transformedData = {};
-          const emotionStats = {};
-          Object.entries(trends || {}).forEach(([date, value]) => {
-            const dailyData = { date };
+        const transformedData = {};
+        const emotionStats = {};
+        Object.entries(trends || {}).forEach(([date, value]) => {
+          // Skip entries that fall in the current week (week start Sunday)
+          const weekDate = parseWeekString(date);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const daysSinceSunday = (today.getDay() + 7 - 0) % 7; // Sunday -> 0
+          const startOfWeek = new Date(today.getTime() - daysSinceSunday * 24 * 60 * 60 * 1000);
+          if (weekDate >= startOfWeek) return;
+
+          const dailyData = { date };
 
             Object.keys(value).forEach((emotion) => {
-              const { count, avg_intensity, example_notification, example_appName, example_icon, example_posted, matches } =
-                value[emotion];
-
-              dailyData[emotion] = count;
-
-            if (!emotionStats[emotion]) {
-              emotionStats[emotion] = {
-                total_count: 0,
-                total_intensity: 0,
+              const {
+                count,
+                avg_intensity,
                 example_notification,
                 example_appName,
                 example_icon,
                 example_posted,
                 matches,
-              };
-            } else {
-              // Keep the most recent notification (compare posted dates)
+              } = value[emotion];
+
+              const intensityNum = Number(avg_intensity) || 0;
+
+              dailyData[emotion] = count;
+
+              if (!emotionStats[emotion]) {
+                emotionStats[emotion] = {
+                  total_count: 0,
+                  total_intensity: 0,
+                  example_notification,
+                  example_appName,
+                  example_icon,
+                  example_posted,
+                  matches,
+                };
+              } else {
+                // Keep the most recent notification (compare posted dates)
               const currentPosted = new Date(emotionStats[emotion].example_posted);
               const newPosted = new Date(example_posted);
               if (newPosted > currentPosted) {
@@ -211,7 +228,7 @@ const EmotionalToneTrends = ({
               }
             }
             emotionStats[emotion].total_count += count;
-            emotionStats[emotion].total_intensity += avg_intensity;
+            emotionStats[emotion].total_intensity += intensityNum * count;
           });
 
           transformedData[date] = dailyData;
@@ -220,18 +237,25 @@ const EmotionalToneTrends = ({
         Object.keys(emotionStats).forEach((emotion) => {
           const { total_count, total_intensity } = emotionStats[emotion];
           emotionStats[emotion].avg_intensity = (
-            total_intensity / total_count
+            total_count > 0 ? total_intensity / total_count : 0
           ).toFixed(2);
         });
 
+        // Drop null/None buckets
+        const cleanedEntries = Object.entries(emotionStats).filter(([key]) => {
+          const k = (key || "").toLowerCase();
+          return k && k !== "none" && k !== "absent";
+        });
+        const cleanedStats = Object.fromEntries(cleanedEntries);
+
         setData(Object.values(transformedData));
-        const sortedEmotions = Object.keys(emotionStats).sort(
+        const sortedEmotions = Object.keys(cleanedStats).sort(
           (a, b) =>
-            (emotionStats[b]?.total_count || 0) -
-            (emotionStats[a]?.total_count || 0)
+            (cleanedStats[b]?.total_count || 0) -
+            (cleanedStats[a]?.total_count || 0)
         );
         setEmotions(sortedEmotions);
-        setStats(emotionStats);
+        setStats(cleanedStats);
         setLoading(false);
       })
       .catch((error) => {
@@ -417,7 +441,7 @@ const EmotionalToneTrends = ({
                         {stats[emotion]?.total_count.toLocaleString()}
                       </div>
                       <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                        Intensity
+                        Avg intensity
                       </div>
                       <div
                         className="text-lg font-semibold"
@@ -482,32 +506,81 @@ const EmotionalToneTrends = ({
               {/* Featured Notification - Full Width, Overlapping */}
               <div className="relative -mt-12 z-10">
                 <div
-                  onClick={() => openModal({
-                    text: stats[emotion]?.example_notification,
-                    appName: stats[emotion]?.example_appName || emotion.charAt(0).toUpperCase() + emotion.slice(1),
-                    posted: stats[emotion]?.example_posted || new Date().toUTCString(),
-                    icon: stats[emotion]?.example_icon
-                  })}
+                  onClick={() => {
+                    const notif = stats[emotion] || {};
+                    const base = {
+                      ...notif,
+                      icon: notif.example_icon || notif.icon,
+                      appPackage: notif.example_app_package || notif.appPackage,
+                      app: notif.example_app_package || notif.app,
+                      appName: notif.example_appName || notif.appName,
+                      text: notif.example_notification || notif.text,
+                    };
+                    openModal({
+                      text: notif.example_notification,
+                      appName: base.appName || emotion.charAt(0).toUpperCase() + emotion.slice(1),
+                      posted: notif.example_posted || new Date().toUTCString(),
+                      icon: buildIcon(base),
+                    });
+                  }}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openModal({
-                    text: stats[emotion]?.example_notification,
-                    appName: stats[emotion]?.example_appName || emotion.charAt(0).toUpperCase() + emotion.slice(1),
-                    posted: stats[emotion]?.example_posted || new Date().toUTCString(),
-                    icon: stats[emotion]?.example_icon
-                  }); }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      const notif = stats[emotion] || {};
+                      const base = {
+                        ...notif,
+                        icon: notif.example_icon || notif.icon,
+                        appPackage: notif.example_app_package || notif.appPackage,
+                        app: notif.example_app_package || notif.app,
+                        appName: notif.example_appName || notif.appName,
+                        text: notif.example_notification || notif.text,
+                      };
+                      openModal({
+                        text: notif.example_notification,
+                        appName: base.appName || emotion.charAt(0).toUpperCase() + emotion.slice(1),
+                        posted: notif.example_posted || new Date().toUTCString(),
+                        icon: buildIcon(base),
+                      });
+                    }
+                  }}
                   className="bg-white backdrop-blur-[9px] shadow-xl rounded-xl w-full ring-1 ring-inset ring-gray-200 hover:scale-[1.02] hover:shadow-2xl transition-all duration-200 border border-gray-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 overflow-hidden"
                 >
                   <div className="h-1 w-full bg-blue-500" />
                 <div className="flex items-start px-4 py-3 min-h-[90px]">
                   <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm border-2 border-white overflow-hidden">
-                    {buildIcon(stats[emotion] || {}) ? (
+                    {(() => {
+                      const notif = stats[emotion] || {};
+                      const base = {
+                        ...notif,
+                        icon: notif.example_icon || notif.icon,
+                        appPackage: notif.example_app_package || notif.appPackage,
+                        app: notif.example_app_package || notif.app,
+                        appName: notif.example_appName || notif.appName,
+                        text: notif.example_notification || notif.text,
+                      };
+                      return buildIcon(base);
+                    })() ? (
                       <>
-                        <img
-                          src={buildIcon(stats[emotion] || {})}
-                          alt="App Icon"
-                          className="w-full h-full object-cover bg-white"
-                        />
+                        {(() => {
+                          const notif = stats[emotion] || {};
+                          const base = {
+                            ...notif,
+                            icon: notif.example_icon || notif.icon,
+                            appPackage: notif.example_app_package || notif.appPackage,
+                            app: notif.example_app_package || notif.app,
+                            appName: notif.example_appName || notif.appName,
+                            text: notif.example_notification || notif.text,
+                          };
+                          const iconUrl = buildIcon(base);
+                          return (
+                            <img
+                              src={iconUrl}
+                              alt="App Icon"
+                              className="w-full h-full object-cover bg-white"
+                            />
+                          );
+                        })()}
                           <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 2px white'}}></div>
                         </>
                       ) : (

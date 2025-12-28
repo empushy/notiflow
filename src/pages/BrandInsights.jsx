@@ -1,6 +1,7 @@
 ﻿import { useCallback, useEffect, useState, useRef } from "react";
 import moment from "moment";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useSearchParams } from "react-router-dom";
 
 import Header from "../partials/Header";
 import Sidebar from "../partials/Sidebar";
@@ -837,6 +838,8 @@ function BrandInsights() {
   const [brandMeta, setBrandMeta] = useState(null);
   const [brandMetaLoading, setBrandMetaLoading] = useState(false);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [searchParams] = useSearchParams();
+  const initialBrandLoaded = useRef(false);
   const userEmail = (user?.email || user?.sub || "").toLowerCase();
 
   const loadMoreNotifications = useCallback(async () => {
@@ -1002,6 +1005,16 @@ function BrandInsights() {
       setLoading(false);
     }
   };
+
+  // Prefill brand from URL query and auto-load once
+  useEffect(() => {
+    const queryBrand = searchParams.get("brand");
+    if (queryBrand && !initialBrandLoaded.current) {
+      initialBrandLoaded.current = true;
+      setBrand(queryBrand);
+      loadInsights(queryBrand);
+    }
+  }, [searchParams, loadInsights]);
 
   const fetchStarred = useCallback(async () => {
     if (!userEmail || !isAuthenticated) return;

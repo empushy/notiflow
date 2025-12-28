@@ -48,6 +48,7 @@ import Apps from "./pages/settings/Apps";
 import Plans from "./pages/settings/Plans";
 import Billing from "./pages/settings/Billing";
 import Feedback from "./pages/settings/Feedback";
+import ApiKeys from "./pages/settings/ApiKeys";
 import Changelog from "./pages/utility/Changelog";
 import Roadmap from "./pages/utility/Roadmap";
 import Faqs from "./pages/utility/Faqs";
@@ -173,6 +174,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/settings/account" element={<Account />} />
         <Route path="/settings/notifications" element={<Notifications />} />
+        <Route path="/settings/api-keys" element={<ApiKeys />} />
         <Route path="/settings/apps" element={<Apps />} />
         <Route path="/settings/plans" element={<Plans />} />
         <Route path="/settings/billing" element={<Billing />} />

@@ -90,7 +90,7 @@ function Footer() {
                   target="_blank"
                   className="text-gray-600 hover:text-gray-900"
                 >
-                  About Us
+                  About
                 </a>
               </li>
               <li>

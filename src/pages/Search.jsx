@@ -356,6 +356,75 @@ const buildIcon = (notif = {}) => {
   };
 
   const toSemanticEntries = (notif, fieldKey) => {
+    // Special handling for promotions: pull from promotions array and specific_promotion_details
+    if (fieldKey === "promotions") {
+      const promoEntries = [];
+      const promoField = notif?.promotions;
+      if (Array.isArray(promoField)) {
+        promoField.forEach((item) => {
+          if (typeof item === "object" && item) {
+            promoEntries.push({
+              value: item.value || item.label || item.name || item.type,
+              matches: Array.isArray(item.matches) ? item.matches : [],
+              spans: item.spans,
+            });
+          } else if (item) {
+            promoEntries.push({ value: String(item), matches: [] });
+          }
+        });
+      }
+      const promoDetails = notif?.specific_promotion_details || {};
+      ["discount_type", "offer_expiration", "terms_and_conditions"].forEach((key) => {
+        (promoDetails[key] || []).forEach((val) => {
+          if (val) promoEntries.push({ value: String(val), matches: [] });
+        });
+      });
+
+      // Drop obvious emotion labels so the Promotions pill cannot fall back to emotional tone values
+      const emotionStoplist = new Set([
+        "excitement",
+        "anticipation",
+        "fear",
+        "anger",
+        "joy",
+        "sadness",
+        "surprise",
+        "disgust",
+        "trust",
+      ]);
+
+      return promoEntries
+        .filter((entry) => entry.value && !emotionStoplist.has(String(entry.value).toLowerCase()))
+        .map((entry) => {
+          const matchesList = Array.isArray(entry.matches) ? entry.matches : [];
+          const spansRaw = entry.spans || entry.matches || [];
+          const hasStructuredSpans =
+            Array.isArray(spansRaw) &&
+            spansRaw.some(
+              (s) =>
+                (Array.isArray(s) && s.length >= 2 && !isNaN(Number(s[0])) && !isNaN(Number(s[1]))) ||
+                (typeof s === "object" && s && s.start !== undefined && s.end !== undefined)
+            );
+          const spans = hasStructuredSpans
+            ? spansRaw
+                .map((span) => {
+                  if (!span) return null;
+                  if (Array.isArray(span) && span.length >= 2) {
+                    return { start: Number(span[0]), end: Number(span[1]) };
+                  }
+                  if (typeof span === "object" && span.start !== undefined && span.end !== undefined) {
+                    return { start: Number(span.start), end: Number(span.end) };
+                  }
+                  return null;
+                })
+                .filter(Boolean)
+                .sort((a, b) => a.start - b.start)
+            : buildSpansFromMatches(notif, matchesList);
+          return { value: entry.value, spans };
+        })
+        .filter(Boolean);
+    }
+
     const field = notif?.[fieldKey];
     if (!field) return [];
 

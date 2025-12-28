@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink } from "react-router-dom";
 
-function Header({ variant = "default" }) {
-  const { isAuthenticated, logout } = useAuth0();
+function Header({ variant = "default", extraContent = null }) {
+  const { isAuthenticated, logout, user } = useAuth0();
 
   // Mobile menu state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ function Header({ variant = "default" }) {
             }
             onClick={() => setMobileMenuOpen(false)}
           >
-            About Us
+            About
           </NavLink>
           <NavLink
             end
@@ -56,14 +56,16 @@ function Header({ variant = "default" }) {
           </a>
         </>
       )}
-        <NavLink
-          end
-          className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
-          to="/auth"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          PRO
-        </NavLink>
+        {!isAuthenticated && (
+          <NavLink
+            end
+            className="bg-blue-200 hover:bg-blue-300 text-blue-700 px-4 py-2 rounded-lg font-bold transition-all"
+            to="/auth"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Dashboard
+          </NavLink>
+        )}
       </>
     );
 
@@ -115,6 +117,17 @@ function Header({ variant = "default" }) {
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
+            {user ? (
+              <div className="hidden lg:flex flex-col items-end text-right pr-3">
+                <span className="text-[11px] uppercase tracking-[0.16em] text-emerald-600 font-semibold">
+                  Welcome back
+                </span>
+                <span className="text-sm text-gray-700 font-semibold">{user.name || "User"}</span>
+              </div>
+            ) : null}
+            {extraContent ? (
+              <div className="hidden lg:flex items-center pr-3">{extraContent}</div>
+            ) : null}
             {isAuthenticated ? (
               <button
                 className={

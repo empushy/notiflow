@@ -291,45 +291,67 @@ function About() {
           </section>
 
           {/* Founder & credibility */}
-          <section className="rounded-3xl bg-white shadow-sm border border-slate-100 p-8 sm:p-10 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 text-white text-xs font-semibold shadow-sm">
-              Founder
+          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white shadow-sm p-8 sm:p-10">
+            <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+              <div className="absolute -left-10 -top-20 h-64 w-64 rounded-full bg-indigo-500 blur-[120px] opacity-40" />
+              <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-amber-400 blur-[140px] opacity-30" />
+              <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-400 blur-[100px] opacity-30" />
             </div>
-            <h2 className="text-2xl font-semibold text-slate-900">
-              Built by a domain expert in push notifications and applied AI
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-[220px,1fr] gap-6 items-center">
-              <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 shadow-sm">
-                <img
-                  src="https://media.licdn.com/dms/image/v2/D4E03AQGiNU8sReKBXg/profile-displayphoto-scale_200_200/B4EZdb49ZeHQAY-/0/1749593348706?e=1768435200&v=beta&t=Uc0lkoxdpwvJ63rYtGkWj33oYJEVqNcS_46HfgIRepU"
-                  alt="Kieran Fraser LinkedIn headshot"
-                  className="h-20 w-20 rounded-2xl object-cover border border-slate-200 shadow-sm"
-                  loading="lazy"
-                />
-                <div className="space-y-1">
-                  <p className="text-lg font-semibold text-slate-900">Kieran Fraser, PhD</p>
-                  <p className="text-sm text-slate-600">Founder & Research Engineer</p>
-                  <a
-                    href="https://www.linkedin.com/in/kieran-fraser-phd-608a54a7/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 hover:text-indigo-600"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.47h4.56V24H.22V8.47zm7.56 0h4.37v2.12h.06c.61-1.16 2.1-2.38 4.32-2.38 4.62 0 5.47 3.04 5.47 6.99V24h-4.56v-7.24c0-1.73-.03-3.95-2.4-3.95-2.4 0-2.77 1.87-2.77 3.81V24H7.78V8.47z" />
-                    </svg>
-                    LinkedIn
-                  </a>
-                </div>
+            <div className="relative space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold tracking-wide">
+                <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+                Founder
               </div>
-              <div className="space-y-2 text-slate-700">
-                <p>
-                  Founded by <strong>Kieran Fraser</strong>, a Research Engineer with a PhD focused on push notifications and large-scale notification data.
-                </p>
-                <p>Over 10 years of experience working with notification systems, experimentation, and behavioral data.</p>
-                <p>Background includes applied AI and machine learning roles building production-grade data pipelines and analytics systems.</p>
-                <p>NotiFlow is built from first-hand experience studying how notifications influence behavior - not from scraped dashboards or self-reported metrics.</p>
-                <p className="italic text-slate-600">NotiFlow exists because this data did not exist anywhere else.</p>
+              <div className="grid grid-cols-1 md:grid-cols-[1.1fr,0.9fr] gap-6 items-start">
+                <div className="flex flex-col gap-4 rounded-2xl bg-white/10 border border-white/20 p-5 shadow-lg">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src="https://media.licdn.com/dms/image/v2/D4E03AQGiNU8sReKBXg/profile-displayphoto-scale_200_200/B4EZdb49ZeHQAY-/0/1749593348706?e=1768435200&v=beta&t=Uc0lkoxdpwvJ63rYtGkWj33oYJEVqNcS_46HfgIRepU"
+                      alt="Kieran Fraser LinkedIn headshot"
+                      className="h-20 w-20 rounded-2xl object-cover border border-white/40 shadow"
+                      loading="lazy"
+                    />
+                    <div className="space-y-1">
+                      <p className="text-lg font-semibold">Kieran Fraser, PhD</p>
+                      <p className="text-sm text-slate-200">Founder and Research Engineer</p>
+                      <a
+                        href="https://www.linkedin.com/in/kieran-fraser-phd-608a54a7/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.47h4.56V24H.22V8.47zm7.56 0h4.37v2.12h.06c.61-1.16 2.1-2.38 4.32-2.38 4.62 0 5.47 3.04 5.47 6.99V24h-4.56v-7.24c0-1.73-.03-3.95-2.4-3.95-2.4 0-2.77 1.87-2.77 3.81V24H7.78V8.47z" />
+                        </svg>
+                        LinkedIn
+                      </a>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-100">
+                    {[
+                      { label: "PhD on notification data", tone: "bg-indigo-500/20 border-indigo-300/30 text-white" },
+                      { label: "10+ years applied AI", tone: "bg-emerald-500/20 border-emerald-300/30 text-white" },
+                      { label: "Built production data systems", tone: "bg-amber-500/20 border-amber-300/30 text-white" },
+                    ].map((chip) => (
+                      <div
+                        key={chip.label}
+                        className={`rounded-lg border px-3 py-2 font-semibold shadow-sm ${chip.tone}`}
+                      >
+                        {chip.label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-slate-100">
+                  <p>
+                    Founded by <strong>Kieran Fraser</strong>, a research engineer with a PhD focused on push notifications and large-scale notification data.
+                  </p>
+                  <p>Over 10 years building and shipping notification systems, experimentation pipelines, and behavioral analytics at the ADAPT Center, IBM, and PayPal.</p>
+                  <p>Applied AI practitioner designing production-grade data and ML systems to power insights and automation.</p>
+                  <p>NotiFlow comes from studying how notifications shape behavior - not from scraped dashboards or self-reported metrics.</p>
+                  <p className="italic text-slate-200">NotiFlow exists because this data did not exist anywhere else.</p>
+                </div>
               </div>
             </div>
           </section>
