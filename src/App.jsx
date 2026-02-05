@@ -6,6 +6,7 @@ import "./css/style.css";
 import "./charts/ChartjsConfig";
 
 // Import pages
+import PageViews from "./components/PageViews";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
@@ -94,6 +95,7 @@ function App() {
 
   return (
     <>
+      <PageViews />
       <Routes>
         {/* Public routes */}
         <Route exact path="/" element={<Dashboard />} />
