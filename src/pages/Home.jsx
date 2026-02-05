@@ -1,4 +1,4 @@
-﻿﻿import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
@@ -282,6 +282,14 @@ function Home() {
   );
   const totalBrandPages = Math.max(Math.ceil(starredBrands.length / brandsPerPage), 1);
 
+  // Keep current page in bounds if starred brands list changes
+  useEffect(() => {
+    const maxPage = Math.max(Math.ceil(starredBrands.length / brandsPerPage) - 1, 0);
+    if (brandPage > maxPage) {
+      setBrandPage(maxPage);
+    }
+  }, [starredBrands.length]);
+
   useEffect(() => {
     displayedBrands.forEach((b) => {
       if (b && !brandFeeds[b]) {
@@ -501,8 +509,8 @@ function Home() {
                     const iconSrc = meta.icon || faviconFromBrand(meta.url || meta.title || brand) || meta.headerImage || "";
                     const headerStyle = meta.headerImage
                       ? {
-                          // Push more white further up the card
-                          backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.98) 60%, rgba(255,255,255,1) 100%), url(${meta.headerImage})`,
+                          // Stronger white overlay pulled higher (~70% white)
+                          backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0.9) 32%, rgba(255,255,255,0.99) 55%, rgba(255,255,255,1) 100%), url(${meta.headerImage})`,
                           backgroundSize: "auto",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "top center",
@@ -605,6 +613,27 @@ function Home() {
                     );
                   })}
                 </div>
+                {totalBrandPages > 1 && (
+                  <div className="mt-4 flex items-center justify-center gap-3 text-sm text-gray-600">
+                    <button
+                      onClick={() => setBrandPage((p) => Math.max(0, p - 1))}
+                      disabled={brandPage === 0}
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <span className="font-medium">
+                      Page {brandPage + 1} of {totalBrandPages}
+                    </span>
+                    <button
+                      onClick={() => setBrandPage((p) => Math.min(totalBrandPages - 1, p + 1))}
+                      disabled={brandPage >= totalBrandPages - 1}
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </section>
             )}
 
