@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+﻿import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import moment from "moment";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -52,7 +52,7 @@ const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Sel
         className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 flex items-center flex-wrap gap-2 cursor-pointer"
       >
         {selected.length === 0 ? (
-          <span className="text-sm text-gray-400">{placeholder}</span>
+          <span className="text-sm text-gray-500">{placeholder}</span>
         ) : (
           selected.map((s) => (
             <span
@@ -61,10 +61,10 @@ const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Sel
                 e.stopPropagation();
                 toggle(s);
               }}
-              className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs hover:bg-indigo-200 cursor-pointer transition-colors flex items-center gap-1"
+              className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs hover:bg-pink-200 cursor-pointer transition-colors flex items-center gap-1"
             >
               {s}
-              <span className="text-indigo-500 hover:text-indigo-700">&times;</span>
+              <span className="text-pink-500 hover:text-pink-700">&times;</span>
             </span>
           ))
         )}
@@ -91,7 +91,7 @@ const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Sel
               </label>
             ))}
             {filtered.length === 0 && (
-              <div className="text-xs text-gray-400 px-2 py-1">No results</div>
+              <div className="text-xs text-gray-500 px-2 py-1">No results</div>
             )}
           </div>
         </div>
@@ -101,10 +101,10 @@ const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Sel
 };
 
 const StatCard = ({ label, value, helper }) => (
-  <div className="rounded-xl bg-white/70 backdrop-blur-sm border border-gray-200 shadow-sm p-4">
+  <div className="rounded-xl bg-white/92 backdrop-blur-sm border border-white/80 shadow-sm p-4">
     <p className="text-sm text-gray-500">{label}</p>
     <p className="text-2xl font-semibold text-gray-900 mt-1 leading-tight">{value}</p>
-    {helper ? <p className="text-xs text-gray-400 mt-1 leading-snug">{helper}</p> : null}
+    {helper ? <p className="text-xs text-gray-500 mt-1 leading-snug">{helper}</p> : null}
   </div>
 );
 
@@ -115,16 +115,16 @@ const BarList = ({ title, items = [], color = "indigo" }) => {
       ? "bg-emerald-500"
       : color === "amber"
       ? "bg-amber-500"
-      : "bg-indigo-500";
+      : "bg-pink-500";
   return (
-    <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-gray-200 shadow-sm p-6">
+    <div className="rounded-2xl bg-white/92 backdrop-blur-sm border border-white/80 shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
-        <span className="text-xs text-gray-400">{items.length} items</span>
+        <span className="text-xs text-gray-500">{items.length} items</span>
       </div>
       <div className="space-y-3">
         {items.length === 0 && (
-          <p className="text-sm text-gray-400">No data available</p>
+          <p className="text-sm text-gray-500">No data available</p>
         )}
         {items.map((item) => {
           const pct = Math.round(((item.count || 0) / max) * 100);
@@ -166,11 +166,11 @@ const heatColor = (count, max) => {
 };
 
 const ROLES_METADATA = {
-  start: { label: "Start", description: "Kick-off message to initiate a campaign or journey.", icon: "🚀" },
-  reminder: { label: "Reminder", description: "Follow-up nudges to bring users back to the flow.", icon: "🔔" },
-  escalation: { label: "Escalation", description: "Higher-urgency prompts when prior attempts didn’t convert.", icon: "⚡" },
-  standalone: { label: "Standalone", description: "One-off communication without a sequence.", icon: "📣" },
-  followup: { label: "Follow-up", description: "Post-action or post-event messages to continue engagement.", icon: "📨" },
+  start: { label: "Start", description: "Kick-off message to initiate a campaign or journey.", icon: "S" },
+  reminder: { label: "Reminder", description: "Follow-up nudges to bring users back to the flow.", icon: "R" },
+  escalation: { label: "Escalation", description: "Higher-urgency prompts when prior attempts did not convert.", icon: "E" },
+  standalone: { label: "Standalone", description: "One-off communication without a sequence.", icon: "N" },
+  followup: { label: "Follow-up", description: "Post-action or post-event messages to continue engagement.", icon: "F" },
 };
 
 const getInitials = (name = "") => {
@@ -260,9 +260,9 @@ const RecentNotificationCard = ({ notif, direction, campaignBrand }) => {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: direction === "left" ? 40 : -40, opacity: 0 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="flex items-start bg-white/60 backdrop-blur-[9px] shadow-sm rounded-2xl px-4 py-3 w-full min-h-[100px] ring-1 ring-inset ring-white/40 border border-gray-100"
+      className="flex items-start bg-white/88 backdrop-blur-[9px] shadow-sm rounded-2xl px-4 py-3 w-full min-h-[100px] ring-1 ring-inset ring-white/70 border border-white/80"
     >
-      <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center mr-3 shadow-sm border-4 border-white overflow-hidden">
+      <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-pink-50 text-pink-700 flex items-center justify-center mr-3 shadow-sm border-4 border-white overflow-hidden">
         {iconUrl ? (
           <>
             <img src={iconUrl} alt={brand} className="w-full h-full object-cover bg-white" />
@@ -278,11 +278,11 @@ const RecentNotificationCard = ({ notif, direction, campaignBrand }) => {
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-baseline mb-1">
           <span className="text-xs text-gray-500 font-semibold truncate">{brand}</span>
-          <span className="text-xs text-indigo-400 font-medium ml-2">{timeAgo}</span>
+          <span className="text-xs text-pink-500 font-medium ml-2">{timeAgo}</span>
         </div>
         <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-3">{text}</div>
         <div className="text-[11px] text-gray-500 mt-1">
-          {formatLabel(notif.campaign_role)} • {formatLabel(notif.campaign_type)}
+          {formatLabel(notif.campaign_role)} | {formatLabel(notif.campaign_type)}
         </div>
       </div>
     </motion.div>
@@ -302,8 +302,8 @@ const parseRolesCounts = (rolesCounts) => {
 };
 
 const CampaignCard = ({ campaign, onClick, iconOverride }) => {
-  const start = campaign.start_ts ? moment(campaign.start_ts).format("YYYY-MM-DD HH:mm") : "—";
-  const end = campaign.end_ts ? moment(campaign.end_ts).format("YYYY-MM-DD HH:mm") : "—";
+  const start = campaign.start_ts ? moment(campaign.start_ts).format("YYYY-MM-DD HH:mm") : "--";
+  const end = campaign.end_ts ? moment(campaign.end_ts).format("YYYY-MM-DD HH:mm") : "--";
   const [imgError, setImgError] = useState(false);
   const iconCandidate = iconOverride || buildCampaignIcon(campaign);
   const iconUrl = !imgError ? iconCandidate : null;
@@ -330,7 +330,7 @@ const CampaignCard = ({ campaign, onClick, iconOverride }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       onClick={onClick}
-      className="rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-200 shadow-md p-5 cursor-pointer hover:-translate-y-1 transition-transform duration-200"
+      className="rounded-2xl bg-white/94 backdrop-blur-sm border border-white/80 shadow-md p-5 cursor-pointer hover:-translate-y-1 transition-transform duration-200"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
@@ -342,19 +342,19 @@ const CampaignCard = ({ campaign, onClick, iconOverride }) => {
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-gray-200 flex items-center justify-center text-indigo-600 font-semibold">
-              📣
+            <div className="w-10 h-10 rounded-lg bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 font-semibold">
+              NF
             </div>
           )}
           <div>
-            <p className="text-xs uppercase text-gray-400 tracking-wide mb-1">
+            <p className="text-xs uppercase text-gray-500 tracking-wide mb-1">
               {campaign.brand || "Unknown brand"}
             </p>
             <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <span className="truncate">{formatCampaignTitle(campaign.campaign_id)}</span>
             </h4>
             <p className="text-sm text-gray-500">
-              {campaign.type_mode ? formatLabel(campaign.type_mode) : "—"}
+              {campaign.type_mode ? formatLabel(campaign.type_mode) : "--"}
             </p>
           </div>
         </div>
@@ -367,22 +367,22 @@ const CampaignCard = ({ campaign, onClick, iconOverride }) => {
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 mt-3">
-        <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+        <span className="px-2 py-1 rounded-full bg-pink-100 text-pink-800 border border-pink-200">
           {campaign.channel || "channel n/a"}
         </span>
-        <span className="text-gray-400">|</span>
+        <span className="text-gray-500">|</span>
         <span>{start}</span>
-        <span className="text-gray-400">→</span>
+        <span className="text-gray-500">-&gt;</span>
         <span>{end}</span>
       </div>
       {rolesCounts.length > 0 && (
         <div className="mt-4 space-y-2">
-          <p className="text-xs font-semibold text-gray-700">🎯 Roles</p>
+          <p className="text-xs font-semibold text-gray-700">Roles</p>
           <div className="flex flex-wrap gap-2">
             {rolesCounts.map((r) => (
               <span
                 key={r.role}
-                className="px-2 py-1 rounded-full bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-700 text-xs border border-indigo-100"
+                className="px-2 py-1 rounded-full bg-gradient-to-r from-pink-50 to-pink-100 text-pink-700 text-xs border border-pink-100"
               >
                 {formatLabel(r.role)}: {r.count}
               </span>
@@ -650,7 +650,7 @@ function CampaignInsights() {
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm text-indigo-600 font-semibold">
+                  <p className="text-sm text-pink-600 font-semibold">
                     Campaigns
                   </p>
                   <h1 className="text-3xl font-semibold text-gray-900">
@@ -663,14 +663,14 @@ function CampaignInsights() {
                 </div>
                 <button
                   onClick={applyFilters}
-                  className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 transition"
+                  className="inline-flex items-center px-4 py-2 rounded-lg bg-pink-600 text-white text-sm font-semibold shadow-sm hover:bg-pink-700 transition"
                 >
                   Apply Filters
                 </button>
               </div>
 
               {/* Filters */}
-                <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-6 relative z-[2000]">
+                <div className="rounded-2xl border border-white/80 bg-white/92 backdrop-blur-sm shadow-sm p-6 relative z-[2000]">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Brands</label>
@@ -782,7 +782,7 @@ function CampaignInsights() {
                   />
                   <StatCard
                     label="Time Span"
-                    value={`${overview.window?.start || "—"} → ${overview.window?.end || "—"}`}
+                    value={`${overview.window?.start || "--"} -> ${overview.window?.end || "--"}`}
                     helper="UTC"
                   />
                 </div>
@@ -793,12 +793,12 @@ function CampaignInsights() {
                   <BarList title="Top Brands" items={brandItems} color="amber" />
                 </div>
 
-                <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-gray-200 shadow-sm p-6">
+                <div className="rounded-2xl bg-white/92 backdrop-blur-sm border border-white/80 shadow-sm p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-gray-900">
                       Timeline (campaigns/day)
                     </h3>
-                      <span className="text-[11px] text-gray-400">
+                      <span className="text-[11px] text-gray-500">
                         {timelineItems.length} days
                       </span>
                   </div>
@@ -822,7 +822,7 @@ function CampaignInsights() {
                       });
                     })()}
                     {timelineItems.length === 0 && (
-                      <p className="text-sm text-gray-400">No timeline data</p>
+                      <p className="text-sm text-gray-500">No timeline data</p>
                     )}
                   </div>
                 </div>
@@ -852,7 +852,7 @@ function CampaignInsights() {
                       </div>
                     ) : campaigns.length === 0 ? (
                       <div className="col-span-full flex items-center justify-center min-h-[360px]">
-                        <p className="text-sm text-gray-400">No campaigns matched the current filters.</p>
+                        <p className="text-sm text-gray-500">No campaigns matched the current filters.</p>
                       </div>
                     ) : (
                       <AnimatePresence mode="sync">
@@ -901,7 +901,7 @@ function CampaignInsights() {
                       buttons.push(
                         <button
                           key={p}
-                          className={`px-3 py-1 text-sm rounded-lg border ${p === campaignPage ? "bg-indigo-500 text-white border-indigo-500" : "border-gray-200 bg-white hover:bg-gray-50"}`}
+                          className={`px-3 py-1 text-sm rounded-lg border ${p === campaignPage ? "bg-pink-500 text-white border-pink-500" : "border-gray-200 bg-white hover:bg-gray-50"}`}
                           onClick={() => {
                             setCampaignPage(p);
                             fetchCampaigns(p);
@@ -949,7 +949,7 @@ function CampaignInsights() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase text-gray-400 tracking-wide mb-1">
+                  <p className="text-xs uppercase text-gray-500 tracking-wide mb-1">
                     {campaignDetail?.campaign?.brand || "Unknown brand"}
                   </p>
                   <div className="flex items-start gap-3">
@@ -966,8 +966,8 @@ function CampaignInsights() {
                           className="w-12 h-12 rounded-xl border border-gray-200 shadow-sm bg-white"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-xl bg-indigo-50 border border-gray-200 flex items-center justify-center text-indigo-600 font-semibold">
-                          🚀
+                        <div className="w-12 h-12 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 font-semibold">
+                          NF
                         </div>
                       );
                     })()}
@@ -980,7 +980,7 @@ function CampaignInsights() {
                         <span className="font-semibold text-gray-800">
                           {campaignDetail?.campaign?.type_mode
                             ? formatLabel(campaignDetail.campaign.type_mode)
-                            : "—"}
+                            : "--"}
                         </span>
                       </p>
                     </div>
@@ -988,7 +988,7 @@ function CampaignInsights() {
                 </div>
                 <button
                   onClick={closeModal}
-                  className="text-gray-400 hover:text-gray-600 ml-4"
+                  className="text-gray-500 hover:text-gray-600 ml-4"
                 >
                   Close
                 </button>
@@ -997,7 +997,7 @@ function CampaignInsights() {
               <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <StatCard
                   label="Notifications"
-                  value={<span className="text-xl">{campaignDetail?.campaign?.num_notifications?.toLocaleString?.() ?? "—"}</span>}
+                  value={<span className="text-xl">{campaignDetail?.campaign?.num_notifications?.toLocaleString?.() ?? "--"}</span>}
                   helper="In this campaign"
                 />
                 <StatCard
@@ -1005,7 +1005,7 @@ function CampaignInsights() {
                   value={
                     campaignDetail?.campaign?.avg_confidence
                       ? <span className="text-xl">{campaignDetail.campaign.avg_confidence.toFixed(2)}</span>
-                      : <span className="text-xl">—</span>
+                      : <span className="text-xl">--</span>
                   }
                   helper="Mean vote"
                 />
@@ -1020,14 +1020,14 @@ function CampaignInsights() {
                     campaignDetail?.campaign
                       ? (
                         <span className="text-base block leading-tight">
-                          {campaignDetail.campaign.start_ts?.slice(0, 10) || "—"}
+                          {campaignDetail.campaign.start_ts?.slice(0, 10) || "--"}
                           <br />
-                          →
+                          -&gt;
                           <br />
-                          {campaignDetail.campaign.end_ts?.slice(0, 10) || "—"}
+                          {campaignDetail.campaign.end_ts?.slice(0, 10) || "--"}
                         </span>
                       ) : (
-                        <span className="text-base">—</span>
+                        <span className="text-base">--</span>
                       )
                   }
                   helper={<span className="text-[10px] text-gray-500">UTC</span>}
@@ -1050,11 +1050,11 @@ function CampaignInsights() {
                 <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
                   <div className="lg:col-span-2 rounded-xl border border-gray-100 bg-gray-50 p-4">
                     <h4 className="text-sm font-semibold text-gray-800 mb-3">
-                      🔔 Recent notifications
+                      Recent notifications
                     </h4>
                     <div className="space-y-3">
                       {campaignDetail.notifications?.length === 0 && (
-                        <p className="text-sm text-gray-400">No notifications found.</p>
+                        <p className="text-sm text-gray-500">No notifications found.</p>
                       )}
                       <AnimatePresence mode="wait">
                         <motion.div
@@ -1095,14 +1095,14 @@ function CampaignInsights() {
                   </div>
                   <div className="rounded-xl border border-gray-100 bg-white p-4">
                     <h4 className="text-sm font-semibold text-gray-800 mb-3">
-                      🎯 Roles breakdown
+                      Roles breakdown
                     </h4>
                     <div className="space-y-2" title="Roles are how the campaign messages behave within the lifecycle.">
                       {parseRolesCounts(campaignDetail.campaign.roles_counts).map((r) => {
                         const meta = ROLES_METADATA[r.role] || {
                           label: formatLabel(r.role),
                           description: "Role definition coming soon.",
-                          icon: "•",
+                          icon: "-",
                         };
                         return (
                           <div
@@ -1121,7 +1121,7 @@ function CampaignInsights() {
                         );
                       })}
                       {parseRolesCounts(campaignDetail.campaign.roles_counts).length === 0 && (
-                        <p className="text-sm text-gray-400">No roles data.</p>
+                        <p className="text-sm text-gray-500">No roles data.</p>
                       )}
                     </div>
                   </div>
@@ -1136,3 +1136,4 @@ function CampaignInsights() {
 }
 
 export default CampaignInsights;
+

@@ -13,17 +13,17 @@ function KnowledgeBase() {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Content area */}
-      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white dark:bg-slate-900">
+      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden ">
         {/*  Site header */}
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <main className="grow">
 
           {/* Search area */}
-          <div className="relative flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 lg:py-16 bg-indigo-500 dark:bg-transparent dark:bg-gradient-to-b dark:from-indigo-500/70 dark:to-indigo-500/30 overflow-hidden">
+          <div className="relative flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 lg:py-16 bg-gradient-to-r from-pink-500/90 via-rose-500/90 to-amber-400/90 overflow-hidden">
             {/* Glow */}
             <div className="absolute pointer-events-none" aria-hidden="true">
-                <div className="w-64 h-64 rounded-full bg-white bg-opacity-30 dark:bg-opacity-10 blur-3xl"></div>
+                <div className="w-64 h-64 rounded-full bg-white bg-opacity-30 blur-3xl"></div>
             </div>
             {/* Illustration */}
             <div className="absolute pointer-events-none" aria-hidden="true">
@@ -66,10 +66,10 @@ function KnowledgeBase() {
                 <label htmlFor="action-search" className="sr-only">
                   Search
                 </label>
-                <input id="action-search" className="form-input pl-9 py-3 dark:bg-slate-800 dark:border-slate-800 dark:hover:border-slate-900 focus:border-slate-300 dark:focus:border-slate-900 w-full" type="search" />
+                <input id="action-search" className="form-input pl-9 py-3 focus:border-slate-300 w-full" type="search" />
                 <button className="absolute inset-0 right-auto group" type="submit" aria-label="Search">
                   <svg
-                    className="w-4 h-4 shrink-0 fill-current text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400 ml-3 mr-2"
+                    className="w-4 h-4 shrink-0 fill-current text-slate-400 group-hover:text-slate-500 ml-3 mr-2"
                     viewBox="0 0 16 16"
                     xmlns="http://www.w3.org/2000/svg"
                   >
@@ -89,17 +89,17 @@ function KnowledgeBase() {
               {/* Popular Topics */}
               <div>
                 <div className="mb-5">
-                  <h2 className="text-xl text-slate-800 dark:text-slate-100 font-bold">Popular Topics</h2>
+                  <h2 className="text-xl text-slate-800 font-bold">Popular Topics</h2>
                 </div>
                 {/* Grid */}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 lg:sidebar-expanded:grid-cols-2 xl:sidebar-expanded:grid-cols-4 gap-6">
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon1-a">
@@ -122,12 +122,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">Getting Started</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">Getting Started</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -135,11 +135,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon2-a">
@@ -161,12 +161,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">In-app Messaging</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">In-app Messaging</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -174,11 +174,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon3-a">
@@ -195,12 +195,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">Apps &amp; Tools</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">Apps &amp; Tools</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -208,11 +208,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon4-a">
@@ -236,12 +236,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">Billing &amp; Invoices</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">Billing &amp; Invoices</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -249,11 +249,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon5-a">
@@ -276,12 +276,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">Support</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">Support</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -289,11 +289,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon6-a">
@@ -317,12 +317,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">Multimedia / Files</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">Multimedia / Files</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -330,11 +330,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon7-a">
@@ -354,12 +354,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">App Rewards</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">App Rewards</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -367,11 +367,11 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="bg-slate-100 dark:bg-slate-800 rounded-sm text-center p-5">
+                  <div className="bg-white/70 backdrop-blur-xl border border-white/60 rounded-sm text-center p-5">
                     <div className="flex flex-col h-full">
                       <div className="grow mb-2">
                         {/* Icon */}
-                        <div className="inline-flex w-12 h-12 rounded-full bg-indigo-400">
+                        <div className="inline-flex w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-amber-400">
                           <svg className="w-12 h-12" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                               <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="icon8-a">
@@ -393,12 +393,12 @@ function KnowledgeBase() {
                           </svg>
                         </div>
                         {/* Content */}
-                        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">Contact Us</h3>
+                        <h3 className="text-lg font-semibold text-slate-800 mb-1">Contact Us</h3>
                         <div className="text-sm">Lorem ipsum dolor sit consectetur adipiscing elit sed do.</div>
                       </div>
                       {/* Link */}
                       <div>
-                        <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                        <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                           Explore -&gt;
                         </a>
                       </div>
@@ -411,13 +411,13 @@ function KnowledgeBase() {
               {/* Popular Guides */}
               <div>
                 <div className="mb-5">
-                  <h2 className="text-xl text-slate-800 dark:text-slate-100 font-bold">Popular Guides</h2>
+                  <h2 className="text-xl text-slate-800 font-bold">Popular Guides</h2>
                 </div>
                 {/* Grid */}
                 <div className="grid sm:grid-cols-2 gap-6">
                   
                   {/* Item */}
-                  <div className="w-full p-3 rounded-sm text bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <div className="w-full p-3 rounded-sm text bg-white/72 backdrop-blur-xl border border-white/60">
                     <div className="flex h-full">
                       {/* Icon */}
                       <svg className="w-4 h-4 shrink-0 fill-indigo-500 mt-[3px] mr-3" viewBox="0 0 16 16">
@@ -426,14 +426,14 @@ function KnowledgeBase() {
                       <div className="flex flex-col h-full">
                         {/* Content */}
                         <div className="grow mb-2">
-                          <div className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Documents For Business Verification</div>
+                          <div className="font-semibold text-slate-800 mb-1">Documents For Business Verification</div>
                           <div className="text-sm">
                             Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.
                           </div>
                         </div>
                         {/* Link */}
                         <div>
-                          <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                          <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                             View -&gt;
                           </a>
                         </div>
@@ -442,7 +442,7 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="w-full p-3 rounded-sm text bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <div className="w-full p-3 rounded-sm text bg-white/72 backdrop-blur-xl border border-white/60">
                     <div className="flex h-full">
                       {/* Icon */}
                       <svg className="w-4 h-4 shrink-0 fill-indigo-500 mt-[3px] mr-3" viewBox="0 0 16 16">
@@ -451,14 +451,14 @@ function KnowledgeBase() {
                       <div className="flex flex-col h-full">
                         {/* Content */}
                         <div className="grow mb-2">
-                          <div className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Delayed Or Missing Payouts</div>
+                          <div className="font-semibold text-slate-800 mb-1">Delayed Or Missing Payouts</div>
                           <div className="text-sm">
                             Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.
                           </div>
                         </div>
                         {/* Link */}
                         <div>
-                          <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                          <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                             View -&gt;
                           </a>
                         </div>
@@ -467,7 +467,7 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="w-full p-3 rounded-sm text bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <div className="w-full p-3 rounded-sm text bg-white/72 backdrop-blur-xl border border-white/60">
                     <div className="flex h-full">
                       {/* Icon */}
                       <svg className="w-4 h-4 shrink-0 fill-indigo-500 mt-[3px] mr-3" viewBox="0 0 16 16">
@@ -476,14 +476,14 @@ function KnowledgeBase() {
                       <div className="flex flex-col h-full">
                         {/* Content */}
                         <div className="grow mb-2">
-                          <div className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Update Existing Bank Account Information</div>
+                          <div className="font-semibold text-slate-800 mb-1">Update Existing Bank Account Information</div>
                           <div className="text-sm">
                             Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.
                           </div>
                         </div>
                         {/* Link */}
                         <div>
-                          <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                          <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                             View -&gt;
                           </a>
                         </div>
@@ -492,7 +492,7 @@ function KnowledgeBase() {
                   </div>
                   
                   {/* Item */}
-                  <div className="w-full p-3 rounded-sm text bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <div className="w-full p-3 rounded-sm text bg-white/72 backdrop-blur-xl border border-white/60">
                     <div className="flex h-full">
                       {/* Icon */}
                       <svg className="w-4 h-4 shrink-0 fill-indigo-500 mt-[3px] mr-3" viewBox="0 0 16 16">
@@ -501,14 +501,14 @@ function KnowledgeBase() {
                       <div className="flex flex-col h-full">
                         {/* Content */}
                         <div className="grow mb-2">
-                          <div className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Close A Mosaic Account</div>
+                          <div className="font-semibold text-slate-800 mb-1">Close A Mosaic Account</div>
                           <div className="text-sm">
                             Lorem ipsum dolor sit amet, consectetur adipiscing sed do eiusmod tempor incididunt ut labore et dolore.
                           </div>
                         </div>
                         {/* Link */}
                         <div>
-                          <a className="text-sm font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400" href="#0">
+                          <a className="text-sm font-medium text-pink-600 hover:text-pink-700" href="#0">
                             View -&gt;
                           </a>
                         </div>
@@ -531,3 +531,7 @@ function KnowledgeBase() {
 }
 
 export default KnowledgeBase;
+
+
+
+

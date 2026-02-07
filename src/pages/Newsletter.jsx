@@ -46,32 +46,44 @@ function Newsletter() {
     }
   };
 
+  const contentIcons = [
+    <svg key="playbook" viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+      <path d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7.8a2 2 0 00-.6-1.4l-2.8-2.8A2 2 0 0012.2 3H5zm2 3h6v1.5H7V6zm0 3h6v1.5H7V9zm0 3h4v1.5H7V12z" />
+    </svg>,
+    <svg key="radar" viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+      <path d="M10 2a8 8 0 108 8A8 8 0 0010 2zm0 2a6 6 0 015.7 4.1L10 10zM4.3 8.1A6 6 0 018 4.3L10 10zM10 16a6 6 0 01-5.7-4.1L10 10z" />
+    </svg>,
+    <svg key="signals" viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+      <path d="M3 14a3 3 0 013-3h2l1-2 1.5 3 1.2-1.6A3 3 0 0114 9h3v2h-3a1 1 0 00-.8.4L10 16l-1.7-3.3-.6 1.1A1 1 0 017 14H3v-2zm8-8a2 2 0 110-4 2 2 0 010 4z" />
+    </svg>,
+  ];
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Site header */}
       <Header />
 
-      <main className="flex-grow bg-slate-50">
+      <main className="flex-grow bg-transparent">
         {/* Hero + Form */}
-        <section className="relative overflow-hidden py-16 sm:py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white">
+        <section className="relative overflow-hidden py-16 sm:py-20 bg-white/50 backdrop-blur border-b border-pink-100 text-slate-900">
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-            <div className="absolute -left-16 -top-24 h-64 w-64 rounded-full bg-indigo-500 blur-[120px] opacity-40" />
-            <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-amber-400 blur-[140px] opacity-30" />
-            <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-400 blur-[100px] opacity-30" />
+            <div className="absolute -left-16 -top-24 h-64 w-64 rounded-full bg-pink-300 blur-[120px] opacity-20" />
+            <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-gold-300 blur-[140px] opacity-20" />
+            <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-300 blur-[100px] opacity-20" />
           </div>
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[1.2fr,1fr] gap-10 items-center">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold tracking-wide">
-                <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-pink-100 text-xs font-semibold tracking-wide text-slate-700">
+                <span className="h-2 w-2 rounded-full bg-pink-500 animate-pulse" />
                 NotiFlow Newsletter
               </div>
               <h1 className="text-3xl sm:text-4xl font-semibold leading-tight">
                 The weekly pulse on push notifications, creative angles, and cadence trends.
               </h1>
-              <p className="text-slate-100/80 text-base sm:text-lg max-w-2xl">
+              <p className="text-slate-600 text-base sm:text-lg max-w-2xl">
                 Get field-tested insights, teardown notes, and real campaign patterns from the notification graph. Zero fluff, zero spam.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-100/90">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-700">
                 {[
                   'Cadence benchmarks across top apps',
                   'Creative teardown highlights',
@@ -79,8 +91,8 @@ function Newsletter() {
                   'Early access to new dashboards',
                 ].map((item) => (
                   <div key={item} className="inline-flex items-center gap-2">
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10 border border-white/10 text-xs">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-emerald-200">
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-sm shadow-emerald-500/30">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                         <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.415l-7.25 7.25a1 1 0 01-1.414 0l-3.04-3.04a1 1 0 111.414-1.415l2.333 2.334 6.543-6.544a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </span>
@@ -91,14 +103,16 @@ function Newsletter() {
             </div>
 
             <div className="relative">
-              <div className="rounded-2xl bg-white/90 backdrop-blur border border-white/40 shadow-2xl p-6 sm:p-7">
+              <div className="rounded-2xl bg-white/80 backdrop-blur border border-pink-100 shadow-2xl p-6 sm:p-7">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-sm font-semibold text-slate-700">Join the list</p>
                     <p className="text-xs text-slate-500">Weekly, actionable, no spam.</p>
                   </div>
-                  <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
-                    NF
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-pink-500 to-amber-400 text-white shadow-md shadow-pink-500/30 flex items-center justify-center">
+                    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden="true">
+                      <path d="M2 5a3 3 0 013-3h10a3 3 0 013 3v10a3 3 0 01-3 3H5a3 3 0 01-3-3V5zm3-.5a1.5 1.5 0 00-1.3.7l6.3 4 6.3-4a1.5 1.5 0 00-1.3-.7H5zm11 3.1l-5.2 3.3a1.5 1.5 0 01-1.6 0L4 7.6V15a1 1 0 001 1h10a1 1 0 001-1V7.6z" />
+                    </svg>
                   </div>
                 </div>
                 <form className="space-y-3" onSubmit={handleSubmit}>
@@ -112,7 +126,7 @@ function Newsletter() {
                       placeholder="name@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-900"
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-slate-900"
                       aria-label="Email address"
                       required
                     />
@@ -122,8 +136,8 @@ function Newsletter() {
                     disabled={status === 'loading'}
                     className={`w-full text-white font-semibold py-3 rounded-lg transition duration-200 shadow-sm ${
                       status === 'loading'
-                        ? 'bg-indigo-300 cursor-not-allowed'
-                        : 'bg-indigo-600 hover:bg-indigo-700'
+                        ? 'bg-pink-300 cursor-not-allowed'
+                        : 'bg-pink-500 hover:bg-pink-600'
                     }`}
                   >
                     {status === 'loading' ? 'Signing up...' : 'Subscribe'}
@@ -160,7 +174,7 @@ function Newsletter() {
         <section className="py-14">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10 space-y-2">
-              <p className="text-sm font-semibold text-indigo-600">Inside the newsletter</p>
+              <p className="text-sm font-semibold text-pink-600">Inside the newsletter</p>
               <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">Actionable, scannable, every week.</h2>
               <p className="text-slate-600 text-base max-w-2xl mx-auto">
                 Teardowns, timing benchmarks, and copy patterns pulled from thousands of live notifications.
@@ -180,10 +194,10 @@ function Newsletter() {
                   title: 'Signals & outliers',
                   body: 'Interesting spikes, campaigns worth copying, and what made them work.',
                 },
-              ].map((item) => (
-                <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 font-semibold text-sm mb-3">
-                    {item.title.split(' ')[0]}
+              ].map((item, idx) => (
+                <div key={item.title} className="rounded-2xl border border-pink-100 bg-white/75 backdrop-blur p-5 shadow-sm">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-amber-400 text-white shadow-md shadow-pink-500/30 mb-3">
+                    {contentIcons[idx]}
                   </div>
                   <p className="font-semibold text-slate-900 mb-1">{item.title}</p>
                   <p className="text-sm text-slate-600">{item.body}</p>

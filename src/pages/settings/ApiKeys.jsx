@@ -28,9 +28,9 @@ function ApiKeys() {
   };
 
   const formatDate = (ts) => {
-    if (!ts) return "—";
+    if (!ts) return "--";
     const d = new Date((Number(ts) || 0) * 1000);
-    if (isNaN(d.getTime())) return "—";
+    if (isNaN(d.getTime())) return "--";
     return d.toLocaleString();
   };
 
@@ -114,43 +114,43 @@ function ApiKeys() {
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
             {/* Page header */}
             <div className="mb-8">
-              <h1 className="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">
+              <h1 className="text-2xl md:text-3xl text-slate-900 font-bold tracking-tight">
                 Account Settings
               </h1>
             </div>
 
             {/* Content */}
-            <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl mb-8">
+            <div className="nf-panel-strong rounded-2xl mb-8">
               <div className="flex flex-col md:flex-row md:-mr-px">
                 <SettingsSidebar />
                 <div className="grow p-6 md:p-8">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Primary key</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Include in <code className="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded">X-API-Key</code> header.
+                      <p className="text-sm font-semibold text-slate-900">Primary key</p>
+                      <p className="text-xs text-slate-600 mt-1">
+                        Include in <code className="bg-white/80 border border-white/70 px-1 py-0.5 rounded">X-API-Key</code> header.
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleRotate}
                         disabled={rotating || loading}
-                        className="px-3 py-2 text-sm font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/40 disabled:opacity-60 disabled:cursor-not-allowed transition"
+                        className="px-3 py-2 text-sm font-semibold rounded-lg border border-white/70 text-slate-700 hover:bg-white/70 disabled:opacity-60 disabled:cursor-not-allowed transition"
                       >
-                        {rotating ? "Rotating…" : "Rotate"}
+                        {rotating ? "Rotating..." : "Rotate"}
                       </button>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 mt-4">
+                  <div className="flex items-center justify-between bg-white/72 border border-white/70 rounded-xl px-4 py-3 mt-4">
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-base text-gray-900 dark:text-gray-100 tracking-wide">
-                        {loading ? "Loading…" : showKey ? apiKey || "—" : maskKey(apiKey)}
+                      <span className="font-mono text-base text-slate-900 tracking-wide">
+                        {loading ? "Loading..." : showKey ? apiKey || "--" : maskKey(apiKey)}
                       </span>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setShowKey((v) => !v)}
-                          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                          className="p-2 rounded-lg border border-white/70 text-slate-700 hover:bg-white/70 transition"
                           aria-label={showKey ? "Hide API key" : "Show API key"}
                         >
                           {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -158,26 +158,26 @@ function ApiKeys() {
                         <button
                           onClick={handleCopy}
                           disabled={!apiKey || loading}
-                          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                          className="p-2 rounded-lg border border-white/70 text-slate-700 hover:bg-white/70 transition disabled:opacity-60 disabled:cursor-not-allowed"
                           aria-label="Copy API key"
                         >
                           <Copy className="w-4 h-4" />
                         </button>
                         {copied && (
-                          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                          <span className="text-xs text-emerald-600 font-medium">
                             Copied!
                           </span>
                         )}
                       </div>
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Last rotated: {loading ? "…" : formatDate(lastRotated)}
+                    <span className="text-xs text-slate-600">
+                      Last rotated: {loading ? "..." : formatDate(lastRotated)}
                     </span>
                   </div>
 
-                  <div className="mt-4 text-sm text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-900/40 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3">
+                  <div className="mt-4 text-sm text-slate-700 bg-white/64 border border-dashed border-white/70 rounded-xl p-4 space-y-3">
                     <div className="flex items-center justify-between flex-wrap gap-3">
-                      <p className="font-semibold text-gray-900 dark:text-gray-100">Example usage</p>
+                      <p className="font-semibold text-slate-900">Example usage</p>
                       <div className="flex items-center gap-2">
                         {[
                           ["curl", "curl"],
@@ -190,8 +190,8 @@ function ApiKeys() {
                             onClick={() => setActiveExample(key)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
                               activeExample === key
-                                ? "bg-indigo-600 text-white border-indigo-600"
-                                : "bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                ? "bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400 text-white border-pink-400"
+                                : "bg-white/80 text-slate-700 border-white/70 hover:bg-white"
                             }`}
                           >
                             {label}
@@ -199,7 +199,7 @@ function ApiKeys() {
                         ))}
                       </div>
                     </div>
-                    <div className="bg-gray-900 text-gray-100 rounded-xl p-4 text-xs leading-relaxed overflow-x-auto shadow-inner">
+                    <div className="bg-slate-900/90 text-slate-100 rounded-xl p-4 text-xs leading-relaxed overflow-x-auto shadow-inner">
                       {activeExample === "curl" && (
                         <pre>{`curl -H "X-API-Key: ${showKey ? (apiKey || "YOUR_API_KEY") : "YOUR_API_KEY"}" \\\n  "https://api.notiflow.empushy.com/trends/daily-volume"`}</pre>
                       )}
@@ -213,13 +213,13 @@ function ApiKeys() {
                         <pre>{`var client = java.net.http.HttpClient.newHttpClient();\nvar req = java.net.http.HttpRequest.newBuilder()\n  .uri(java.net.URI.create("https://api.notiflow.empushy.com/trends/daily-volume"))\n  .header("X-API-Key", "${showKey ? (apiKey || "YOUR_API_KEY") : "YOUR_API_KEY"}")\n  .build();\nvar res = client.send(req, java.net.http.HttpResponse.BodyHandlers.ofString());\nSystem.out.println(res.body());`}</pre>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-slate-600">
                       See full docs at{" "}
                       <a
                         href="https://docs.notiflow.empushy.com/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-indigo-500 hover:text-indigo-600 underline"
+                        className="text-pink-600 hover:text-pink-700 underline"
                       >
                         docs.notiflow.empushy.com
                       </a>
@@ -242,3 +242,7 @@ function ApiKeys() {
 }
 
 export default ApiKeys;
+
+
+
+

@@ -19,7 +19,7 @@ function Changelog() {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} variant="v2" />
 
       {/* Content area */}
-      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-900">
+      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden ">
 
         {/*  Site header */}
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} variant="v3" />
@@ -27,18 +27,18 @@ function Changelog() {
         <main className="grow">
 
           {/* Page header */}
-          <div className="sm:flex sm:justify-between sm:items-center px-4 sm:px-6 py-8 border-b border-gray-200 dark:border-gray-700/60">
+          <div className="sm:flex sm:justify-between sm:items-center px-4 sm:px-6 py-8 border-b border-white/60">
 
             {/* Left: Title */}
             <div className="mb-4 sm:mb-0">
-              <h1 className="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">Changelog</h1>
+              <h1 className="text-2xl md:text-3xl text-slate-900 font-bold">Changelog</h1>
             </div>
 
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
 
               {/* Add entry button */}
-              <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">Add Entry</button>
+              <button className="btn bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400 text-white hover:from-pink-600 hover:to-amber-500 shadow-lg shadow-pink-500/30">Add Entry</button>
 
             </div>
 
@@ -51,19 +51,19 @@ function Changelog() {
               <div className="xl:pl-32 xl:-translate-x-16 mb-2">
                 <ul className="flex flex-wrap -m-1">
                   <li className="m-1">
-                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-transparent shadow-sm bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-800 transition">View All</button>
+                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-transparent shadow-sm bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400 text-white transition">View All</button>
                   </li>
                   <li className="m-1">
-                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 transition">Announcements</button>
+                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-white/60 hover:border-pink-200 shadow-sm bg-white text-slate-600 transition">Announcements</button>
                   </li>
                   <li className="m-1">
-                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 transition">Bug Fix</button>
+                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-white/60 hover:border-pink-200 shadow-sm bg-white text-slate-600 transition">Bug Fix</button>
                   </li>
                   <li className="m-1">
-                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 transition">Product</button>
+                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-white/60 hover:border-pink-200 shadow-sm bg-white text-slate-600 transition">Product</button>
                   </li>
                   <li className="m-1">
-                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-gray-200 dark:border-gray-700/60 hover:border-gray-300 dark:hover:border-gray-600 shadow-sm bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 transition">Exciting News</button>
+                    <button className="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-white/60 hover:border-pink-200 shadow-sm bg-white text-slate-600 transition">Exciting News</button>
                   </li>
                 </ul>
               </div>
@@ -74,21 +74,21 @@ function Changelog() {
                 <article className="pt-6">
                   <div className="xl:flex">
                     <div className="w-32 shrink-0">
-                      <div className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 xl:leading-8">8 July, 2024</div>
+                      <div className="text-xs font-semibold uppercase text-gray-400 xl:leading-8">8 July, 2024</div>
                     </div>
-                    <div className="grow pb-6 border-b border-gray-200 dark:border-gray-700/60">
+                    <div className="grow pb-6 border-b border-white/60">
                       <header>
-                        <h2 className="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-3">Released version 2.0</h2>
+                        <h2 className="text-2xl text-slate-900 font-bold mb-3">Released version 2.0</h2>
                         <div className="flex flex-nowrap items-center space-x-2 mb-4">
                           <div className="flex items-center">
                             <a className="block mr-2 shrink-0" href="#0">
-                              <img className="rounded-full border-2 border-white dark:border-gray-800 box-content" src={User07} width="32" height="32" alt="User 04" />
+                              <img className="rounded-full border-2 border-white border-white/70 box-content" src={User07} width="32" height="32" alt="User 04" />
                             </a>
-                            <a className="block text-sm font-semibold text-gray-800 dark:text-gray-100" href="#0">
-                              Simona LÃ¼rwer
+                            <a className="block text-sm font-semibold text-slate-900" href="#0">
+                              Simona Lurwer
                             </a>
                           </div>
-                          <div className="text-gray-400 dark:text-gray-600">Â·</div>
+                          <div className="text-slate-400">·</div>
                           <div>
                             <div className="text-xs inline-flex font-medium bg-green-500/20 text-green-700 rounded-full text-center px-2.5 py-1">Product</div>
                           </div>
@@ -105,21 +105,21 @@ function Changelog() {
                 <article className="pt-6">
                   <div className="xl:flex">
                     <div className="w-32 shrink-0">
-                      <div className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 xl:leading-8">6 July, 2024</div>
+                      <div className="text-xs font-semibold uppercase text-gray-400 xl:leading-8">6 July, 2024</div>
                     </div>
-                    <div className="grow pb-6 border-b border-gray-200 dark:border-gray-700/60">
+                    <div className="grow pb-6 border-b border-white/60">
                       <header>
-                        <h2 className="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-3">Feature Name is now public ðŸŽ‰</h2>
+                        <h2 className="text-2xl text-slate-900 font-bold mb-3">Feature Name is now public </h2>
                         <div className="flex flex-nowrap items-center space-x-2 mb-4">
                           <div className="flex items-center">
                             <a className="block mr-2 shrink-0" href="#0">
-                              <img className="rounded-full border-2 border-white dark:border-gray-800 box-content" src={User02} width="32" height="32" alt="User 04" />
+                              <img className="rounded-full border-2 border-white border-white/70 box-content" src={User02} width="32" height="32" alt="User 04" />
                             </a>
-                            <a className="block text-sm font-semibold text-gray-800 dark:text-gray-100" href="#0">
+                            <a className="block text-sm font-semibold text-slate-900" href="#0">
                               Danielle Cohen
                             </a>
                           </div>
-                          <div className="text-gray-400 dark:text-gray-600">Â·</div>
+                          <div className="text-slate-400">·</div>
                           <div>
                             <div className="text-xs inline-flex font-medium bg-yellow-500/20 text-yellow-700 rounded-full text-center px-2.5 py-1">Announcement</div>
                           </div>
@@ -136,21 +136,21 @@ function Changelog() {
                 <article className="pt-6">
                   <div className="xl:flex">
                     <div className="w-32 shrink-0">
-                      <div className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 xl:leading-8">4 July, 2024</div>
+                      <div className="text-xs font-semibold uppercase text-gray-400 xl:leading-8">4 July, 2024</div>
                     </div>
-                    <div className="grow pb-6 border-b border-gray-200 dark:border-gray-700/60">
+                    <div className="grow pb-6 border-b border-white/60">
                       <header>
-                        <h2 className="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-3">Bugs fixed, issues, and more</h2>
+                        <h2 className="text-2xl text-slate-900 font-bold mb-3">Bugs fixed, issues, and more</h2>
                         <div className="flex flex-nowrap items-center space-x-2 mb-4">
                           <div className="flex items-center">
                             <a className="block mr-2 shrink-0" href="#0">
-                              <img className="rounded-full border-2 border-white dark:border-gray-800 box-content" src={User01} width="32" height="32" alt="User 04" />
+                              <img className="rounded-full border-2 border-white border-white/70 box-content" src={User01} width="32" height="32" alt="User 04" />
                             </a>
-                            <a className="block text-sm font-semibold text-gray-800 dark:text-gray-100" href="#0">
+                            <a className="block text-sm font-semibold text-slate-900" href="#0">
                               Patrick Kumar
                             </a>
                           </div>
-                          <div className="text-gray-400 dark:text-gray-600">Â·</div>
+                          <div className="text-slate-400">·</div>
                           <div>
                             <div className="text-xs inline-flex font-medium bg-red-500/20 text-red-700 rounded-full text-center px-2.5 py-1">Bug Fix</div>
                           </div>
@@ -173,21 +173,21 @@ function Changelog() {
                 <article className="pt-6">
                   <div className="xl:flex">
                     <div className="w-32 shrink-0">
-                      <div className="text-xs font-semibold uppercase text-gray-400 dark:text-gray-500 xl:leading-8">2 July, 2024</div>
+                      <div className="text-xs font-semibold uppercase text-gray-400 xl:leading-8">2 July, 2024</div>
                     </div>
-                    <div className="grow pb-6 border-b border-gray-200 dark:border-gray-700/60">
+                    <div className="grow pb-6 border-b border-white/60">
                       <header>
-                        <h2 className="text-2xl text-gray-800 dark:text-gray-100 font-bold mb-3">Thanks, everyone ðŸ™Œ</h2>
+                        <h2 className="text-2xl text-slate-900 font-bold mb-3">Thanks, everyone </h2>
                         <div className="flex flex-nowrap items-center space-x-2 mb-4">
                           <div className="flex items-center">
                             <a className="block mr-2 shrink-0" href="#0">
-                              <img className="rounded-full border-2 border-white dark:border-gray-800 box-content" src={User02} width="32" height="32" alt="User 04" />
+                              <img className="rounded-full border-2 border-white border-white/70 box-content" src={User02} width="32" height="32" alt="User 04" />
                             </a>
-                            <a className="block text-sm font-semibold text-gray-800 dark:text-gray-100" href="#0">
+                            <a className="block text-sm font-semibold text-slate-900" href="#0">
                               Danielle Cohen
                             </a>
                           </div>
-                          <div className="text-gray-400 dark:text-gray-600">Â·</div>
+                          <div className="text-slate-400">·</div>
                           <div>
                             <div className="text-xs inline-flex font-medium bg-sky-500/20 text-sky-700 rounded-full text-center px-2.5 py-1">Exciting News</div>
                           </div>
@@ -218,3 +218,7 @@ function Changelog() {
 }
 
 export default Changelog;
+
+
+
+

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+﻿import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
@@ -29,14 +29,14 @@ const NotificationCard = ({ message, iconUrl, posted, appName, onClick, index = 
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick(); }}
       className={
-        `flex items-start bg-white/60 backdrop-blur-[9px]
-        shadow-xl rounded-2xl px-6 py-5 w-full min-h-[110px]
-        ring-1 ring-inset ring-white/40
+        `flex items-start bg-white/80 backdrop-blur-[9px]
+        shadow-lg rounded-2xl px-5 py-4 w-full min-h-[96px]
+        ring-1 ring-inset ring-white/70
         hover:scale-[1.02] hover:shadow-2xl transition-all duration-200
-        border border-gray-100 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-gray-200`
+        border border-white/80 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-pink-200`
       }
     >
-      <div className="relative flex-shrink-0 w-20 h-20 rounded-full bg-white flex items-center justify-center mr-4 shadow-sm border-4 border-white overflow-hidden">
+      <div className="relative flex-shrink-0 w-16 h-16 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm border-3 border-white overflow-hidden">
         {iconUrl && !imgError ? (
           <>
             <img
@@ -49,21 +49,21 @@ const NotificationCard = ({ message, iconUrl, posted, appName, onClick, index = 
           </>
         ) : (
           <>
-            <span className="text-4xl text-gray-400">🔔</span>
+            <span className="text-xs font-semibold text-slate-500">NF</span>
             <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 4px white, 0 0 0 4px white'}}></div>
           </>
         )}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-baseline mb-1">
-          <span className="text-xs text-gray-400 font-semibold truncate">
+          <span className="text-xs text-gray-500 font-semibold truncate">
             {appName}
           </span>
-          <span className="text-xs text-indigo-400 font-medium ml-2">
+          <span className="text-xs text-pink-600 font-medium ml-2">
             {timeAgo}
           </span>
         </div>
-        <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-3">
+        <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-2">
           {message}
         </div>
       </div>
@@ -103,10 +103,10 @@ const MultiSelect = ({ options = [], selected = [], setSelected, placeholder = "
             key={s}
             type="button"
             onClick={() => toggle(s)}
-            className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs hover:bg-indigo-200 transition-colors flex items-center gap-1"
+            className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs hover:bg-pink-200 transition-colors flex items-center gap-1"
           >
             {s}
-            <span className="text-indigo-500 hover:text-indigo-700">&times;</span>
+            <span className="text-pink-500 hover:text-pink-700">&times;</span>
           </button>
         ))}
         <input
@@ -186,7 +186,7 @@ const SingleSelect = ({ options = [], value, setValue, placeholder = "Select", d
               }}
               className={`px-3 py-2 rounded cursor-pointer text-sm ${
                 value === opt.value
-                  ? 'bg-indigo-50 text-indigo-700 font-medium'
+                  ? 'bg-pink-50 text-pink-700 font-medium'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -572,7 +572,7 @@ function Search() {
   const fetchMetadata = async () => {
     setLoadingMetadata(true);
     try {
-      // Public endpoints — no Authorization header required
+      // Public endpoints - no Authorization header required
       const genresRes = await fetch(`${API_URL}/web/categories`, { method: "GET" });
       const genresData = await genresRes.json();
       setGenres(genresData.data || []);
@@ -703,7 +703,7 @@ function Search() {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* Content area */}
-      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-gray-50">
+      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         {/* Site header */}
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
@@ -714,11 +714,11 @@ function Search() {
           {!hasSearched ? (
             // ChatGPT-like minimalist home state
             <div className="flex flex-col items-center px-4 pt-16">
-              <div className="w-full max-w-2xl">
+              <div className="w-full max-w-xl">
                 {/* Logo/Icon */}
                 <div className="mb-10 text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-100 to-blue-200 rounded-full mb-4">
-                    <SearchIcon className="w-8 h-8 text-indigo-600" />
+                    <SearchIcon className="w-8 h-8 text-pink-600" />
                   </div>
                   <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">
                     Search Notifications
@@ -736,12 +736,12 @@ function Search() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search by keyword, brand, or message..."
-                      className="w-full px-6 py-4 text-lg rounded-2xl bg-white border-2 border-gray-200 text-gray-900 placeholder-gray-400 shadow-lg focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 transition-all duration-200"
+                      className="w-full px-5 py-3.5 text-base rounded-xl bg-white/86 backdrop-blur-sm border border-white/80 text-gray-900 placeholder-gray-400 shadow-md focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
                       autoFocus
                     />
                     <button
                       type="submit"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-pink-600 transition-colors"
                     >
                       <SearchIcon className="w-6 h-6" />
                     </button>
@@ -763,14 +763,14 @@ function Search() {
                       <button
                         key={suggestion}
                         onClick={() => performSearch(suggestion)}
-                        className="px-4 py-3 text-sm rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors text-left"
+                        className="px-4 py-3 text-sm rounded-xl bg-white/80 border border-white/75 hover:bg-white text-gray-700 font-medium transition-colors text-left"
                       >
                         {suggestion}
                       </button>
                     ))}
                   </div>
                   <p className="text-xs text-gray-400 text-center mt-6 pt-4 border-t border-gray-200">
-                    💡 Tip: Use wildcards like sale* or *discount for pattern matching. Wrap in quotes for exact phrases.
+                    Tip: Use wildcards like sale* or *discount for pattern matching. Wrap in quotes for exact phrases.
                   </p>
                 </div>
               </div>
@@ -786,11 +786,11 @@ function Search() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search by keyword, brand, or message..."
-                    className="w-full px-6 py-3 text-base rounded-xl bg-white border-2 border-gray-200 text-gray-900 placeholder-gray-400 shadow-md focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 transition-all duration-200"
+                    className="w-full px-5 py-3 text-base rounded-xl bg-white/86 backdrop-blur-sm border border-white/80 text-gray-900 placeholder-gray-400 shadow-md focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-200 transition-all duration-200"
                   />
                   <button
                     type="submit"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-pink-600 transition-colors"
                   >
                     <SearchIcon className="w-5 h-5" />
                   </button>
@@ -814,7 +814,7 @@ function Search() {
                       setSearchQuery("");
                       clearFilters();
                     }}
-                    className="mt-4 px-5 py-2 text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+                    className="mt-4 px-5 py-2 text-pink-600 hover:text-pink-700 font-medium transition-colors"
                   >
                     Try another search
                   </button>
@@ -827,7 +827,7 @@ function Search() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-8 bg-white rounded-xl p-6 shadow-sm border border-gray-200"
+                    className="mb-8 bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-white/80"
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                       {/* Brand Filter */}
@@ -928,7 +928,7 @@ function Search() {
                         No notifications match your filters.{" "}
                         <button
                           onClick={clearFilters}
-                          className="text-indigo-600 hover:text-indigo-700 font-medium"
+                          className="text-pink-600 hover:text-pink-700 font-medium"
                         >
                           Clear filters
                         </button>
@@ -983,7 +983,7 @@ function Search() {
                                     onClick={() => setCurrentPage(page)}
                                     className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                                       currentPage === page
-                                        ? 'bg-indigo-600 text-white'
+                                        ? 'bg-pink-500 text-white'
                                         : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                                     }`}
                                   >
@@ -1039,7 +1039,7 @@ function Search() {
                     </>
                   ) : (
                     <>
-                      <span className="text-4xl text-gray-400">🔔</span>
+                      <span className="text-sm font-semibold text-slate-500">NF</span>
                       <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 4px white, 0 0 0 4px white'}}></div>
                     </>
                   )}
@@ -1048,7 +1048,7 @@ function Search() {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">{selectedNotification.appName}</h3>
-                      <p className="text-xs text-gray-400">{moment(selectedNotification.posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow()}</p>
+                    <p className="text-xs text-gray-500">{moment(selectedNotification.posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow()}</p>
                     </div>
                     <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 ml-4">Close</button>
                   </div>
@@ -1099,7 +1099,7 @@ function Search() {
                               })}
                             </div>
                           ) : (
-                            <p className="text-xs text-gray-400">No data</p>
+                            <p className="text-xs text-gray-500">No data</p>
                           )}
                         </div>
                       );
@@ -1114,15 +1114,15 @@ function Search() {
                       <div className="md:col-span-2 bg-white border border-gray-200 rounded-lg p-4">
                         <div className="text-xs text-gray-500 mb-2">Notification frequency (last 7 days)</div>
                         <div className="h-36 flex items-end gap-2">
-                          <div className="flex-1 h-6 rounded-t-lg bg-indigo-100" />
-                          <div className="flex-1 h-12 rounded-t-lg bg-indigo-300" />
-                          <div className="flex-1 h-20 rounded-t-lg bg-indigo-400" />
-                          <div className="flex-1 h-10 rounded-t-lg bg-indigo-300" />
-                          <div className="flex-1 h-8 rounded-t-lg bg-indigo-200" />
-                          <div className="flex-1 h-22 rounded-t-lg bg-indigo-400" />
-                          <div className="flex-1 h-14 rounded-t-lg bg-indigo-300" />
+                          <div className="flex-1 h-6 rounded-t-lg bg-pink-100" />
+                          <div className="flex-1 h-12 rounded-t-lg bg-pink-300" />
+                          <div className="flex-1 h-20 rounded-t-lg bg-pink-400" />
+                          <div className="flex-1 h-10 rounded-t-lg bg-pink-300" />
+                          <div className="flex-1 h-8 rounded-t-lg bg-pink-200" />
+                          <div className="flex-1 h-22 rounded-t-lg bg-pink-400" />
+                          <div className="flex-1 h-14 rounded-t-lg bg-pink-300" />
                         </div>
-                        <div className="mt-3 text-xs text-gray-500">Static sample chart — real charts will replace this using Empushy analytics data.</div>
+                        <div className="mt-3 text-xs text-gray-500">Static sample chart - real charts will replace this using Empushy analytics data.</div>
                       </div>
                       <div className="md:col-span-1 bg-white border border-gray-200 rounded-lg p-4">
                         <div className="space-y-3">
@@ -1136,12 +1136,12 @@ function Search() {
                           </div>
                           <div>
                             <div className="text-xs text-gray-500">Top keywords</div>
-                            <div className="text-sm text-gray-700">sale · update · promo</div>
+                            <div className="text-sm text-gray-700">sale / update / promo</div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <p className="mt-3 text-xs text-gray-500">More analytics coming soon — brand frequency, text analysis, and engagement metrics.</p>
+                    <p className="mt-3 text-xs text-gray-500">More analytics coming soon - brand frequency, text analysis, and engagement metrics.</p>
                   </div>
                 </div>
               </div>
@@ -1154,3 +1154,4 @@ function Search() {
 }
 
 export default Search;
+

@@ -544,11 +544,11 @@ const EmotionalToneTrends = ({
                       });
                     }
                   }}
-                  className="bg-white backdrop-blur-[9px] shadow-xl rounded-xl w-full ring-1 ring-inset ring-gray-200 hover:scale-[1.02] hover:shadow-2xl transition-all duration-200 border border-gray-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 overflow-hidden"
+                  className="bg-white/94 backdrop-blur-[9px] shadow-xl rounded-xl w-full ring-1 ring-inset ring-white/70 hover:scale-[1.02] hover:shadow-2xl transition-all duration-200 border border-white/75 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-300 overflow-hidden"
                 >
-                  <div className="h-1 w-full bg-blue-500" />
+                  <div className="h-1 w-full bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400" />
                 <div className="flex items-start px-4 py-3 min-h-[90px]">
-                  <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm border-2 border-white overflow-hidden">
+                  <div className="relative flex-shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center mr-3 shadow-sm ring-1 ring-slate-200/80 overflow-hidden">
                     {(() => {
                       const notif = stats[emotion] || {};
                       const base = {
@@ -585,14 +585,14 @@ const EmotionalToneTrends = ({
                         </>
                       ) : (
                         <>
-                          <span className="text-2xl">💭</span>
+                          <span className="text-sm font-semibold text-slate-500">NF</span>
                           <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 2px white'}}></div>
                         </>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-1">
-                        <span className="text-xs text-gray-400 font-semibold truncate">
+                        <span className="text-xs text-slate-600 font-semibold truncate">
                           {(() => {
                             const notif = stats[emotion] || {};
                             const chromeDomain =
@@ -608,15 +608,15 @@ const EmotionalToneTrends = ({
                               : notif.example_appName || emotion.charAt(0).toUpperCase() + emotion.slice(1);
                           })()}
                         </span>
-                        <span className="text-xs text-indigo-400 font-medium ml-2">
+                        <span className="text-xs text-pink-600 font-medium ml-2">
                           {stats[emotion]?.example_posted ? moment(stats[emotion].example_posted).fromNow() : ''}
                         </span>
                       </div>
-                      <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-2 mb-2">
+                      <div className="text-sm text-slate-900 font-medium leading-snug line-clamp-2 mb-2">
                         {stats[emotion]?.example_notification}
                       </div>
-                      <div className="text-xs text-gray-400 italic">
-                        ⭐ Featured notification
+                      <div className="text-xs text-slate-500 italic">
+                        Featured notification
                       </div>
                     </div>
                   </div>
@@ -743,3 +743,5 @@ const buildIcon = (notif = {}) => {
   }
   return notif.icon || "";
 };
+
+

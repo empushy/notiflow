@@ -83,9 +83,22 @@ import Pricing from "./pages/Pricing";
 
 // Import components
 import ProtectedRoute from "./components/ProtectedRoute";
+import EmpushyBackground from "./components/EmpushyBackground";
 
 function App() {
   const location = useLocation();
+  const mutedBgRoutePrefixes = [
+    "/home",
+    "/search",
+    "/campaign-insights",
+    "/campaign_insights",
+    "/brand-insights",
+    "/brand_insights",
+    "/settings",
+  ];
+  const muteBackground = mutedBgRoutePrefixes.some((prefix) =>
+    location.pathname.startsWith(prefix)
+  );
 
   useEffect(() => {
     document.querySelector("html").style.scrollBehavior = "auto";
@@ -94,9 +107,11 @@ function App() {
   }, [location.pathname]); // triggered on route change
 
   return (
-    <>
-      <PageViews />
-      <Routes>
+    <div className="empushy-shell">
+      <EmpushyBackground muted={muteBackground} />
+      <div className="empushy-content">
+        <PageViews />
+        <Routes>
         {/* Public routes */}
         <Route exact path="/" element={<Dashboard />} />
         <Route exact path="/auth" element={<Auth />} />
@@ -207,8 +222,9 @@ function App() {
         <Route path="/component/accordion" element={<AccordionPage />} />
         <Route path="/component/icons" element={<IconsPage />} />
         <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </>
+        </Routes>
+      </div>
+    </div>
   );
 }
 

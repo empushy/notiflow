@@ -36,15 +36,15 @@ const NotificationCard = ({ message, iconUrl, posted, appName, onClick }) => {
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick(); }}
       className="
-        bg-white/60 backdrop-blur-[9px] 
+        bg-white/86 backdrop-blur-[9px] 
         shadow-xl rounded-2xl w-full
-        ring-1 ring-inset ring-white/40
+        ring-1 ring-inset ring-white/70
         hover:scale-[1.02] hover:shadow-2xl transition-all duration-300
-        border border-gray-100 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-gray-200
+        border border-white/80 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-pink-200
         overflow-visible
       "
     >
-      <div className="h-1 w-full bg-green-600" />
+      <div className="h-1 w-full bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400" />
       <div className="relative px-4 py-4 pt-6">
         <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2">
           <div className="relative w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm border-[3px] border-white overflow-hidden">
@@ -60,7 +60,7 @@ const NotificationCard = ({ message, iconUrl, posted, appName, onClick }) => {
               </>
             ) : (
               <>
-                <span className="text-2xl text-gray-400">••</span>
+                <span className="text-sm font-semibold text-slate-500">NF</span>
                 <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 3px white, 0 0 0 3px white'}}></div>
               </>
             )}
@@ -68,10 +68,10 @@ const NotificationCard = ({ message, iconUrl, posted, appName, onClick }) => {
         </div>
         <div className="pl-4 pr-2 space-y-1">
           <div className="flex justify-between items-baseline">
-            <span className="text-[11px] text-gray-400 font-semibold truncate">
+            <span className="text-[11px] text-slate-600 font-semibold truncate">
               {appName}
             </span>
-            <span className="text-[11px] text-pink-400 font-medium ml-2">
+            <span className="text-[11px] text-pink-600 font-medium ml-2">
               {timeAgo}
             </span>
           </div>
@@ -193,7 +193,7 @@ const NotificationSystem = () => {
                     </>
                   ) : (
                     <>
-                      <span className="text-2xl text-gray-400">ðŸ””</span>
+                      <span className="text-sm font-semibold text-slate-500">NF</span>
                       <div className="absolute inset-0 rounded-full pointer-events-none" style={{boxShadow: 'inset 0 0 0 3px white, 0 0 0 3px white'}}></div>
                     </>
                   )}
@@ -202,9 +202,9 @@ const NotificationSystem = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">{selectedNotification.appName}</h3>
-                      <p className="text-xs text-gray-400">{moment(selectedNotification.posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow()}</p>
+                      <p className="text-xs text-slate-500">{moment(selectedNotification.posted, "ddd, DD MMM YYYY HH:mm:ss [GMT]").fromNow()}</p>
                     </div>
-                    <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 ml-4">Close</button>
+                    <button onClick={closeModal} className="text-slate-500 hover:text-slate-700 ml-4">Close</button>
                   </div>
                   <div className="mt-4 text-sm text-gray-800 whitespace-pre-wrap">
                     {selectedNotification.text}
@@ -217,15 +217,15 @@ const NotificationSystem = () => {
                       <div className="md:col-span-2 bg-white border border-gray-200 rounded-lg p-4">
                         <div className="text-xs text-gray-500 mb-2">Notification frequency (last 7 days)</div>
                         <div className="h-36 flex items-end gap-2">
-                          <div className="flex-1 h-6 rounded-t-lg bg-indigo-100" />
-                          <div className="flex-1 h-12 rounded-t-lg bg-indigo-300" />
-                          <div className="flex-1 h-20 rounded-t-lg bg-indigo-400" />
-                          <div className="flex-1 h-10 rounded-t-lg bg-indigo-300" />
-                          <div className="flex-1 h-8 rounded-t-lg bg-indigo-200" />
-                          <div className="flex-1 h-22 rounded-t-lg bg-indigo-400" />
-                          <div className="flex-1 h-14 rounded-t-lg bg-indigo-300" />
+                          <div className="flex-1 h-6 rounded-t-lg bg-pink-100" />
+                          <div className="flex-1 h-12 rounded-t-lg bg-pink-300" />
+                          <div className="flex-1 h-20 rounded-t-lg bg-pink-400" />
+                          <div className="flex-1 h-10 rounded-t-lg bg-pink-300" />
+                          <div className="flex-1 h-8 rounded-t-lg bg-pink-200" />
+                          <div className="flex-1 h-22 rounded-t-lg bg-pink-400" />
+                          <div className="flex-1 h-14 rounded-t-lg bg-pink-300" />
                         </div>
-                        <div className="mt-3 text-xs text-gray-500">Static sample chart â€” real charts will replace this using Empushy analytics data.</div>
+                        <div className="mt-3 text-xs text-gray-500">Static sample chart - real charts will replace this using Empushy analytics data.</div>
                       </div>
                       <div className="md:col-span-1 bg-white border border-gray-200 rounded-lg p-4">
                         <div className="space-y-3">
@@ -239,12 +239,12 @@ const NotificationSystem = () => {
                           </div>
                           <div>
                             <div className="text-xs text-gray-500">Top keywords</div>
-                            <div className="text-sm text-gray-700">sale Â· update Â· promo</div>
+                            <div className="text-sm text-gray-700">sale / update / promo</div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <p className="mt-3 text-xs text-gray-500">More analytics coming soon â€” brand frequency, text analysis, and engagement metrics.</p>
+                    <p className="mt-3 text-xs text-gray-500">More analytics coming soon - brand frequency, text analysis, and engagement metrics.</p>
                   </div>
                 </div>
               </div>
@@ -424,9 +424,9 @@ function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -462,7 +462,7 @@ function Home() {
                   Live feed
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">Live notifications</h2>
-                <p className="text-sm text-gray-500 max-w-xl">
+                <p className="text-sm text-slate-600 max-w-xl">
                   See the newest pushes as they arrive and track brand momentum in real time.
                 </p>
             </div>
@@ -474,9 +474,9 @@ function Home() {
               <section className="max-w-7xl mx-auto mb-12 px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-indigo-500 font-semibold">Favourites</p>
-                    <h2 className="text-2xl font-bold text-gray-900">Starred brands</h2>
-                    <p className="text-sm text-gray-500">Latest pushes from the brands you care about.</p>
+                    <p className="text-xs uppercase tracking-[0.18em] text-pink-500 font-semibold">Favourites</p>
+                    <h2 className="text-2xl font-bold text-slate-900">Starred brands</h2>
+                    <p className="text-sm text-slate-600">Latest pushes from the brands you care about.</p>
                   </div>
                   {starredBrands.length > brandsPerPage && (
                     <div className="flex items-center gap-2">
@@ -504,13 +504,13 @@ function Home() {
                   {displayedBrands.map((brand, idx) => {
                     const feed = brandFeeds[brand] || { loading: true, data: [] };
                     const meta = brandMeta[brand] || {};
-                    const colors = ["from-indigo-500/20", "from-emerald-500/20", "from-amber-500/20", "from-sky-500/20"];
+                    const colors = ["from-pink-500/20", "from-emerald-500/20", "from-amber-500/20", "from-gold-500/20"];
                     const glow = colors[idx % colors.length];
                     const iconSrc = meta.icon || faviconFromBrand(meta.url || meta.title || brand) || meta.headerImage || "";
                     const headerStyle = meta.headerImage
                       ? {
-                          // Stronger white overlay pulled higher (~70% white)
-                          backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0.9) 32%, rgba(255,255,255,0.99) 55%, rgba(255,255,255,1) 100%), url(${meta.headerImage})`,
+                          // Top image with a soft fade to white (avoid stretching/distortion)
+                          backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 18%, rgba(255,255,255,0.62) 28%, rgba(255,255,255,0.9) 34%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 100%), url(${meta.headerImage})`,
                           backgroundSize: "auto",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "top center",
@@ -528,7 +528,7 @@ function Home() {
                           </svg>
                         </div>
                         {!meta.headerImage && (
-                          <div className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-br ${glow} via-transparent to-white pointer-events-none`} />
+                          <div className={`absolute inset-x-0 top-0 h-44 bg-gradient-to-br ${glow} via-transparent to-white pointer-events-none`} />
                         )}
                         <div className="relative p-4 flex flex-col gap-3">
                           <div className="flex items-center gap-3">
@@ -545,7 +545,7 @@ function Home() {
                                   }}
                                 />
                               ) : (
-                                <span className="text-sm font-semibold text-indigo-600">
+                                <span className="text-sm font-semibold text-pink-600">
                                   {brand?.charAt(0)?.toUpperCase() || "B"}
                                 </span>
                               )}
@@ -558,15 +558,15 @@ function Home() {
                           </div>
                           <div className="space-y-2">
                             {feed.loading ? (
-                              <div className="text-xs text-gray-400">Loadingâ€¦</div>
+                              <div className="text-xs text-slate-500">Loading...</div>
                             ) : feed.data && feed.data.length > 0 ? (
                               feed.data.map((notif) => (
                                 <div
                                   key={notif.id || notif._id || notif.ts}
-                                  className="rounded-xl border border-gray-100 bg-white/80 p-3 hover:border-indigo-100 transition shadow-sm"
+                                  className="rounded-xl border border-white/85 bg-white/95 p-3.5 hover:border-pink-200 transition shadow-sm"
                                 >
-                                  <div className="flex items-center justify-between gap-2 mb-1">
-                                    <p className="text-xs text-gray-500">
+                                  <div className="flex items-start justify-between gap-2 mb-2">
+                                    <p className="text-xs font-semibold text-pink-700 whitespace-nowrap">
                                       {moment(notif.ts || notif.posted || notif.timestamp || new Date()).fromNow()}
                                     </p>
                                     {(() => {
@@ -584,25 +584,28 @@ function Home() {
                                         }
                                       }
                                       return (
-                                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+                                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-pink-50 text-pink-700 border border-pink-100 max-w-[140px] truncate">
                                           {domain}
                                         </span>
                                       );
                                     })()}
                                   </div>
-                                  <p className="text-sm font-medium text-gray-900 line-clamp-2">
-                                    {notif.text || notif.message}
+                                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 mb-1">
+                                    {notif.appName || notif.brand || "Notification"}
+                                  </p>
+                                  <p className="text-sm font-medium text-slate-900 leading-relaxed line-clamp-3">
+                                    {(notif.text || notif.message || "No content available").trim()}
                                   </p>
                                 </div>
                               ))
                             ) : (
-                              <div className="text-xs text-gray-400">No recent notifications.</div>
+                              <div className="text-xs text-slate-500">No recent notifications.</div>
                             )}
                           </div>
                           <div className="pt-2 flex justify-end">
                             <a
                               href={`/brand-insights?brand=${encodeURIComponent(brand)}`}
-                              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-white/80 text-indigo-700 border border-indigo-100 shadow-sm hover:bg-indigo-50 transition"
+                              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-white/92 text-pink-700 border border-pink-200 shadow-sm hover:bg-pink-50 transition"
                             >
                               More detail
                               <ChevronRight className="w-4 h-4" />
@@ -639,9 +642,9 @@ function Home() {
 
             {/* Emotion Filters Section */}
             <div className="max-w-7xl mx-auto mt-12 mb-6 px-4 text-left">
-              <p className="text-xs uppercase tracking-[0.18em] text-indigo-500 font-semibold">Semantics</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-pink-500 font-semibold">Semantics</p>
               <h2 className="text-2xl font-bold text-gray-900">Explore notification tone and cadence</h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-slate-600">
                 Toggle between emotion, context, triggers, call-to-emotion, and promotions to explore trends.
               </p>
             </div>
@@ -677,6 +680,7 @@ function Home() {
 }
 
 export default Home;
+
 
 
 

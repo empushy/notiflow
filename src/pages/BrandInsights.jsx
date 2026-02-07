@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import moment from "moment";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useSearchParams } from "react-router-dom";
@@ -8,7 +8,7 @@ import Sidebar from "../partials/Sidebar";
 import Loader from "../partials/dashboard/Loader";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
-const BELL_FALLBACK =
+const NF_FALLBACK =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5'/%3E%3Cpath d='M13 21a3 3 0 11-6 0'/%3E%3C/svg%3E";
 
 const pickText = (notif = {}) => {
@@ -146,7 +146,7 @@ const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Selec
   return (
     <div ref={dropdownRef} className="relative z-[60]">
       <input
-        className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400"
+        className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-800 placeholder:text-gray-500"
         value={inputValue}
         placeholder={placeholder}
         onFocus={() => setOpen(true)}
@@ -159,7 +159,7 @@ const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Selec
         }}
       />
       {loading && (
-        <div className="absolute top-2 right-2 text-[10px] text-gray-400 pointer-events-none">
+        <div className="absolute top-2 right-2 text-[10px] text-gray-500 pointer-events-none">
           Loading...
         </div>
       )}
@@ -185,7 +185,7 @@ const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Selec
               </label>
             ))}
             {filtered.length === 0 && (
-              <div className="text-xs text-gray-400 px-2 py-1">No results</div>
+              <div className="text-xs text-gray-500 px-2 py-1">No results</div>
             )}
           </div>
         </div>
@@ -197,7 +197,7 @@ const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Selec
 const TextBlock = ({ title, icon = "", accent = "indigo", content }) => {
   const accentMap = {
     indigo: {
-      badge: "bg-indigo-50 text-indigo-700 border-indigo-100",
+      badge: "bg-pink-50 text-pink-700 border-pink-100",
       bg: "bg-gradient-to-br from-indigo-50 via-white to-white",
       stops: ["#f9faff", "#fcfdff", "#f1f5ff"],
       shadow: "rgba(79, 70, 229, 0.22)",
@@ -289,7 +289,7 @@ const RiskList = ({ risks }) => (
 const Timeline = ({ items, onLoadMore, loadingMore }) => {
   if (!items || items.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/60 p-4 text-sm text-gray-500 text-center">
+      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/86 p-4 text-sm text-gray-500 text-center">
         No timeline data.
       </div>
     );
@@ -303,7 +303,7 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
   return (
     <div className="rounded-2xl bg-transparent border-0 shadow-none p-0">
       <div className="flex items-center gap-2 mb-2">
-        <div className="h-9 w-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 text-sm font-semibold shadow-sm">
+        <div className="h-9 w-9 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-700 text-sm font-semibold shadow-sm">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 4v4m0 8v4m12-8h4m-8 0h4m-8 0H2m10 0V6m0 8v6" />
           </svg>
@@ -323,7 +323,7 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
             const text = pickText(i);
             const iconUrl = buildIcon(i, i.brand);
             const displayTime = i.time || timeLabel || " ";
-            const displayIcon = iconUrl || BELL_FALLBACK;
+            const displayIcon = iconUrl || NF_FALLBACK;
             const dateChanged = idx === 0 || i.date !== items[idx - 1]?.date;
             const roleTag = normalizeLabel(i.campaign_role || i.role);
             const typeTag = normalizeLabel(i.campaign_type || i.type);
@@ -334,13 +334,13 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                   <div className="flex items-center gap-3 text-xs text-gray-500 mb-2 px-4 md:px-10">
                     <div className="flex-1 h-px bg-gray-200" />
                     <span className="px-3 py-1 rounded-full bg-white text-gray-600 border border-gray-200 flex items-center gap-2 shadow-sm">
-                      <span className="inline-flex items-center gap-1 text-indigo-600">
+                      <span className="inline-flex items-center gap-1 text-pink-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V5m8 2V5m-9 4h10M5 11h14v8a2 2 0 01-2 2H7a2 2 0 01-2-2v-8z" />
                         </svg>
                         {i.date}
                       </span>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-50 text-pink-700 border border-pink-100">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
@@ -375,11 +375,11 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                                 alt={i.brand || "icon"}
                                 className="w-full h-full object-cover bg-white"
                                 onError={(e) => {
-                                  e.currentTarget.src = BELL_FALLBACK;
+                                  e.currentTarget.src = NF_FALLBACK;
                                 }}
                               />
                             ) : (
-                              <span className="text-3xl text-gray-400">Bell</span>
+                              <span className="text-3xl text-gray-500">NF</span>
                             )}
                             <div className="absolute inset-0 rounded-full pointer-events-none" style={{ boxShadow: "inset 0 0 0 4px white" }}></div>
                           </div>
@@ -388,11 +388,11 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                               <span className="flex items-center gap-2">
                                 {i.brand || i.appName || "Unknown brand"}
                               </span>
-                              {displayTime ? <span className="text-xs text-indigo-500 font-medium">{displayTime}</span> : null}
+                              {displayTime ? <span className="text-xs text-pink-500 font-medium">{displayTime}</span> : null}
                             </div>
                             <div className="flex flex-wrap gap-2 text-xs text-gray-700">
                               {typeTag && (
-                                <span className="px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{typeTag}</span>
+                                <span className="px-2 py-1 rounded-full bg-pink-50 text-pink-700 border border-pink-100">{typeTag}</span>
                               )}
                               {roleTag && (
                                 <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">{roleTag}</span>
@@ -414,7 +414,7 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                     </>
                   )}
 
-                  {/* Center bell with alternating date */}
+                  {/* Center NF with alternating date */}
                   <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center px-10 gap-3 pointer-events-none z-0">
                     <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-amber-50 border-2 border-amber-300 shadow flex-shrink-0 flex items-center justify-center text-amber-600">
                       <svg
@@ -443,11 +443,11 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                               alt={i.brand || "icon"}
                               className="w-full h-full object-cover bg-white"
                               onError={(e) => {
-                                e.currentTarget.src = BELL_FALLBACK;
+                                e.currentTarget.src = NF_FALLBACK;
                               }}
                             />
                           ) : (
-                            <span className="text-3xl text-gray-400">Bell</span>
+                            <span className="text-3xl text-gray-500">NF</span>
                           )}
                           <div className="absolute inset-0 rounded-full pointer-events-none" style={{ boxShadow: "inset 0 0 0 4px white" }}></div>
                         </div>
@@ -456,11 +456,11 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                             <span className="flex items-center gap-2">
                               {i.brand || i.appName || "Unknown brand"}
                             </span>
-                            {displayTime ? <span className="text-xs text-indigo-500 font-medium">{displayTime}</span> : null}
+                            {displayTime ? <span className="text-xs text-pink-500 font-medium">{displayTime}</span> : null}
                           </div>
                           <div className="flex flex-wrap gap-2 justify-end text-xs text-gray-700">
                             {typeTag && (
-                              <span className="px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{typeTag}</span>
+                              <span className="px-2 py-1 rounded-full bg-pink-50 text-pink-700 border border-pink-100">{typeTag}</span>
                             )}
                             {roleTag && (
                               <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">{roleTag}</span>
@@ -512,19 +512,19 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
                     {(() => {
                       const iconSets = [
                         [
-                          { icon: "🔔", top: "10%", left: "30%" },
-                          { icon: "🛒", top: "55%", left: "65%" },
-                          { icon: "🏆", top: "35%", left: "80%" },
+                          { icon: "??", top: "10%", left: "30%" },
+                          { icon: "??", top: "55%", left: "65%" },
+                          { icon: "??", top: "35%", left: "80%" },
                         ],
                         [
-                          { icon: "💙", top: "25%", left: "20%" },
-                          { icon: "😊", top: "60%", left: "55%" },
-                          { icon: "🔔", top: "40%", left: "75%" },
+                          { icon: "??", top: "25%", left: "20%" },
+                          { icon: "??", top: "60%", left: "55%" },
+                          { icon: "??", top: "40%", left: "75%" },
                         ],
                         [
-                          { icon: "🛒", top: "20%", left: "25%" },
-                          { icon: "❤️", top: "50%", left: "50%" },
-                          { icon: "🏆", top: "70%", left: "70%" },
+                          { icon: "??", top: "20%", left: "25%" },
+                          { icon: "??", top: "50%", left: "50%" },
+                          { icon: "??", top: "70%", left: "70%" },
                         ],
                       ];
                       const set = iconSets[idx % iconSets.length];
@@ -554,11 +554,11 @@ const Timeline = ({ items, onLoadMore, loadingMore }) => {
             <button
               onClick={onLoadMore}
               disabled={loadingMore}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-indigo-700 border border-indigo-100 shadow-sm hover:bg-indigo-50 disabled:opacity-60 disabled:cursor-not-allowed transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-pink-700 border border-pink-100 shadow-sm hover:bg-pink-50 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {loadingMore ? (
                 <>
-                  <svg className="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-4 w-4 text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
                   </svg>
@@ -582,7 +582,7 @@ const EmotionBreakdown = ({ items }) => {
 
   if (!items || items.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/60 p-4 text-sm text-gray-500 text-center">
+      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/86 p-4 text-sm text-gray-500 text-center">
         No emotion breakdown available.
       </div>
     );
@@ -591,7 +591,7 @@ const EmotionBreakdown = ({ items }) => {
   const visible = showAll ? sorted : sorted.slice(0, 5);
   const max = Math.max(...sorted.map((i) => i.count || 0), 1);
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-5">
+    <div className="rounded-2xl border border-gray-200 bg-white/92 backdrop-blur-sm shadow-sm p-5">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div
@@ -652,7 +652,7 @@ const CampaignTypesCard = ({ items }) => {
 
   if (!items || items.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/60 p-4 text-sm text-gray-500 text-center">
+      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/86 p-4 text-sm text-gray-500 text-center">
         No campaign type data available.
       </div>
     );
@@ -661,11 +661,11 @@ const CampaignTypesCard = ({ items }) => {
   const visible = showAll ? sorted : sorted.slice(0, 5);
   const max = Math.max(...sorted.map((i) => i.count || 0), 1);
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-5">
+    <div className="rounded-2xl border border-gray-200 bg-white/92 backdrop-blur-sm shadow-sm p-5">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div
-            className="h-9 w-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 text-sm font-semibold shadow-sm"
+            className="h-9 w-9 rounded-xl bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-700 text-sm font-semibold shadow-sm"
             title="Campaign types"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -681,7 +681,7 @@ const CampaignTypesCard = ({ items }) => {
           <button
             type="button"
             onClick={() => setShowAll((prev) => !prev)}
-            className="px-3 py-1 rounded-full text-xs font-semibold border border-indigo-200 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition"
+            className="px-3 py-1 rounded-full text-xs font-semibold border border-indigo-200 text-pink-700 bg-pink-50 hover:bg-pink-100 transition"
           >
             {showAll ? "Show less" : "Show more"}
           </button>
@@ -696,7 +696,7 @@ const CampaignTypesCard = ({ items }) => {
             </div>
             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-indigo-500"
+                className="h-full bg-pink-500"
                 style={{ width: `${Math.round(((i.count || 0) / max) * 100)}%` }}
               />
             </div>
@@ -712,7 +712,7 @@ const GenericBreakdownCard = ({ title, icon, accent = "indigo", items, buttonAcc
 
   if (!items || items.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/60 p-4 text-sm text-gray-500 text-center">
+      <div className="rounded-2xl border border-dashed border-gray-200 bg-white/86 p-4 text-sm text-gray-500 text-center">
         No data available.
       </div>
     );
@@ -721,7 +721,7 @@ const GenericBreakdownCard = ({ title, icon, accent = "indigo", items, buttonAcc
   const visible = showAll ? sorted : sorted.slice(0, 5);
   const max = Math.max(...sorted.map((i) => i.count || 0), 1);
   const accentMap = {
-    indigo: { bg: "bg-indigo-50 border-indigo-100 text-indigo-700", bar: "bg-indigo-500", btnBorder: "border-indigo-200", btnText: "text-indigo-700", btnBg: "bg-indigo-50", btnHover: "hover:bg-indigo-100" },
+    indigo: { bg: "bg-pink-50 border-pink-100 text-pink-700", bar: "bg-pink-500", btnBorder: "border-pink-200", btnText: "text-pink-700", btnBg: "bg-pink-50", btnHover: "hover:bg-pink-100" },
     amber: { bg: "bg-amber-50 border-amber-100 text-amber-700", bar: "bg-amber-500", btnBorder: "border-amber-200", btnText: "text-amber-700", btnBg: "bg-amber-50", btnHover: "hover:bg-amber-100" },
     emerald: { bg: "bg-emerald-50 border-emerald-100 text-emerald-700", bar: "bg-emerald-500", btnBorder: "border-emerald-200", btnText: "text-emerald-700", btnBg: "bg-emerald-50", btnHover: "hover:bg-emerald-100" },
     sky: { bg: "bg-sky-50 border-sky-100 text-sky-700", bar: "bg-sky-500", btnBorder: "border-sky-200", btnText: "text-sky-700", btnBg: "bg-sky-50", btnHover: "hover:bg-sky-100" },
@@ -731,7 +731,7 @@ const GenericBreakdownCard = ({ title, icon, accent = "indigo", items, buttonAcc
   const btnClasses = `px-3 py-1 rounded-full text-xs font-semibold border ${colors.btnBorder} ${colors.btnText} ${colors.btnBg} ${colors.btnHover} transition`;
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-5">
+    <div className="rounded-2xl border border-gray-200 bg-white/92 backdrop-blur-sm shadow-sm p-5">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className={`h-9 w-9 rounded-xl ${colors.bg} border flex items-center justify-center text-sm font-semibold shadow-sm`}>
@@ -770,7 +770,7 @@ const DailyHeatmap = ({ items }) => {
   const maxCount = Math.max(...items.map((x) => x.count || 0), 1);
   const visible = showAll ? items : items.slice(0, 18);
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-5">
+    <div className="rounded-2xl border border-gray-200 bg-white/92 backdrop-blur-sm shadow-sm p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="h-9 w-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 text-sm font-semibold shadow-sm">
@@ -786,7 +786,7 @@ const DailyHeatmap = ({ items }) => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-gray-400">{items.length} days</span>
+          <span className="text-[11px] text-gray-500">{items.length} days</span>
           {items.length > 18 && (
             <button
               type="button"
@@ -1184,13 +1184,13 @@ function BrandInsights() {
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col gap-3">
               <div>
-                <p className="text-sm text-indigo-600 font-semibold">Brands</p>
+                <p className="text-sm text-pink-600 font-semibold">Brands</p>
                 <h1 className="text-3xl font-semibold text-gray-900">Brand Insights</h1>
                 <p className="text-gray-500">
                   What is the push strategy of a brand?
                 </p>
               </div>
-              <div className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm p-4 relative z-[3000] flex flex-col gap-3">
+              <div className="rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm p-4 relative z-[3000] flex flex-col gap-3">
                 <div className="flex flex-col gap-2">
                   <label className="block text-sm font-semibold text-gray-700">Brand</label>
                   <SingleSelect
@@ -1211,7 +1211,7 @@ function BrandInsights() {
                             setBrand(b);
                             loadInsights(b);
                           }}
-                          className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-semibold hover:bg-indigo-100"
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50 text-pink-700 border border-pink-100 text-xs font-semibold hover:bg-pink-100"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
@@ -1226,7 +1226,7 @@ function BrandInsights() {
                   <p className="text-sm text-gray-500">Pick a brand and load insights.</p>
                   <button
                     onClick={loadInsights}
-                    className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 transition"
+                    className="inline-flex items-center px-4 py-2 rounded-lg bg-pink-600 text-white text-sm font-semibold shadow-sm hover:bg-pink-700 transition"
                   >
                     Load insights
                   </button>
@@ -1256,7 +1256,7 @@ function BrandInsights() {
                       <option value={90}>Last 3 months</option>
                     </select>
                     {loading ? (
-                      <span className="inline-flex items-center justify-center h-8 w-8 text-indigo-500">
+                      <span className="inline-flex items-center justify-center h-8 w-8 text-pink-500">
                         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="4"></path>
@@ -1297,7 +1297,7 @@ function BrandInsights() {
               <div className="relative">
                 <div className={`space-y-5 ${loading ? "pointer-events-none blur-[1.5px]" : ""}`}>
                   <div
-                    className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm p-5 relative overflow-hidden"
+                    className="rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm p-5 relative overflow-hidden"
                     style={
                       brandMeta?.headerImage
                         ? {
@@ -1311,7 +1311,7 @@ function BrandInsights() {
                   >
                     <div className="flex flex-col gap-4">
                       <div className="flex items-start gap-3">
-                        <div className="h-14 w-14 min-w-[56px] min-h-[56px] rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden">
+                        <div className="h-14 w-14 min-w-[56px] min-h-[56px] rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center overflow-hidden">
                           {(() => {
                             const iconSrc =
                               brandMeta?.icon ||
@@ -1325,15 +1325,15 @@ function BrandInsights() {
                                 className="block w-full h-full object-cover rounded-full"
                                 onError={(e) => {
                                   e.currentTarget.onerror = null;
-                                  const fallback = faviconFromBrand(brand) || BELL_FALLBACK;
+                                  const fallback = faviconFromBrand(brand) || NF_FALLBACK;
                                   if (e.currentTarget.src !== fallback) {
                                     e.currentTarget.src = fallback;
                                   }
                                 }}
                               />
                             ) : (
-                              <span className="text-lg font-semibold text-indigo-600">
-                                {brand ? brand.slice(0, 2).toUpperCase() : "—"}
+                              <span className="text-lg font-semibold text-pink-600">
+                                {brand ? brand.slice(0, 2).toUpperCase() : "�"}
                               </span>
                             );
                           })()}
@@ -1356,7 +1356,7 @@ function BrandInsights() {
                                 </span>
                               )}
                               {brandMeta?.overall_category && (
-                                <span className="px-2 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-xs text-indigo-700">
+                                <span className="px-2 py-1 rounded-full bg-pink-50 border border-pink-100 text-xs text-pink-700">
                                   {brandMeta.overall_category}
                                 </span>
                               )}
@@ -1366,7 +1366,7 @@ function BrandInsights() {
                                 href={brandMeta.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold hover:bg-indigo-100"
+                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50 border border-pink-100 text-pink-700 text-xs font-semibold hover:bg-pink-100"
                               >
                                 See more
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1383,7 +1383,7 @@ function BrandInsights() {
                 <TextBlock
                   title="Primary strategy"
                   icon={
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-pink-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 18h6m-4 3h2m-5.5-9.5A5.5 5.5 0 1116.5 14c0 1.455-.556 2.769-1.467 3.75a2 2 0 00-.533 1.333V20a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.917c0-.5-.186-.984-.533-1.333A5.495 5.495 0 017 14.5z" />
                       </svg>
                     }
@@ -1482,7 +1482,7 @@ function BrandInsights() {
                     <EmotionBreakdown items={emotionArray} />
                   </div>
                 </div>
-                <div className="rounded-2xl border border-gray-200 bg-white/80 backdrop-blur-sm shadow-sm p-4 relative overflow-hidden">
+                <div className="rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm p-4 relative overflow-hidden">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="h-9 w-9 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-700 text-sm font-semibold shadow-sm">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1567,16 +1567,16 @@ function BrandInsights() {
               </div>
               ) : (
               <div className="rounded-2xl border border-gray-200 bg-white/80 shadow-sm p-8 flex flex-col items-center gap-3 text-center">
-                <div className="h-12 w-12 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+                <div className="h-12 w-12 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 shadow-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-gray-900">No brand selected</p>
-                  <p className="text-sm text-gray-500">Pick a brand and date range above, then hit “Load insights”.</p>
+                  <p className="text-sm text-gray-500">Pick a brand and date range above, then hit �Load insights�.</p>
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-xs font-semibold">
+                <div className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-pink-50 text-pink-700 border border-pink-100 text-xs font-semibold">
                   Tip: start typing to search your brands
                 </div>
               </div>
@@ -1590,3 +1590,5 @@ function BrandInsights() {
 }
 
 export default BrandInsights;
+
+

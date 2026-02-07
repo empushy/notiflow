@@ -19,7 +19,7 @@ const Auth = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
@@ -30,14 +30,14 @@ const Auth = () => {
 
   if (isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"
+          className="bg-white/80 backdrop-blur rounded-2xl shadow-xl border border-pink-100 p-8 max-w-md w-full mx-4"
         >
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">👋</span>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -67,7 +67,7 @@ const Auth = () => {
           <div className="space-y-3">
             <button
               onClick={() => (window.location.href = "/home")}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 transition duration-200"
+              className="w-full bg-pink-500 text-white py-3 px-4 rounded-xl font-semibold hover:bg-pink-600 transition duration-200"
             >
               Go to Dashboard
             </button>
@@ -86,14 +86,14 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-50">
+    <div className="min-h-screen flex items-center justify-center bg-transparent">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4"
+        className="bg-white/80 backdrop-blur rounded-2xl shadow-xl border border-pink-100 p-8 max-w-md w-full mx-4"
       >
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">🔐</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -107,7 +107,7 @@ const Auth = () => {
         <div className="space-y-4">
           <button
             onClick={() => loginWithRedirect()}
-            className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-700 transition duration-200 shadow-lg hover:shadow-xl"
+            className="w-full bg-pink-500 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-pink-600 transition duration-200 shadow-lg hover:shadow-xl"
           >
             Sign In / Sign Up
           </button>
@@ -115,11 +115,11 @@ const Auth = () => {
           <div className="text-center">
             <p className="text-sm text-gray-500">
               By signing in, you agree to our{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <a href="#" className="text-pink-600 hover:underline">
                 Terms of Service
               </a>{" "}
               and{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <a href="#" className="text-pink-600 hover:underline">
                 Privacy Policy
               </a>
             </p>

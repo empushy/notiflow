@@ -2,12 +2,13 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
+import KieranImage from "../images/kieran_image.jpg";
 
 const whoFor = [
   {
     title: "Marketing & Growth Teams",
     body: "Monitor competitor campaigns and messaging strategies.",
-    iconBg: "bg-amber-50 text-amber-600",
+    iconBg: "bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
@@ -17,7 +18,7 @@ const whoFor = [
   {
     title: "Product & CRM Teams",
     body: "Understand cadence, urgency, and engagement approaches.",
-    iconBg: "bg-emerald-50 text-emerald-600",
+    iconBg: "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -27,7 +28,7 @@ const whoFor = [
   {
     title: "Analysts & Agencies",
     body: "Power reports and automated insights via API.",
-    iconBg: "bg-sky-50 text-sky-600",
+    iconBg: "bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-md shadow-sky-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
@@ -46,7 +47,8 @@ const whatItems = [
   {
     title: "Capture",
     body: "Proprietary listening algorithms gather mobile and web push notifications.",
-    accent: "bg-indigo-50 text-indigo-800 border-indigo-100",
+    accent: "bg-pink-50 text-pink-800 border-pink-100",
+    iconTone: "bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-pink-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h10" />
@@ -57,6 +59,7 @@ const whatItems = [
     title: "Pattern detection",
     body: "Identifies recurring campaigns, creative patterns, and CTAs.",
     accent: "bg-emerald-50 text-emerald-800 border-emerald-100",
+    iconTone: "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-emerald-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
@@ -68,6 +71,7 @@ const whatItems = [
     title: "Timing signals",
     body: "Reveals timing, volume spikes, and urgency signals.",
     accent: "bg-amber-50 text-amber-800 border-amber-100",
+    iconTone: "bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-amber-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3" />
@@ -79,6 +83,7 @@ const whatItems = [
     title: "Searchable",
     body: "Makes notification data searchable by brand and category.",
     accent: "bg-sky-50 text-sky-800 border-sky-100",
+    iconTone: "bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-sky-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 5a6 6 0 100 12 6 6 0 000-12z" />
@@ -90,7 +95,8 @@ const whatItems = [
 const differentiators = [
   {
     label: "Built specifically for push notifications",
-    color: "bg-indigo-50 text-indigo-800 border-indigo-100",
+    color: "bg-pink-50 text-pink-800 border-pink-100",
+    iconTone: "bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-pink-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m0 14v1m8-8h-1M5 12H4m13.364-7.364l-.707.707M7.343 16.657l-.707.707m12.728 0l-.707-.707M7.343 7.343l-.707-.707" />
@@ -100,6 +106,7 @@ const differentiators = [
   {
     label: "Designed for competitive intelligence, not just first-party data",
     color: "bg-emerald-50 text-emerald-800 border-emerald-100",
+    iconTone: "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-emerald-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -109,6 +116,7 @@ const differentiators = [
   {
     label: "API-first and automation-ready",
     color: "bg-amber-50 text-amber-800 border-amber-100",
+    iconTone: "bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-amber-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 7H7v10h6m4-10v10m-4-5h4" />
@@ -118,6 +126,7 @@ const differentiators = [
   {
     label: "No personal user data collected",
     color: "bg-rose-50 text-rose-800 border-rose-100",
+    iconTone: "bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-rose-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 9.5l15 15m-9-18.5a4 4 0 018 0v2.75c0 2.485-2.686 4.5-6 4.5-1.3 0-2.48-.303-3.4-.81" />
@@ -129,52 +138,52 @@ const differentiators = [
 
 function About() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-transparent flex flex-col">
       <Header />
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white">
+        <section className="relative overflow-hidden border-b border-pink-100 bg-white/50 backdrop-blur text-slate-900">
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-            <div className="absolute -left-10 -top-20 h-64 w-64 rounded-full bg-indigo-500 blur-[120px] opacity-40" />
-            <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-amber-400 blur-[140px] opacity-30" />
-            <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-400 blur-[100px] opacity-30" />
+            <div className="absolute -left-10 -top-20 h-64 w-64 rounded-full bg-pink-300 blur-[120px] opacity-20" />
+            <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-gold-300 blur-[140px] opacity-20" />
+            <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-300 blur-[100px] opacity-20" />
           </div>
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 grid grid-cols-1 lg:grid-cols-[1.2fr,1fr] gap-10 items-center">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold tracking-wide">
-                <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-pink-100 text-xs font-semibold tracking-wide text-slate-700">
+                <span className="h-2 w-2 rounded-full bg-pink-500 animate-pulse" />
                 About NotiFlow
               </div>
               <h1 className="text-3xl sm:text-4xl font-semibold leading-tight">
                 Turn every push notification into a signal you can act on.
               </h1>
-              <p className="text-base sm:text-lg text-slate-100/80 max-w-3xl">
+              <p className="text-base sm:text-lg text-slate-600 max-w-3xl">
                 Track competitor campaigns, timing, and creative angles across mobile and web push. NotiFlow listens to the notification graph so you can move from guessing to knowing.
               </p>
               <div className="flex flex-wrap gap-3">
                 <NavLink
                   to="/auth/"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-900 font-semibold shadow-sm hover:bg-slate-100 transition"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-pink-500 text-white font-semibold shadow-sm hover:bg-pink-600 transition"
                 >
                   Try for Free
                 </NavLink>
-                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900/70 text-white font-semibold shadow-sm hover:bg-slate-800 transition">
+                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-800 font-semibold shadow-sm border border-slate-200 hover:bg-slate-50 transition">
                   View Demo
                 </button>
-                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 text-white font-semibold border border-white/20 hover:border-white/40 transition">
+                <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gold-100/70 text-gold-700 font-semibold border border-gold-200 hover:border-gold-300 transition">
                   View Docs
                 </button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-slate-100/90">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-slate-700">
                 {[
                   { label: "Signals monitored", value: "2.4M+" },
                   { label: "Brands tracked", value: "18k" },
                   { label: "Fresh pushes daily", value: "15k+" },
                 ].map((item) => (
-                  <div key={item.label} className="rounded-xl border border-white/15 bg-white/5 p-4 shadow-sm">
-                    <p className="text-2xl font-semibold text-white">{item.value}</p>
-                    <p className="text-xs text-slate-100/80">{item.label}</p>
+                  <div key={item.label} className="rounded-xl border border-slate-200 bg-white/80 p-4 shadow-sm">
+                    <p className="text-2xl font-semibold text-slate-900">{item.value}</p>
+                    <p className="text-xs text-slate-600">{item.label}</p>
                   </div>
                 ))}
               </div>
@@ -193,18 +202,18 @@ function About() {
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     {[
                       { title: "Promo spikes", value: "+42%", tone: "text-emerald-600" },
-                      { title: "Lifecycle nudges", value: "31%", tone: "text-indigo-700" },
+                      { title: "Lifecycle nudges", value: "31%", tone: "text-pink-700" },
                       { title: "Avg. cadence", value: "4.3 pushes/week", tone: "text-slate-700" },
                       { title: "CTA mix", value: "Shop / Save / Return", tone: "text-slate-700" },
                     ].map((card) => (
-                      <div key={card.title} className="rounded-xl border border-slate-100 bg-slate-50 p-3 shadow-sm">
+                      <div key={card.title} className="rounded-xl border border-slate-200 bg-white/80 p-3 shadow-sm">
                         <p className="text-xs uppercase tracking-wide text-slate-500">{card.title}</p>
                         <p className={`text-sm font-semibold ${card.tone}`}>{card.value}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-4 space-y-2">
-                    <p className="text-sm font-semibold text-indigo-800">Signal radar</p>
+                  <div className="rounded-xl border border-pink-100 bg-pink-50 p-4 space-y-2">
+                    <p className="text-sm font-semibold text-pink-700">Signal radar</p>
                     <p className="text-xs text-slate-700">
                       Identify timing clusters, creative angles, and alert-worthy spikes before your competitors do.
                     </p>
@@ -225,7 +234,7 @@ function About() {
                   key={item.title}
                   className={`rounded-2xl border ${item.accent} p-4 shadow-sm flex items-start gap-3`}
                 >
-                  <div className="h-10 w-10 rounded-xl flex items-center justify-center bg-white/60 border border-white/70 shadow-sm">
+                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center shadow-md ${item.iconTone}`}>
                     {item.icon}
                   </div>
                   <div>
@@ -260,8 +269,8 @@ function About() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {howItWorks.map((step, idx) => (
                 <div key={step.title} className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4 shadow-sm">
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-sm mb-2">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 border border-indigo-100 text-xs">
+                  <div className="flex items-center gap-2 text-pink-600 font-semibold text-sm mb-2">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-pink-50 border border-pink-100 text-xs">
                       {idx + 1}
                     </span>
                     {step.title}
@@ -281,7 +290,7 @@ function About() {
                   key={item.label}
                   className={`flex items-start gap-3 rounded-2xl border ${item.color} p-4 shadow-sm`}
                 >
-                  <div className="h-9 w-9 rounded-lg bg-white/70 border border-white/80 flex items-center justify-center">
+                  <div className={`h-9 w-9 rounded-lg flex items-center justify-center shadow-md ${item.iconTone}`}>
                     {item.icon}
                   </div>
                   <p className="text-sm font-semibold text-slate-900">{item.label}</p>
@@ -291,34 +300,34 @@ function About() {
           </section>
 
           {/* Founder & credibility */}
-          <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white shadow-sm p-8 sm:p-10">
+          <section className="relative overflow-hidden rounded-3xl bg-white/75 backdrop-blur border border-pink-100 text-slate-900 shadow-sm p-8 sm:p-10">
             <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-              <div className="absolute -left-10 -top-20 h-64 w-64 rounded-full bg-indigo-500 blur-[120px] opacity-40" />
-              <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-amber-400 blur-[140px] opacity-30" />
-              <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-400 blur-[100px] opacity-30" />
+              <div className="absolute -left-10 -top-20 h-64 w-64 rounded-full bg-pink-300 blur-[120px] opacity-20" />
+              <div className="absolute right-0 -bottom-10 h-72 w-72 rounded-full bg-gold-300 blur-[140px] opacity-20" />
+              <div className="absolute left-1/2 top-10 h-32 w-32 rounded-full bg-emerald-300 blur-[100px] opacity-20" />
             </div>
             <div className="relative space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold tracking-wide">
-                <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-pink-100 text-xs font-semibold tracking-wide text-slate-700">
+                <span className="h-2 w-2 rounded-full bg-pink-500 animate-pulse" />
                 Founder
               </div>
               <div className="grid grid-cols-1 md:grid-cols-[1.1fr,0.9fr] gap-6 items-start">
-                <div className="flex flex-col gap-4 rounded-2xl bg-white/10 border border-white/20 p-5 shadow-lg">
+                <div className="flex flex-col gap-4 rounded-2xl bg-white/80 border border-slate-200 p-5 shadow-lg">
                   <div className="flex items-center gap-4">
                     <img
-                      src="https://media.licdn.com/dms/image/v2/D4E03AQGiNU8sReKBXg/profile-displayphoto-scale_200_200/B4EZdb49ZeHQAY-/0/1749593348706?e=1768435200&v=beta&t=Uc0lkoxdpwvJ63rYtGkWj33oYJEVqNcS_46HfgIRepU"
+                      src={KieranImage}
                       alt="Kieran Fraser LinkedIn headshot"
                       className="h-20 w-20 rounded-2xl object-cover border border-white/40 shadow"
                       loading="lazy"
                     />
                     <div className="space-y-1">
                       <p className="text-lg font-semibold">Kieran Fraser, PhD</p>
-                      <p className="text-sm text-slate-200">Founder and Research Engineer</p>
+                      <p className="text-sm text-slate-600">Founder and Research Engineer</p>
                       <a
                         href="https://www.linkedin.com/in/kieran-fraser-phd-608a54a7/"
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-amber-200 hover:text-amber-100"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-pink-600 hover:text-pink-700"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.47h4.56V24H.22V8.47zm7.56 0h4.37v2.12h.06c.61-1.16 2.1-2.38 4.32-2.38 4.62 0 5.47 3.04 5.47 6.99V24h-4.56v-7.24c0-1.73-.03-3.95-2.4-3.95-2.4 0-2.77 1.87-2.77 3.81V24H7.78V8.47z" />
@@ -327,11 +336,11 @@ function About() {
                       </a>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700">
                     {[
-                      { label: "PhD on notification data", tone: "bg-indigo-500/20 border-indigo-300/30 text-white" },
-                      { label: "10+ years applied AI", tone: "bg-emerald-500/20 border-emerald-300/30 text-white" },
-                      { label: "Built production data systems", tone: "bg-amber-500/20 border-amber-300/30 text-white" },
+                      { label: "PhD on notification data", tone: "bg-pink-100 border-pink-200 text-slate-800" },
+                      { label: "10+ years applied AI", tone: "bg-emerald-100 border-emerald-200 text-slate-800" },
+                      { label: "Built production data systems", tone: "bg-gold-100 border-gold-200 text-slate-800" },
                     ].map((chip) => (
                       <div
                         key={chip.label}
@@ -343,14 +352,14 @@ function About() {
                   </div>
                 </div>
 
-                <div className="space-y-3 text-slate-100">
+                <div className="space-y-3 text-slate-700">
                   <p>
                     Founded by <strong>Kieran Fraser</strong>, a research engineer with a PhD focused on push notifications and large-scale notification data.
                   </p>
                   <p>Over 10 years building and shipping notification systems, experimentation pipelines, and behavioral analytics at the ADAPT Center, IBM, and PayPal.</p>
                   <p>Applied AI practitioner designing production-grade data and ML systems to power insights and automation.</p>
                   <p>NotiFlow comes from studying how notifications shape behavior - not from scraped dashboards or self-reported metrics.</p>
-                  <p className="italic text-slate-200">NotiFlow exists because this data did not exist anywhere else.</p>
+                  <p className="italic text-slate-600">NotiFlow exists because this data did not exist anywhere else.</p>
                 </div>
               </div>
             </div>
@@ -365,15 +374,15 @@ function About() {
           </section>
 
           {/* Final CTA */}
-          <section className="rounded-3xl bg-slate-900 text-white shadow-sm p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <section className="rounded-3xl bg-white/75 backdrop-blur border border-pink-100 text-slate-900 shadow-sm p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h2 className="text-2xl font-semibold">Start exploring push-notification trends today.</h2>
-              <p className="text-slate-200 mt-1">Get API access or book a demo with the team.</p>
+              <p className="text-slate-600 mt-1">Get API access or book a demo with the team.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <NavLink
                 to="/auth/"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-slate-900 font-semibold shadow-sm hover:bg-slate-100 transition"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-pink-500 text-white font-semibold shadow-sm hover:bg-pink-600 transition"
               >
                 Try for Free
               </NavLink>
