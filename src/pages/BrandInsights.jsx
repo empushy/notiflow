@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import Header from "../partials/Header";
 import Sidebar from "../partials/Sidebar";
 import Loader from "../partials/dashboard/Loader";
+import { extractDomainFromText, isValidDomain } from "../utils/domain";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const BELL_FALLBACK =
@@ -73,15 +74,9 @@ const heatColor = (count, max) => {
 const buildIcon = (notif = {}, brand = "") => {
   const isChrome = notif.app === "com.android.chrome" || notif.appPackage === "com.android.chrome";
 
-  const domainFromText = () => {
-    if (!notif.text) return null;
-    const match = notif.text.match(/\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/);
-    return match ? match[0] : null;
-  };
-
   const domain = (() => {
-    if (brand && brand.includes(".")) return brand;
-    return domainFromText();
+    if (brand && isValidDomain(brand)) return brand;
+    return extractDomainFromText(notif.text || "");
   })();
 
   if (isChrome && domain) {
@@ -110,24 +105,70 @@ const isValidLabel = (val) => {
   return true;
 };
 
+const normalizeCategory = (val) => {
+  const t = normalizeLabel(val);
+  if (!t) return "Website";
+  if (t.toLowerCase() === "unknown") return "Website";
+  return t;
+};
+
 const faviconFromBrand = (b = "") => {
   if (!b || typeof b !== "string") return "";
   const trimmed = b.trim();
-  if (!trimmed.includes(".")) return "";
+  if (!isValidDomain(trimmed)) return "";
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(trimmed)}&sz=128`;
 };
 
 // Single-select dropdown with inline search input
-const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Select", onSearch, loading = false }) => {
+const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Select", loading = false }) => {
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(value || "");
+  const selectedLabel = (() => {
+    if (typeof value !== "string" || !value) return "";
+    const match = options.find((opt) => {
+      if (typeof opt === "string") return opt === value;
+      return opt?.value === value || opt?.brand === value;
+    });
+    if (!match) return value;
+    return typeof match === "string" ? match : match.label || match.brand || match.value || value;
+  })();
+  const [inputValue, setInputValue] = useState(selectedLabel || value || "");
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setInputValue(value || "");
-  }, [value]);
+    setInputValue(selectedLabel || value || "");
+  }, [value, selectedLabel]);
 
-  const filtered = options.filter((o) => o.toLowerCase().includes((inputValue || "").toLowerCase()));
+  const filteredGroups = (() => {
+    const term = (inputValue || "").toLowerCase();
+    const grouped = new Map();
+    options.forEach((item) => {
+      const brandLabel =
+        typeof item === "string"
+          ? item
+          : item?.label || item?.brand || item?.value;
+      if (!brandLabel || typeof brandLabel !== "string") return;
+      if (term && !brandLabel.toLowerCase().includes(term)) return;
+      const category = typeof item === "string" ? "Website" : normalizeCategory(item?.overall_category);
+      if (!grouped.has(category)) grouped.set(category, []);
+      grouped.get(category).push({
+        label: brandLabel,
+        value:
+          typeof item === "string"
+            ? item
+            : item?.value || item?.brand || brandLabel,
+      });
+    });
+    const sortedCategories = [...grouped.keys()].sort((a, b) => {
+      if (a === "Website") return 1;
+      if (b === "Website") return -1;
+      return a.localeCompare(b);
+    });
+    return sortedCategories.map((category) => ({
+      category,
+      options: grouped.get(category).sort((a, b) => a.label.localeCompare(b.label)),
+    }));
+  })();
+  const totalOptions = filteredGroups.reduce((acc, group) => acc + group.options.length, 0);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -146,11 +187,19 @@ const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Selec
   return (
     <div ref={dropdownRef} className="relative z-[60]">
       <input
-        className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400"
+        className={`w-full min-h-[40px] px-3 py-2 rounded-lg border text-sm text-gray-800 placeholder:text-gray-400 ${
+          loading
+            ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed"
+            : "bg-white border-gray-200"
+        }`}
         value={inputValue}
-        placeholder={placeholder}
-        onFocus={() => setOpen(true)}
+        placeholder={loading ? "Loading brands..." : placeholder}
+        disabled={loading}
+        onFocus={() => {
+          if (!loading) setOpen(true);
+        }}
         onChange={(e) => {
+          if (loading) return;
           setInputValue(e.target.value);
           setOpen(true);
         }}
@@ -166,25 +215,32 @@ const SingleSelect = ({ options = [], value = "", onChange, placeholder = "Selec
       {open && (
         <div className="absolute z-[3000] mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-auto">
           <div className="p-3 pt-2 space-y-1">
-            {filtered.map((opt) => (
-              <label
-                key={opt}
-                className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer text-sm"
-              >
-                <input
-                  type="radio"
-                  name="brand-select"
-                  checked={value === opt}
-                  onChange={() => {
-                    onChange(opt);
-                    setInputValue(opt);
-                    setOpen(false);
-                  }}
-                />
-                <span className="truncate">{opt}</span>
-              </label>
+            {filteredGroups.map((group) => (
+              <div key={group.category} className="space-y-1">
+                <div className="px-2 py-1 text-[11px] uppercase tracking-[0.14em] text-gray-400">
+                  {group.category}
+                </div>
+                {group.options.map((opt) => (
+                  <label
+                    key={`${group.category}:${opt.value}`}
+                    className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer text-sm"
+                  >
+                    <input
+                      type="radio"
+                      name="brand-select"
+                      checked={value === opt.value}
+                      onChange={() => {
+                        onChange(opt.value);
+                        setInputValue(opt.label);
+                        setOpen(false);
+                      }}
+                    />
+                    <span className="truncate">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
             ))}
-            {filtered.length === 0 && (
+            {totalOptions === 0 && (
               <div className="text-xs text-gray-400 px-2 py-1">No results</div>
             )}
           </div>
@@ -888,10 +944,25 @@ function BrandInsights() {
   const fetchBrands = useCallback(async (search = "") => {
     try {
       setBrandsLoading(true);
-      const res = await fetch(`${API_URL}/web/campaigns/brands?limit=500${search ? `&q=${encodeURIComponent(search)}` : ""}`);
+      const res = await fetch(`${API_URL}/web/campaigns/brands?limit=500&include_category=1${search ? `&q=${encodeURIComponent(search)}` : ""}`);
       if (!res.ok) throw new Error("Failed to load brands");
       const json = await res.json();
-      setBrandOptions(json.data || []);
+      const raw = Array.isArray(json.data) ? json.data : [];
+      const normalized = raw
+        .map((item) => {
+          if (typeof item === "string") {
+            return { label: item, value: item, overall_category: "" };
+          }
+          const label = item?.brand || item?._id || "";
+          const value = item?.brand_raw || item?.brand || item?._id || "";
+          return {
+            label,
+            value,
+            overall_category: item?.overall_category || item?.category || item?.genre || "",
+          };
+        })
+        .filter((item) => item.label && item.value);
+      setBrandOptions(normalized);
     } catch (err) {
       console.error(err);
       setBrandOptions([]);

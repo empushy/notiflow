@@ -10,6 +10,7 @@ import NotificationStatCard from "../partials/dashboard/NotificationStatCard";
 import EmotionalToneTrends from "../partials/dashboard/NotificationToneCard";
 import Loader from "../partials/dashboard/Loader";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { extractDomainFromText, isValidDomain } from "../utils/domain";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
@@ -17,7 +18,7 @@ const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
 const faviconFromBrand = (b = "") => {
   if (!b || typeof b !== "string") return "";
   const trimmed = b.trim();
-  if (!trimmed.includes(".")) return "";
+  if (!isValidDomain(trimmed)) return "";
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(trimmed)}&sz=128`;
 };
 
@@ -578,10 +579,8 @@ function Home() {
                                       let domain = appName;
                                       if (isChrome) {
                                         const text = notif.text || notif.message || "";
-                                        const match = text.match(/\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/);
-                                        if (match && match[0]) {
-                                          domain = match[0];
-                                        }
+                                        const match = extractDomainFromText(text);
+                                        if (match) domain = match;
                                       }
                                       return (
                                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">

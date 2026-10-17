@@ -13,6 +13,7 @@ import Loader from "../../partials/dashboard/Loader";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 import { motion, AnimatePresence } from "framer-motion";
+import { extractDomainFromText, isValidDomain } from "../../utils/domain";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 const API_KEY = import.meta.env.VITE_NOTIFLOW_API_KEY;
@@ -596,8 +597,8 @@ const EmotionalToneTrends = ({
                           {(() => {
                             const notif = stats[emotion] || {};
                             const chromeDomain =
-                              (notif.example_appName && notif.example_appName.includes(".") && notif.example_appName) ||
-                              chromeDomainFromText(notif.example_notification || "");
+                              (notif.example_appName && isValidDomain(notif.example_appName) && notif.example_appName) ||
+                              extractDomainFromText(notif.example_notification || "");
                             const isChrome = isChromeNotif({
                               appPackage: notif.example_app_package,
                               app: notif.example_app_package,
@@ -718,12 +719,6 @@ const EmotionalToneTrends = ({
 };
 
 export default EmotionalToneTrends;
-const chromeDomainFromText = (text = "") => {
-  if (!text || typeof text !== "string") return null;
-  const match = text.match(/\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/);
-  return match ? match[0] : null;
-};
-
 const isChromeNotif = (notif = {}) =>
   notif.appPackage === "com.android.chrome" ||
   notif.app === "com.android.chrome" ||
@@ -731,8 +726,8 @@ const isChromeNotif = (notif = {}) =>
 
 const buildIcon = (notif = {}) => {
   const domain =
-    (notif.appName && notif.appName.includes(".") && notif.appName) ||
-    chromeDomainFromText(notif.text || notif.example_notification || "");
+    (notif.appName && isValidDomain(notif.appName) && notif.appName) ||
+    extractDomainFromText(notif.text || notif.example_notification || "");
 
   if (isChromeNotif(notif) && domain) {
     return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;

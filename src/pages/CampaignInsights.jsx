@@ -5,22 +5,62 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "../partials/Header";
 import Sidebar from "../partials/Sidebar";
 import Loader from "../partials/dashboard/Loader";
+import { extractDomainFromText, isValidDomain } from "../utils/domain";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 
 // Match Search page dropdown styling
-const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Select", onSearch }) => {
+const normalizeCategory = (val) => {
+  if (typeof val !== "string") return "Website";
+  const t = val.trim();
+  if (!t) return "Website";
+  if (t.toLowerCase() === "unknown") return "Website";
+  if (t.toLowerCase() === "none") return "Website";
+  return t;
+};
+
+const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Select", onSearch, loading = false }) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
 
-  const filtered = options.filter((o) => o.toLowerCase().includes(query.toLowerCase()));
+  const normalizedOptions = options
+    .map((opt) => {
+      if (typeof opt === "string") return { label: opt, value: opt };
+      const label = opt?.label || opt?.brand || opt?.value || "";
+      const value = opt?.value || opt?.brand || opt?.label || "";
+      const overallCategory = opt?.overall_category || opt?.category || opt?.genre || "";
+      return { label, value, overall_category: overallCategory };
+    })
+    .filter((opt) => opt.label && opt.value);
 
-  const toggle = (opt) => {
+  const filteredGroups = (() => {
+    const term = query.toLowerCase();
+    const grouped = new Map();
+    normalizedOptions.forEach((opt) => {
+      if (term && !opt.label.toLowerCase().includes(term)) return;
+      const category = normalizeCategory(opt.overall_category);
+      if (!grouped.has(category)) grouped.set(category, []);
+      grouped.get(category).push(opt);
+    });
+    const sortedCategories = [...grouped.keys()].sort((a, b) => {
+      if (a === "Website") return 1;
+      if (b === "Website") return -1;
+      return a.localeCompare(b);
+    });
+    return sortedCategories.map((category) => ({
+      category,
+      options: grouped.get(category).sort((a, b) => a.label.localeCompare(b.label)),
+    }));
+  })();
+  const totalOptions = filteredGroups.reduce((acc, group) => acc + group.options.length, 0);
+
+  const toggle = (value) => {
     onChange(
-      selected.includes(opt)
-        ? selected.filter((s) => s !== opt)
-        : [...selected, opt]
+      selected.includes(value)
+        ? selected.filter((s) => s !== value)
+        : [...selected, value]
     );
   };
 
@@ -40,57 +80,74 @@ const MultiSelect = ({ options = [], selected = [], onChange, placeholder = "Sel
   }, [open]);
 
   useEffect(() => {
-    if (!onSearch || !open) return;
+    if (!onSearch || !open || loading) return;
     const t = setTimeout(() => onSearch(query), 200);
     return () => clearTimeout(t);
-  }, [query, onSearch, open]);
+  }, [query, onSearch, open, loading]);
+
+  useEffect(() => {
+    if (!open) setQuery("");
+  }, [open]);
 
   return (
     <div ref={dropdownRef} className="relative z-[60]">
       <div
-        onClick={() => setOpen((v) => !v)}
-        className="w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-gray-200 flex items-center flex-wrap gap-2 cursor-pointer"
+        onClick={() => {
+          if (!loading) inputRef.current?.focus();
+        }}
+        className={`w-full min-h-[40px] px-3 py-2 rounded-lg border text-sm text-gray-800 leading-5 shadow-sm flex items-center gap-2 focus-within:ring-0 focus-within:border-gray-300 ${
+          loading
+            ? "bg-gray-50 border-gray-200 cursor-not-allowed pointer-events-none"
+            : "bg-white border-gray-200 hover:border-gray-300"
+        }`}
       >
-        {selected.length === 0 ? (
-          <span className="text-sm text-gray-400">{placeholder}</span>
-        ) : (
-          selected.map((s) => (
-            <span
-              key={s}
-              onClick={(e) => {
-                e.stopPropagation();
-                toggle(s);
-              }}
-              className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs hover:bg-indigo-200 cursor-pointer transition-colors flex items-center gap-1"
-            >
-              {s}
-              <span className="text-indigo-500 hover:text-indigo-700">&times;</span>
-            </span>
-          ))
-        )}
+        <input
+          ref={inputRef}
+          className="flex-1 min-w-[120px] h-full py-0 bg-transparent text-sm text-gray-800 leading-5 placeholder:text-gray-400 border-0 outline-none shadow-none focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none"
+          placeholder={
+            loading
+              ? "Loading brands..."
+              : selected.length === 0
+              ? placeholder
+              : "Type to filter..."
+          }
+          value={query}
+          disabled={loading}
+          onFocus={() => {
+            if (!loading) setOpen(true);
+          }}
+          onChange={(e) => {
+            if (!loading) setQuery(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setOpen(false);
+          }}
+        />
       </div>
       {open && (
         <div className="absolute z-[3000] mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-3 max-h-64 overflow-auto">
-          <input
-            className="w-full px-2 py-1 rounded border border-gray-200 text-sm mb-2"
-            placeholder="Search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") setOpen(false);
-            }}
-          />
           <div className="max-h-52 overflow-auto space-y-1">
-            {filtered.map((opt) => (
-              <label
-                key={opt}
-                className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer text-sm"
-              >
-                <input type="checkbox" checked={selected.includes(opt)} onChange={() => toggle(opt)} />
-                <span className="truncate">{opt}</span>
-              </label>
+            {filteredGroups.map((group) => (
+              <div key={group.category} className="space-y-1">
+                <div className="px-2 py-1 text-[11px] uppercase tracking-[0.14em] text-gray-400">
+                  {group.category}
+                </div>
+                {group.options.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer text-sm"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(opt.value)}
+                      onChange={() => toggle(opt.value)}
+                    />
+                    <span className="truncate">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
             ))}
-            {filtered.length === 0 && (
+            {totalOptions === 0 && (
               <div className="text-xs text-gray-400 px-2 py-1">No results</div>
             )}
           </div>
@@ -196,17 +253,9 @@ const buildIcon = (notif, brand) => {
   const isChrome =
     notif?.app === "com.android.chrome" || notif?.appPackage === "com.android.chrome";
 
-  const domainFromText = () => {
-    if (!notif?.text) return null;
-    const match = notif.text.match(
-      /\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/
-    );
-    return match ? match[0] : null;
-  };
-
   const domain = (() => {
-    if (brand && brand.includes(".")) return brand;
-    return domainFromText();
+    if (brand && isValidDomain(brand)) return brand;
+    return extractDomainFromText(notif?.text || "");
   })();
 
   if (isChrome && domain) {
@@ -227,7 +276,7 @@ const buildCampaignIcon = (campaign) => {
   if (notif) {
     const brand = notif.brand || notif.appName || campaign.brand || campaign.appName;
     const appPkg = notif.appPackage || notif.app;
-    if (appPkg === "com.android.chrome" && brand && brand.includes(".")) {
+    if (appPkg === "com.android.chrome" && brand && isValidDomain(brand)) {
       return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(brand)}&sz=96`;
     }
     const icon = buildIcon(
@@ -240,7 +289,7 @@ const buildCampaignIcon = (campaign) => {
   if (campaign.icon) return campaign.icon;
   const brand = campaign.brand || campaign.appName;
   const appPkg = campaign.appPackage || campaign.app;
-  if (appPkg === "com.android.chrome" && brand && brand.includes(".")) {
+  if (appPkg === "com.android.chrome" && brand && isValidDomain(brand)) {
     return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(brand)}&sz=96`;
   }
   if (brand) return buildIcon({ icon: campaign.icon, appPackage: appPkg }, brand);
@@ -412,6 +461,7 @@ function CampaignInsights() {
 
   const [taxonomy, setTaxonomy] = useState({ types: [], roles: [] });
   const [brandOptions, setBrandOptions] = useState([]);
+  const [brandsLoading, setBrandsLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [campaignDetail, setCampaignDetail] = useState(null);
@@ -457,15 +507,33 @@ function CampaignInsights() {
 
   const fetchBrands = useCallback(async (search = "") => {
     try {
+      setBrandsLoading(true);
       const res = await fetch(
-        `${API_URL}/web/campaigns/brands?limit=1000${search ? `&q=${encodeURIComponent(search)}` : ""}`
+        `${API_URL}/web/campaigns/brands?limit=1000&include_category=1${search ? `&q=${encodeURIComponent(search)}` : ""}`
       );
       if (!res.ok) throw new Error("Failed to load brands");
       const data = await res.json();
-      setBrandOptions(data.data || []);
+      const raw = Array.isArray(data.data) ? data.data : [];
+      const normalized = raw
+        .map((item) => {
+          if (typeof item === "string") {
+            return { label: item, value: item, overall_category: "" };
+          }
+          const label = item?.brand || item?._id || "";
+          const value = item?.brand_raw || item?.brand || item?._id || "";
+          return {
+            label,
+            value,
+            overall_category: item?.overall_category || item?.category || item?.genre || "",
+          };
+        })
+        .filter((item) => item.label && item.value);
+      setBrandOptions(normalized);
     } catch (err) {
       setBrandOptions([]);
       console.error(err);
+    } finally {
+      setBrandsLoading(false);
     }
   }, [API_URL]);
 
@@ -634,6 +702,17 @@ function CampaignInsights() {
     overview?.roles?.map((t) => ({ label: t.label, count: t.count })) || [];
   const brandItems =
     overview?.brands?.map((t) => ({ label: t.label, count: t.count })) || [];
+  const brandLabelMap = useMemo(() => {
+    const map = new Map();
+    brandOptions.forEach((opt) => {
+      if (typeof opt === "string") {
+        map.set(opt, opt);
+      } else if (opt?.value) {
+        map.set(opt.value, opt.label || opt.value);
+      }
+    });
+    return map;
+  }, [brandOptions]);
 
   return (
     <>
@@ -671,6 +750,30 @@ function CampaignInsights() {
 
               {/* Filters */}
                 <div className="rounded-2xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm p-6 relative z-[2000]">
+                {filters.brand.length > 0 && (
+                  <div className="mb-4 w-full overflow-x-auto">
+                    <div className="flex items-center gap-2 min-w-full pr-1">
+                      {filters.brand.map((value) => {
+                        const label = brandLabelMap.get(value) || value;
+                        return (
+                          <span
+                            key={value}
+                            onClick={() =>
+                              setFilters((f) => ({
+                                ...f,
+                                brand: f.brand.filter((b) => b !== value),
+                              }))
+                            }
+                            className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs hover:bg-indigo-200 cursor-pointer transition-colors flex items-center gap-1 whitespace-nowrap"
+                          >
+                            {label}
+                            <span className="text-indigo-500 hover:text-indigo-700">&times;</span>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Brands</label>
@@ -680,6 +783,7 @@ function CampaignInsights() {
                       onChange={(vals) => setFilters((f) => ({ ...f, brand: vals }))}
                       placeholder="Search"
                       onSearch={(q) => fetchBrands(q)}
+                      loading={brandsLoading}
                     />
                   </div>
                   <div>

@@ -7,6 +7,7 @@ import { Search as SearchIcon, ChevronDown } from "lucide-react";
 import Header from "../partials/Header";
 import Sidebar from "../partials/Sidebar";
 import Loader from "../partials/dashboard/Loader";
+import { extractDomainFromText, isValidDomain } from "../utils/domain";
 
 const API_URL = import.meta.env.VITE_NOTIFLOW_API_URL;
 
@@ -277,12 +278,6 @@ const SearchableSingleSelect = ({ options = [], value = "", onChange, placeholde
   );
 };
 
-const chromeDomainFromText = (text = "") => {
-  if (!text || typeof text !== "string") return null;
-  const match = text.match(/\b([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b/);
-  return match ? match[0] : null;
-};
-
 const buildIcon = (notif = {}) => {
   const isChrome =
     notif.appPackage === "com.android.chrome" ||
@@ -290,8 +285,8 @@ const buildIcon = (notif = {}) => {
     notif.appName === "Chrome";
 
   const domain = (() => {
-    if (notif.appName && notif.appName.includes(".")) return notif.appName;
-    return chromeDomainFromText(notif.text || notif.message || "");
+    if (notif.appName && isValidDomain(notif.appName)) return notif.appName;
+    return extractDomainFromText(notif.text || notif.message || "");
   })();
 
   if (isChrome && domain) {
@@ -309,7 +304,7 @@ const buildIcon = (notif = {}) => {
       notif.appPackage === "com.android.chrome" ||
       notif.app === "com.android.chrome" ||
       notif.appName === "Chrome";
-    const domain = chromeDomainFromText(notif.text || notif.message || "");
+    const domain = extractDomainFromText(notif.text || notif.message || "");
     const iconUrl = buildIcon(notif);
     return {
       ...notif,
