@@ -6,8 +6,8 @@ import KieranImage from "../images/kieran_image.jpg";
 
 const whoFor = [
   {
-    title: "Marketing & Growth Teams",
-    body: "Monitor competitor campaigns and messaging strategies.",
+    title: "Retention & Growth Teams",
+    body: "Benchmark messaging, timing, and campaign patterns to guide channel strategy.",
     iconBg: "bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -16,8 +16,8 @@ const whoFor = [
     ),
   },
   {
-    title: "Product & CRM Teams",
-    body: "Understand cadence, urgency, and engagement approaches.",
+    title: "CRM & Lifecycle Teams",
+    body: "Use market signals to shape briefs, cadence decisions, and performance reviews.",
     iconBg: "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -26,8 +26,8 @@ const whoFor = [
     ),
   },
   {
-    title: "Analysts & Agencies",
-    body: "Power reports and automated insights via API.",
+    title: "Agencies & Consultants",
+    body: "Build sharper client-facing reports, recommendations, and competitive narratives.",
     iconBg: "bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-md shadow-sky-500/30",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -39,8 +39,8 @@ const whoFor = [
 
 const howItWorks = [
   { title: "Collect", body: "Proprietary listening algorithms gather mobile and web push notifications." },
-  { title: "Analyze", body: "Campaign detection, timing patterns, and messaging signals." },
-  { title: "Access", body: "Insights via dashboard and API." },
+  { title: "Analyze", body: "Campaign detection, timing patterns, messaging signals, and comparable benchmarks." },
+  { title: "Apply", body: "Use insights in dashboards, reports, briefs, and client recommendations." },
 ];
 
 const whatItems = [
@@ -69,7 +69,7 @@ const whatItems = [
   },
   {
     title: "Timing signals",
-    body: "Reveals timing, volume spikes, and urgency signals.",
+    body: "Reveals timing, volume spikes, and urgency signals that can inform broader retention strategy.",
     accent: "bg-amber-50 text-amber-800 border-amber-100",
     iconTone: "bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-amber-500/30",
     icon: (
@@ -81,7 +81,7 @@ const whatItems = [
   },
   {
     title: "Searchable",
-    body: "Makes notification data searchable by brand and category.",
+    body: "Makes notification data searchable by brand and category for reporting, briefing, and benchmarking.",
     accent: "bg-sky-50 text-sky-800 border-sky-100",
     iconTone: "bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-sky-500/30",
     icon: (
@@ -94,7 +94,7 @@ const whatItems = [
 
 const differentiators = [
   {
-    label: "Built specifically for push notifications",
+    label: "Built around real retention messaging signals, starting with push notifications",
     color: "bg-pink-50 text-pink-800 border-pink-100",
     iconTone: "bg-gradient-to-br from-pink-500 to-rose-500 text-white shadow-pink-500/30",
     icon: (
@@ -156,10 +156,10 @@ function About() {
                 About NotiFlow
               </div>
               <h1 className="text-3xl sm:text-4xl font-semibold leading-tight">
-                Turn every push notification into a signal you can act on.
+                Turn notification signals into sharper retention decisions.
               </h1>
               <p className="text-base sm:text-lg text-slate-600 max-w-3xl">
-                Track competitor campaigns, timing, and creative angles across mobile and web push. NotiFlow listens to the notification graph so you can move from guessing to knowing.
+                Track campaigns, timing, and messaging patterns so retention strategists and growth marketers can plan, brief, benchmark, and report with more confidence.
               </p>
               <div className="flex flex-wrap gap-3">
                 <NavLink
@@ -244,7 +244,7 @@ function About() {
                 </div>
               ))}
             </div>
-            <p className="text-slate-600 italic">Think of it as social listening - but for push notifications.</p>
+            <p className="text-slate-600 italic">Think of it as a retention-strategy intelligence layer powered by push-notification data.</p>
           </section>
 
           {/* Who it's for */}
@@ -358,7 +358,8 @@ function About() {
                   </p>
                   <p>Over 10 years building and shipping notification systems, experimentation pipelines, and behavioral analytics at the ADAPT Center, IBM, and PayPal.</p>
                   <p>Applied AI practitioner designing production-grade data and ML systems to power insights and automation.</p>
-                  <p>NotiFlow comes from studying how notifications shape behavior - not from scraped dashboards or self-reported metrics.</p>
+                  <p>NotiFlow is built to help retention teams plan, report, brief, and advise with evidence grounded in real messaging signals.</p>
+                  <p>That point of view comes from studying how notifications shape behavior, not from scraped dashboards or self-reported metrics.</p>
                   <p className="italic text-slate-600">NotiFlow exists because this data did not exist anywhere else.</p>
                 </div>
               </div>
@@ -376,7 +377,7 @@ function About() {
           {/* Final CTA */}
           <section className="rounded-3xl bg-white/75 backdrop-blur border border-pink-100 text-slate-900 shadow-sm p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-semibold">Start exploring push-notification trends today.</h2>
+              <h2 className="text-2xl font-semibold">Start turning retention signals into sharper strategy.</h2>
               <p className="text-slate-600 mt-1">Get API access or book a demo with the team.</p>
             </div>
             <div className="flex flex-wrap gap-3">
